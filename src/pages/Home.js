@@ -1,9 +1,10 @@
 import React from 'react'
 
-function Home() {
+function Home({handleLogout, ...props}) {
     return (
         <div>
             Home
+            <button onClick={handleLogout}>logout</button>
         </div>
     )
 }

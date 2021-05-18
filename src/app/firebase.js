@@ -12,7 +12,7 @@ const config = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 console.log(config);
-firebase.initializeApp(config);
+export const fire = firebase.initializeApp(config);
 
 export const firestore = firebase.firestore();
 export const auth = firebase.auth;
