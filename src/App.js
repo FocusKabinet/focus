@@ -14,31 +14,31 @@ function App() {
       <div className="App">
         <Switch>
           <Route exact path="/">
-              <Landing />
+            <Landing />
           </Route>
           <Route path="/login">
-              <Navbar title={"Login"} loggedIn={false}/>
-              <Login />
+            <Navbar title={'Login'} loggedIn={false} />
+            <Login />
           </Route>
           <Route path="/register" loggedIn={false}>
-              <Navbar title={"Register"} />
-              <Register />
+            <Navbar title={'Register'} />
+            <Register />
           </Route>
           <Route path="/:id" loggedIn={true}>
-              <Navbar title={"Home"}/>
-              <Home />
+            <Navbar title={'Home'} />
+            <Home />
           </Route>
           <Route path="/profile:id">
-              <Navbar title={"Profile"} loggedIn={true}/>
-              <Profile />
+            <Navbar title={'Profile'} loggedIn={true} />
+            <Profile />
           </Route>
           <Route path="/settings:id">
-              <Navbar title={"Settings"} loggedIn={true}/>
-              <Settings />
+            <Navbar title={'Settings'} loggedIn={true} />
+            <Settings />
           </Route>
           <Route path="/datapage:id">
-              <Navbar title={"Data"} loggedIn={true}/>
-              <Datapage />
+            <Navbar title={'Data'} loggedIn={true} />
+            <Datapage />
           </Route>
         </Switch>
       </div>

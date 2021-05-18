@@ -1,10 +1,10 @@
 import '../../styles/navbar.scss';
 import Nav from './Nav';
 
-function NavBar({title,...props}) {
+function NavBar({ title, ...props }) {
   return (
     <header className="navbar">
-      <Nav title={title}/>
+      <Nav title={title} />
       <h1>{title}</h1>
     </header>
   );
