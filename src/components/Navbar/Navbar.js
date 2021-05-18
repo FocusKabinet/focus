@@ -9,7 +9,11 @@ function NavBar(props) {
         <h1>{props.title}</h1>
       </header>
     );
-  }else{return("");}
+  }else{return(
+    <header className="navbar">
+        <h1>Focus</h1>
+    </header>
+  );}
 }
 
 export default NavBar;
