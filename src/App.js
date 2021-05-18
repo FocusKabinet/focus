@@ -1,6 +1,6 @@
 import { Switch, Route, useHistory } from 'react-router-dom';
-import {useState, useEffect} from 'react';
-import {fire} from './app/firebase';
+import { useState, useEffect } from 'react';
+import { fire } from './app/firebase';
 import Navbar from './components/Navbar/Navbar';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -10,6 +10,8 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Datapage from './pages/Datapage';
 import KabinetDashboard from './pages/KabinetDashboard';
+import Page from './components/Page';
+
 function App() {
   const history = useHistory();
 
@@ -20,160 +22,164 @@ function App() {
   const [passwordError, setPasswordError] = useState('');
   const [hasAccount, setHasAccount] = useState(false);
 
-  const clearAllInputs = ()=>{
+  const clearAllInputs = () => {
     setEmail('');
     setPassword('');
-  }
+  };
 
-  const clearAllErr = () =>{
+  const clearAllErr = () => {
     setEmailError('');
     setPasswordError('');
-  }
+  };
 
-  const handleLogin = () =>{
+  const handleLogin = () => {
     clearAllErr();
     fire
       .auth()
-      .signInWithEmailAndPassword(email,password)
-      .then(result=>{
-        handleHistory("home");
+      .signInWithEmailAndPassword(email, password)
+      .then((result) => {
+        handleHistory('home');
       })
-      .catch(err=>{
-        switch(err.code){
-          case "auth/invalid-email":
-          case "auth/user-disabled":
-          case "auth/user-not-found":
+      .catch((err) => {
+        switch (err.code) {
+          case 'auth/invalid-email':
+          case 'auth/user-disabled':
+          case 'auth/user-not-found':
             setEmailError(err.message);
             break;
-          case "auth/wrong-password":
+          case 'auth/wrong-password':
             setPasswordError(err.message);
             break;
         }
       });
-    if(user)
-      handleHistory("home");    
-  }
+    if (user) handleHistory('home');
+  };
 
-  const handleRegister = () =>{
+  const handleRegister = () => {
     clearAllErr();
     fire
       .auth()
-      .createUserWithEmailAndPassword(email,password)
-      .then(result=>{
-        handleHistory("home");
+      .createUserWithEmailAndPassword(email, password)
+      .then((result) => {
+        handleHistory('home');
       })
-      .catch(err=>{
-        switch(err.code){
-          case "auth/email-already-in-use":
-          case "auth/invalid-email":
+      .catch((err) => {
+        switch (err.code) {
+          case 'auth/email-already-in-use':
+          case 'auth/invalid-email':
             setEmailError(err.message);
             break;
-          case "auth/weak-password":
+          case 'auth/weak-password':
             setPasswordError(err.message);
             break;
         }
-      })    
-  }
+      });
+  };
 
-  const handleLogout = () =>{
+  const handleLogout = () => {
     fire.auth().signOut();
-    handleHistory("login")
-  }
+    handleHistory('login');
+  };
 
-  const authListener = () =>{
-    fire.auth().onAuthStateChanged(user =>{
-      if(user){
+  const authListener = () => {
+    fire.auth().onAuthStateChanged((user) => {
+      if (user) {
         clearAllInputs();
         setUser(user);
-      }else{
+      } else {
         setUser('');
       }
-    })
-  }
+    });
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     authListener();
-  },[])
+  }, []);
 
-  const handleHistory = (path) =>{
+  const handleHistory = (path) => {
     history.push(`/${path}`);
-  }
+  };
 
   return (
-      <div className="App">
-        <Switch>
-          <Route exact path="/">
-              <Navbar loggedIn={false}/>
-              <Landing />
-          </Route>
-          <Route path="/login">
-              <Navbar loggedIn={false}/>
-              <Login 
-                email={email}   
-                setEmail={setEmail}   
-                password={password}   
-                setPassword={setPassword} 
-                handleLogin={handleLogin}
-                hasAccount={hasAccount}
-                setHasAccount={setHasAccount}
-                emailError={emailError}
-                passwordError={passwordError}
-              />
-          </Route>
-          <Route path="/register">
-              <Navbar loggedIn={false} />
-              <Register 
-                email={email}   
-                setEmail={setEmail}   
-                password={password}   
-                setPassword={setPassword} 
-                handleLogin={handleLogin}
-                handleRegister={handleRegister}
-                hasAccount={hasAccount}
-                setHasAccount={setHasAccount}
-                emailError={emailError}
-                passwordError={passwordError}
-              />
-          </Route>
-          {user ?
-            <>
-              <Route path="/home" >
-                  <Navbar title={"Home"} loggedIn={true}/>
-                  <Home handleLogout={handleLogout} />
-              </Route>
-              <Route path="/profile:id">
-                  <Navbar title={"Profile"} loggedIn={true}/>
-                  <Profile />
-              </Route>
-              <Route path="/settings:id">
-                  <Navbar title={"Settings"} loggedIn={true}/>
-                  <Settings />
-              </Route>
-              <Route path="/datapage:id">
-                  <Navbar title={"Data"} loggedIn={true}/>
-                  <Datapage />
-              </Route>
-            </>
-            :
-            <>
-            <div> 
+    <div className="App">
+      <Switch>
+        <Route exact path="/">
+          <Navbar loggedIn={false} />
+          <Landing />
+        </Route>
+        <Route path="/login">
+          <Navbar loggedIn={false} />
+          <Login
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            handleLogin={handleLogin}
+            hasAccount={hasAccount}
+            setHasAccount={setHasAccount}
+            emailError={emailError}
+            passwordError={passwordError}
+          />
+        </Route>
+        <Route path="/register">
+          <Navbar loggedIn={false} />
+          <Register
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            handleLogin={handleLogin}
+            handleRegister={handleRegister}
+            hasAccount={hasAccount}
+            setHasAccount={setHasAccount}
+            emailError={emailError}
+            passwordError={passwordError}
+          />
+        </Route>
+        {user ? (
+          <>
+            <Route path="/home">
+              <Navbar title={'Home'} loggedIn={true} />
+              <Home handleLogout={handleLogout} />
+            </Route>
+            <Route path="/kabinet-home">
+              <Page>
+                <KabinetDashboard />
+              </Page>
+            </Route>
+            <Route path="/profile:id">
+              <Navbar title={'Profile'} loggedIn={true} />
+              <Profile />
+            </Route>
+            <Route path="/settings:id">
+              <Navbar title={'Settings'} loggedIn={true} />
+              <Settings />
+            </Route>
+            <Route path="/datapage:id">
+              <Navbar title={'Data'} loggedIn={true} />
+              <Datapage />
+            </Route>
+          </>
+        ) : (
+          <>
+            <div>
               please log in
-              <Login 
-                  email={email}   
-                  setEmail={setEmail}   
-                  password={password}   
-                  setPassword={setPassword} 
-                  handleLogin={handleLogin}
-                  hasAccount={hasAccount}
-                  setHasAccount={setHasAccount}
-                  emailError={emailError}
-                  passwordError={passwordError}
-                />
-              </div>
-              </>
-          }
-        </Switch>
-      </div>
+              <Login
+                email={email}
+                setEmail={setEmail}
+                password={password}
+                setPassword={setPassword}
+                handleLogin={handleLogin}
+                hasAccount={hasAccount}
+                setHasAccount={setHasAccount}
+                emailError={emailError}
+                passwordError={passwordError}
+              />
+            </div>
+          </>
+        )}
+      </Switch>
+    </div>
   );
 }
 
