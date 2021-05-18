@@ -8,6 +8,8 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Datapage from './pages/Datapage';
 import KabinetDashboard from './pages/KabinetDashboard';
+import Page from './components/Page';
+
 function App() {
   return (
     <Router>
@@ -25,7 +27,9 @@ function App() {
             <Register />
           </Route>
           <Route path="/kabinet-home">
-            <KabinetDashboard />
+            <Page>
+              <KabinetDashboard />
+            </Page>
           </Route>
           <Route path="/:id" loggedIn={true}>
             <Navbar title={'Home'} />
