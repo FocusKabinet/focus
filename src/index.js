@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { firestore, auth } from './app/firebase';
 
 ReactDOM.render(<App />,  document.getElementById('root'));
 
