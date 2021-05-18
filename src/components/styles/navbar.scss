@@ -5,7 +5,7 @@
     box-shadow: 0 0.3rem 0.7rem rgba(0, 0, 0, 0.1);
     display: flex;
     align-items: center;
-    position: fixed;
+    position: relative;
     width: 100%;
     height: $spacer;
     z-index: 10000;

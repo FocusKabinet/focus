@@ -1,13 +1,15 @@
 import '../styles/navbar.scss';
 import Nav from './Nav';
 
-function NavBar({ title, ...props }) {
-  return (
-    <header className="navbar">
-      <Nav title={title} />
-      <h1>{title}</h1>
-    </header>
-  );
+function NavBar(props) {
+  if(props.loggedIn){
+    return (
+      <header className="navbar">
+        <Nav title={props.title}/>
+        <h1>{props.title}</h1>
+      </header>
+    );
+  }else{return("");}
 }
 
 export default NavBar;
