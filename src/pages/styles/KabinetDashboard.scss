@@ -1,0 +1,25 @@
+.kabinet-home {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+.actions {
+  padding: 0.5rem;
+  margin-bottom: 1.5rem;
+  // margin-left: 1rem;
+  // margin-right: 1rem;
+}
+.grid-container {
+  align-items: center;
+  &.list {
+    // margin-top: 1rem;
+    // max-width: 90vw;
+    margin-bottom: 1rem;
+  }
+}
+
+.list-title {
+  color: white;
+  margin-top: 2rem;
+}

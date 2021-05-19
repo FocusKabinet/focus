@@ -1,0 +1,23 @@
+.new-idea-form {
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  &-nav {
+    button:not(:last-child) {
+      margin-right: 1rem;
+    }
+  }
+}
+
+.MuiPaper-root.photo-tabs {
+  background-color: #d7dee1;
+}
+.image-preview {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  height: 10rem;
+}
