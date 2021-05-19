@@ -12,9 +12,15 @@ import Datapage from './pages/Datapage';
 import BlockedLogin from './components/BlockedLogin';
 import KabinetDashboard from './pages/KabinetDashboard';
 import {fire} from './app/firebase';
+import { useSelector } from 'react-redux';
+import {useDispatch} from 'react-redux';
+import {logIn, logOut} from './redux/actions/index';
 
 function App() {
   const history = useHistory();
+  const dispatch = useDispatch();
+  
+  const isLogged = useSelector(state=> state.isLogged) 
 
   const [user, setUser] = useState('');
   const [email, setEmail] = useState('');
@@ -38,6 +44,7 @@ function App() {
     const res = fireHandleLogin(email,password);
     res
       .then(()=>{
+        dispatch(logIn());
         handleHistory("home");
       }) 
       .catch(e=>{
@@ -59,6 +66,7 @@ function App() {
     const res = fireHandleRegister(email,password);
     res
       .then(()=>{
+        dispatch(logIn());
         handleHistory("home");
       }) 
       .catch(e=>{
@@ -77,7 +85,9 @@ function App() {
   const handleLogout = () =>{
     const res = firehandleLogout();
     res
-      .then(()=>handleHistory("login"))
+      .then(()=>{
+        dispatch(logOut());
+        handleHistory("login")})
       .catch(e=>{
         alert("There was an error logging out")
         console.log(e.message);
@@ -107,11 +117,11 @@ function App() {
       <div className="App">
         <Switch>
           <Route exact path="/">
-              <Navbar loggedIn={false}/>
+              <Navbar loggedIn={isLogged}/>
               <Landing />
           </Route>
           <Route path="/login">
-              <Navbar loggedIn={false}/>
+              <Navbar loggedIn={isLogged}/>
               <Login 
                 email={email}   
                 setEmail={setEmail}   
@@ -125,7 +135,7 @@ function App() {
               />
           </Route>
           <Route path="/register">
-              <Navbar loggedIn={false} />
+              <Navbar loggedIn={isLogged} />
               <Register 
                 email={email}   
                 setEmail={setEmail}   
@@ -139,22 +149,22 @@ function App() {
                 passwordError={passwordError}
               />
           </Route>
-          {user ?
+          {isLogged ?
             <>
               <Route path="/home" >
-                  <Navbar title={"Home"} loggedIn={true}/>
+                  <Navbar title={"Home"} loggedIn={isLogged}/>
                   <Home handleLogout={handleLogout} />
               </Route>
               <Route path="/profile:id">
-                  <Navbar title={"Profile"} loggedIn={true}/>
+                  <Navbar title={"Profile"} loggedIn={isLogged}/>
                   <Profile />
               </Route>
               <Route path="/settings:id">
-                  <Navbar title={"Settings"} loggedIn={true}/>
+                  <Navbar title={"Settings"} loggedIn={isLogged}/>
                   <Settings />
               </Route>
               <Route path="/datapage:id">
-                  <Navbar title={"Data"} loggedIn={true}/>
+                  <Navbar title={"Data"} loggedIn={isLogged}/>
                   <Datapage />
               </Route>
             </>
