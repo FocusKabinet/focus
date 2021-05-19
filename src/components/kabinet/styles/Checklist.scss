@@ -1,0 +1,9 @@
+.MuiPaper-root.checklist-item {
+  background-color: #e4e8e9;
+  &:not(:last-child) {
+    margin-bottom: 0.5rem;
+  }
+  .delete-list-item {
+    color: #aa3333;
+  }
+}
