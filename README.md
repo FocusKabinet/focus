@@ -1,11 +1,9 @@
 [![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
 
 <!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  <h1 align="center">Focus</h3>
+  <h1 align="center">💡 Focus 💡</h1>
 
   <p align="center">
     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
@@ -73,14 +71,13 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 <!-- CONTACT -->
 ## Contact
 
-[Viet Nguyen](https://www.linkedin.com/in/viet-nguyen-550b21124/)
-[Denzel Edwards](https://https://denedwards.github.io/)
+* [Viet Nguyen](https://www.linkedin.com/in/viet-nguyen-550b21124/)
+* [Denzel Edwards](https://https://denedwards.github.io/)
 
 Project Link: [https://github.com/FocusKabinet/focus](https://github.com/FocusKabinet/focus)
 
 <!-- ACKNOWLEDGEMENTS -->
-## Acknowledgements
-* 
+
 
 
 
