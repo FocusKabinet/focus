@@ -11,7 +11,6 @@ const config = {
   appId: process.env.REACT_APP_APP_ID,
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
-console.log(config);
 export const fire = firebase.initializeApp(config);
 
 export const firestore = firebase.firestore();

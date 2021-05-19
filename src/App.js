@@ -1,6 +1,6 @@
 import { Switch, Route, useHistory } from 'react-router-dom';
 import {useState, useEffect} from 'react';
-import {fire} from './app/firebase';
+import {fireHandleLogin, fireHandleRegister, firehandleLogout} from './helpers/firebaseHelpers';
 import Navbar from './components/Navbar/Navbar';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -10,6 +10,8 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Datapage from './pages/Datapage';
 import KabinetDashboard from './pages/KabinetDashboard';
+import {fire} from './app/firebase';
+
 function App() {
   const history = useHistory();
 
@@ -32,52 +34,53 @@ function App() {
 
   const handleLogin = () =>{
     clearAllErr();
-    fire
-      .auth()
-      .signInWithEmailAndPassword(email,password)
-      .then(result=>{
+    const res = fireHandleLogin(email,password);
+    res
+      .then(()=>{
         handleHistory("home");
+      }) 
+      .catch(e=>{
+        switch(e.code){
+            case "auth/invalid-email":
+            case "auth/user-disabled":
+            case "auth/user-not-found":
+              setEmailError(e.message)
+              break;
+            case "auth/wrong-password":
+              setPasswordError(e.message)
+              break;
+            }
       })
-      .catch(err=>{
-        switch(err.code){
-          case "auth/invalid-email":
-          case "auth/user-disabled":
-          case "auth/user-not-found":
-            setEmailError(err.message);
-            break;
-          case "auth/wrong-password":
-            setPasswordError(err.message);
-            break;
-        }
-      });
-    if(user)
-      handleHistory("home");    
   }
 
   const handleRegister = () =>{
     clearAllErr();
-    fire
-      .auth()
-      .createUserWithEmailAndPassword(email,password)
-      .then(result=>{
+    const res = fireHandleRegister(email,password);
+    res
+      .then(()=>{
         handleHistory("home");
-      })
-      .catch(err=>{
-        switch(err.code){
+      }) 
+      .catch(e=>{
+        switch(e.code){
           case "auth/email-already-in-use":
           case "auth/invalid-email":
-            setEmailError(err.message);
+            setEmailError(e.message);
             break;
           case "auth/weak-password":
-            setPasswordError(err.message);
+            setPasswordError(e.message);
             break;
         }
-      })    
+      });
   }
 
   const handleLogout = () =>{
-    fire.auth().signOut();
-    handleHistory("login")
+    const res = firehandleLogout();
+    res
+      .then(()=>handleHistory("login"))
+      .catch(e=>{
+        alert("There was an error logging out")
+        console.log(e.message);
+      });
   }
 
   const authListener = () =>{
