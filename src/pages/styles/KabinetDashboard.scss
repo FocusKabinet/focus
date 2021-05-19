@@ -1,3 +1,48 @@
+.kabinet-home {
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+}
+.actions {
+  padding: 0.5rem;
+  margin-bottom: 1.5rem;
+  // margin-left: 1rem;
+  // margin-right: 1rem;
+}
 .grid-container {
   align-items: center;
+  &.list {
+    // margin-top: 1rem;
+    // max-width: 90vw;
+    margin-bottom: 1rem;
+  }
+}
+
+.card {
+  margin-bottom: 2rem;
+}
+
+.card-img {
+  height: 150px;
+}
+.list-title {
+  color: white;
+  align-self: flex-start;
+
+  margin-top: 2rem;
+}
+
+.MuiButtonBase-root.menu-item-delete {
+  color: #cd2b2c;
+}
+.MuiGrid-item {
+  width: 100%;
+}
+
+.MuiCardHeader-action {
+  margin-left: 0.5rem;
+}
+.MuiCardHeader-title.MuiTypography-h5 {
+  font-size: 1rem;
 }

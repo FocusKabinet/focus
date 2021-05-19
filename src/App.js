@@ -11,6 +11,7 @@ import Settings from './pages/Settings';
 import Datapage from './pages/Datapage';
 import KabinetDashboard from './pages/KabinetDashboard';
 import Page from './components/Page';
+import KabinetNewIdea from './pages/KabinetNewIdea';
 
 function App() {
   const history = useHistory();
@@ -103,6 +104,22 @@ function App() {
   return (
     <div className="App">
       <Switch>
+        <Route
+          path="/kabinet-home"
+          render={(routeProps) => (
+            <Page>
+              <KabinetDashboard {...routeProps} />
+            </Page>
+          )}
+        ></Route>
+        <Route
+          path="/kabinet-new"
+          render={(routeProps) => (
+            <Page>
+              <KabinetNewIdea {...routeProps} />
+            </Page>
+          )}
+        ></Route>
         <Route exact path="/">
           <Navbar loggedIn={false} />
           <Landing />
@@ -141,11 +158,6 @@ function App() {
             <Route path="/home">
               <Navbar title={'Home'} loggedIn={true} />
               <Home handleLogout={handleLogout} />
-            </Route>
-            <Route path="/kabinet-home">
-              <Page>
-                <KabinetDashboard />
-              </Page>
             </Route>
             <Route path="/profile:id">
               <Navbar title={'Profile'} loggedIn={true} />
