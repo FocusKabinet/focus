@@ -7,3 +7,10 @@
   background-color: #292f31;
   min-height: 100vh;
 }
+
+.page-content {
+  width: 60vw;
+  &.xs {
+    width: 95vw;
+  }
+}

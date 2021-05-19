@@ -1,0 +1,13 @@
+.keyword-container {
+  padding-top: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  // background-color: #d7dee1;
+
+  .tag {
+    margin-bottom: 0.5rem;
+  }
+  .tag:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+}
