@@ -1,0 +1,18 @@
+.new-idea-form {
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.keyword-container {
+  padding-top: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  background-color: #efe9db;
+
+  .tag {
+    margin-bottom: 0.5rem;
+  }
+  .tag:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+}
