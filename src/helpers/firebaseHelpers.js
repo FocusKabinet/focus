@@ -1,7 +1,7 @@
 import {fire} from '../app/firebase';
 
 export const fireHandleLogin = async (email,password) =>{
-    const res = await 
+    return await 
         fire
         .auth()
         .signInWithEmailAndPassword(email,password)
@@ -12,7 +12,7 @@ export const fireHandleLogin = async (email,password) =>{
 }
 
 export const fireHandleRegister = async (email,password) =>{
-    const res = await 
+    return await 
         fire
         .auth()
         .createUserWithEmailAndPassword(email,password)
@@ -23,7 +23,7 @@ export const fireHandleRegister = async (email,password) =>{
 }
 
 export const firehandleLogout = async () =>{
-    const res = await 
+    return await 
         fire.auth().signOut()
         .then(result=>result)
         .catch(err=>{
