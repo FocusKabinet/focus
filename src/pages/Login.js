@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom';
 
 function Login(props) {
-    const {email, setEmail, password, setPassword, handleLogin, handleRegister, hasAccount, setHasAccount, emailError, passwordError} = props;
+    const {email, setEmail, password, setPassword, handleLogin, hasAccount, setHasAccount, emailError, passwordError} = props;
     return (
         <div>
             <section>

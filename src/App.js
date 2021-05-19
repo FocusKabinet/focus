@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Datapage from './pages/Datapage';
+import BlockedLogin from './components/BlockedLogin';
 import KabinetDashboard from './pages/KabinetDashboard';
 import {fire} from './app/firebase';
 
@@ -160,7 +161,7 @@ function App() {
             :
             <>
             <div> 
-              please log in
+              <BlockedLogin />
               <Login 
                   email={email}   
                   setEmail={setEmail}   
