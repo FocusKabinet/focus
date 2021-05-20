@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import empty from "../assets/empty-state-photo.png";
 import {
   Grid,
   Button,
@@ -9,10 +10,14 @@ import {
   Dialog,
   Chip,
   Box,
+  Tabs,
+  Tab,
+  CardMedia,
 } from "@material-ui/core";
 import "./styles/KabinetNewIdea.scss";
 import { DateTimePicker } from "@material-ui/pickers";
 import Picker from "emoji-picker-react";
+import ImageUploader from "react-images-upload";
 
 export default function KabinetNewIdea(props) {
   const defaultEmoji = {
@@ -30,8 +35,10 @@ export default function KabinetNewIdea(props) {
     keywords: [],
     description: "",
     reminder: null,
+    imageUpload: null,
+    imageURL: "",
   });
-
+  const [tab, setTab] = React.useState(0);
   const handleUpdateForm = (e) => {
     return updateForm({ ...form, [e.target.id]: e.target.value });
   };
@@ -71,13 +78,24 @@ export default function KabinetNewIdea(props) {
       keywords: [],
       description: "",
       reminder: null,
+      imageUpload: null,
+      imageURL: "",
+    });
+  };
+
+  const handleUpload = (files) => {
+    return updateForm({
+      ...form,
+      imageUpload: files[0],
     });
   };
 
   const handleSubmit = () => {
     form.createdAt = Date.now();
+    tab === 0 ? (form.imageUpload = null) : (form.imageURL = "");
     console.log("Submit", form);
   };
+
   return (
     <div>
       <Typography className="list-title" align="left" variant="h5" gutterBottom>
@@ -158,6 +176,61 @@ export default function KabinetNewIdea(props) {
             />
           </Grid>
           <Grid item>
+            <Button size="small" color="primary" onClick={handleTogglePicker}>
+              Add a photo
+            </Button>
+            <Paper className="photo-tabs">
+              <Tabs
+                value={tab}
+                onChange={(e, value) => setTab(value)}
+                indicatorColor="primary"
+                textColor="primary"
+                centered
+              >
+                <Tab label="Image URL" />
+                <Tab label="Upload" />
+              </Tabs>
+              <TabPanel value={tab} index={0}>
+                <TextField
+                  fullWidth
+                  className="image_url-field"
+                  placeholder="https://"
+                  variant="outlined"
+                  size="small"
+                  id="imageURL"
+                  value={form.imageURL}
+                  onChange={handleUpdateForm}
+                />
+                {form.imageURL && (
+                  <CardMedia
+                    className="image-preview"
+                    src={form.imageURL}
+                    component="img"
+                    onError={(e) => (e.target.src = empty)}
+                  />
+                )}
+              </TabPanel>
+              <TabPanel value={tab} index={1}>
+                <ImageUploader
+                  withIcon={false}
+                  buttonText="Browse"
+                  id="imageUpload"
+                  onChange={handleUpload}
+                  imgExtension={[".jpg", ".gif", ".png"]}
+                  maxFileSize={5242880}
+                  singleImage
+                  withPreview={false}
+                />
+                {form.imageUpload && (
+                  <CardMedia
+                    className="image-preview"
+                    image={URL.createObjectURL(form.imageUpload)}
+                  />
+                )}
+              </TabPanel>
+            </Paper>
+          </Grid>
+          <Grid item>
             <DateTimePicker
               label="Set reminder ?"
               value={form.reminder}
@@ -217,5 +290,15 @@ function KeywordTags(props) {
         />
       ))}
     </Box>
+  );
+}
+
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div role="tabpanel" hidden={value !== index} {...other}>
+      {value === index && <Box p={2}>{children}</Box>}
+    </div>
   );
 }

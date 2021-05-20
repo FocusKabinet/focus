@@ -11,6 +11,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import { MoreVert } from "@material-ui/icons";
+import empty from "../assets/empty-state-photo.png";
 
 export default function IdeaCard(props) {
   const { title, description, img_url, subheader } = props;
@@ -48,7 +49,12 @@ export default function IdeaCard(props) {
           </>
         }
       />
-      <CardMedia className="card-img" image={img_url} />
+      <CardMedia
+        className="card-img"
+        image={img_url}
+        component="img"
+        onError={(e) => (e.target.src = empty)}
+      />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
           {description}
