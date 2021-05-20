@@ -29,8 +29,7 @@ function KabinetDashboard(props) {
       title: "Wash my eyes with lime juice",
       subheader: "September 14, 2016",
       description: "Recommended by Steve-O",
-      img_url:
-        "https://images.unsplash.com/photo-1494253109108-2e30c049369b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80",
+      img_url: "https://media.giphy.com/media/cGdPHFcAZ6oJq/giphy.gif",
     },
     {
       title: "LinkedIn but for the losers - Disconnect",
