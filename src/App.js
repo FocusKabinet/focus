@@ -1,6 +1,6 @@
 import { Switch, Route, useHistory } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { fire } from './app/firebase';
+import {useState, useEffect} from 'react';
+import {fireHandleLogin, fireHandleRegister, firehandleLogout} from './helpers/firebaseHelpers';
 import Navbar from './components/Navbar/Navbar';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Datapage from './pages/Datapage';
+import BlockedLogin from './components/BlockedLogin';
 import KabinetDashboard from './pages/KabinetDashboard';
 import Page from './components/Page';
 import KabinetNewIdea from './pages/KabinetNewIdea';
@@ -35,52 +36,54 @@ function App() {
 
   const handleLogin = () => {
     clearAllErr();
-    fire
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((result) => {
-        handleHistory('home');
+    const res = fireHandleLogin(email,password);
+    res
+      .then(()=>{
+        handleHistory("home");
+      }) 
+      .catch(e=>{
+        switch(e.code){
+            case "auth/invalid-email":
+            case "auth/user-disabled":
+            case "auth/user-not-found":
+              setEmailError(e.message)
+              break;
+            case "auth/wrong-password":
+              setPasswordError(e.message)
+              break;
+            }
       })
-      .catch((err) => {
-        switch (err.code) {
-          case 'auth/invalid-email':
-          case 'auth/user-disabled':
-          case 'auth/user-not-found':
-            setEmailError(err.message);
-            break;
-          case 'auth/wrong-password':
-            setPasswordError(err.message);
-            break;
-        }
-      });
-    if (user) handleHistory('home');
-  };
+  }
 
   const handleRegister = () => {
     clearAllErr();
-    fire
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((result) => {
-        handleHistory('home');
-      })
-      .catch((err) => {
-        switch (err.code) {
-          case 'auth/email-already-in-use':
-          case 'auth/invalid-email':
-            setEmailError(err.message);
+    const res = fireHandleRegister(email,password);
+    res
+      .then(()=>{
+        handleHistory("home");
+      }) 
+      .catch(e=>{
+        switch(e.code){
+          case "auth/email-already-in-use":
+          case "auth/invalid-email":
+            setEmailError(e.message);
             break;
-          case 'auth/weak-password':
-            setPasswordError(err.message);
+          case "auth/weak-password":
+            setPasswordError(e.message);
             break;
         }
       });
-  };
+  }
 
-  const handleLogout = () => {
-    fire.auth().signOut();
-    handleHistory('login');
-  };
+  const handleLogout = () =>{
+    const res = firehandleLogout();
+    res
+      .then(()=>handleHistory("login"))
+      .catch(e=>{
+        alert("There was an error logging out")
+        console.log(e.message);
+      });
+  }
 
   const authListener = () => {
     fire.auth().onAuthStateChanged((user) => {
@@ -152,46 +155,46 @@ function App() {
             emailError={emailError}
             passwordError={passwordError}
           />
-        </Route>
-        {user ? (
-          <>
-            <Route path="/home">
-              <Navbar title={'Home'} loggedIn={true} />
-              <Home handleLogout={handleLogout} />
-            </Route>
-            <Route path="/profile:id">
-              <Navbar title={'Profile'} loggedIn={true} />
-              <Profile />
-            </Route>
-            <Route path="/settings:id">
-              <Navbar title={'Settings'} loggedIn={true} />
-              <Settings />
-            </Route>
-            <Route path="/datapage:id">
-              <Navbar title={'Data'} loggedIn={true} />
-              <Datapage />
-            </Route>
-          </>
-        ) : (
-          <>
-            <div>
-              please log in
-              <Login
-                email={email}
-                setEmail={setEmail}
-                password={password}
-                setPassword={setPassword}
-                handleLogin={handleLogin}
-                hasAccount={hasAccount}
-                setHasAccount={setHasAccount}
-                emailError={emailError}
-                passwordError={passwordError}
-              />
-            </div>
-          </>
-        )}
-      </Switch>
-    </div>
+          </Route>
+          {user ?
+            <>
+              <Route path="/home" >
+                  <Navbar title={"Home"} loggedIn={true}/>
+                  <Home handleLogout={handleLogout} />
+              </Route>
+              <Route path="/profile:id">
+                  <Navbar title={"Profile"} loggedIn={true}/>
+                  <Profile />
+              </Route>
+              <Route path="/settings:id">
+                  <Navbar title={"Settings"} loggedIn={true}/>
+                  <Settings />
+              </Route>
+              <Route path="/datapage:id">
+                  <Navbar title={"Data"} loggedIn={true}/>
+                  <Datapage />
+              </Route>
+            </>
+            :
+            <>
+            <div> 
+              <BlockedLogin />
+              <Login 
+                  email={email}   
+                  setEmail={setEmail}   
+                  password={password}   
+                  setPassword={setPassword} 
+                  handleLogin={handleLogin}
+                  hasAccount={hasAccount}
+                  setHasAccount={setHasAccount}
+                  emailError={emailError}
+                  passwordError={passwordError}
+                />
+              </div>
+              </>
+          }
+        </Switch>
+      </div>
   );
 }
 
