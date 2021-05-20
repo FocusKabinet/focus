@@ -1,26 +1,28 @@
-import { Switch, Route, useHistory } from "react-router-dom";
-import { useState, useEffect } from "react";
-import {
-  fireHandleLogin,
-  fireHandleRegister,
-  firehandleLogout,
-} from "./helpers/firebaseHelpers";
-import { fire } from "./app/firebase";
-import Navbar from "./components/Navbar/Navbar";
-import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Home from "./pages/Home";
-import Profile from "./pages/Profile";
-import Settings from "./pages/Settings";
-import Datapage from "./pages/Datapage";
-import BlockedLogin from "./components/BlockedLogin";
+import { Switch, Route, useHistory } from 'react-router-dom';
+import {useState, useEffect} from 'react';
+import {fireHandleLogin, fireHandleRegister, firehandleLogout} from './helpers/firebaseHelpers';
+import Navbar from './components/Navbar/Navbar';
+import Landing from './pages/Landing';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Home from './pages/Home';
+import Profile from './pages/Profile';
+import Settings from './pages/Settings';
+import Datapage from './pages/Datapage';
+import BlockedLogin from './components/BlockedLogin';
 import KabinetDashboard from "./pages/KabinetDashboard";
 import Page from "./components/Page";
 import KabinetNewIdea from "./pages/KabinetNewIdea";
+import {fire} from './app/firebase';
+import { useSelector } from 'react-redux';
+import {useDispatch} from 'react-redux';
+import {logIn, logOut} from './redux/actions/index';
 
 function App() {
   const history = useHistory();
+  const dispatch = useDispatch();
+  
+  const isLogged = useSelector(state=> state.isLogged) 
 
   const [user, setUser] = useState("");
   const [email, setEmail] = useState("");
@@ -42,8 +44,8 @@ function App() {
   const handleLogin = () => {
     clearAllErr();
     const res = fireHandleLogin(email, password);
-    res
-      .then(() => {
+    res.then(()=>{
+        dispatch(logIn());
         handleHistory("home");
       })
       .catch((e) => {
@@ -64,7 +66,8 @@ function App() {
     clearAllErr();
     const res = fireHandleRegister(email, password);
     res
-      .then(() => {
+      .then(()=>{
+        dispatch(logIn());
         handleHistory("home");
       })
       .catch((e) => {
@@ -83,9 +86,11 @@ function App() {
   const handleLogout = () => {
     const res = firehandleLogout();
     res
-      .then(() => handleHistory("login"))
-      .catch((e) => {
-        alert("There was an error logging out");
+      .then(()=>{
+        dispatch(logOut());
+        handleHistory("login")})
+      .catch(e=>{
+        alert("There was an error logging out")
         console.log(e.message);
       });
   };
