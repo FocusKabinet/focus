@@ -1,12 +1,12 @@
-import React from 'react';
-import { Grid, Button, TextField, Paper, Typography } from '@material-ui/core';
-import './styles/KabinetDashboard.scss';
-import { DatePicker } from '@material-ui/pickers';
-import IdeaCard from '../components/IdeaCard';
+import React from "react";
+import { Grid, Button, TextField, Paper, Typography } from "@material-ui/core";
+import "./styles/KabinetDashboard.scss";
+import { DatePicker } from "@material-ui/pickers";
+import IdeaCard from "../components/IdeaCard";
 
 function KabinetDashboard(props) {
   const [selectedDate, setSelectedDate] = React.useState(Date.now());
-  const [search, setSearch] = React.useState('');
+  const [search, setSearch] = React.useState("");
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -18,27 +18,27 @@ function KabinetDashboard(props) {
 
   const mockData = [
     {
-      title: 'What if I make an app that stores ideas?',
-      subheader: 'September 14, 2016',
+      title: "What if I make an app that stores ideas?",
+      subheader: "September 14, 2016",
       description:
-        'Create a React web app that help me store and develop ideas whenever.',
+        "Create a React web app that help me store and develop ideas whenever.",
       img_url:
-        'https://images.unsplash.com/photo-1541913299-273fd84d10c4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80',
+        "https://images.unsplash.com/photo-1541913299-273fd84d10c4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80",
     },
     {
-      title: 'Wash my eyes with lime juice',
-      subheader: 'September 14, 2016',
-      description: 'Recommended by Steve-O',
+      title: "Wash my eyes with lime juice",
+      subheader: "September 14, 2016",
+      description: "Recommended by Steve-O",
       img_url:
-        'https://images.unsplash.com/photo-1494253109108-2e30c049369b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80',
+        "https://images.unsplash.com/photo-1494253109108-2e30c049369b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2250&q=80",
     },
     {
-      title: 'LinkedIn but for the losers - Disconnect',
-      subheader: 'September 14, 2016',
+      title: "LinkedIn but for the losers - Disconnect",
+      subheader: "September 14, 2016",
       description:
-        'LinkedIn is made for people to brag about their careers. How about a social media for people to show their failures?',
+        "LinkedIn is made for people to brag about their careers. How about a social media for people to show their failures?",
       img_url:
-        'https://images.unsplash.com/photo-1494158064015-7ff877b5bb2b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80',
+        "https://images.unsplash.com/photo-1494158064015-7ff877b5bb2b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80",
     },
   ];
   return (
@@ -50,7 +50,7 @@ function KabinetDashboard(props) {
               className="add-button"
               variant="contained"
               color="primary"
-              onClick={() => props.history.push('/kabinet-new')}
+              onClick={() => props.history.push("/kabinet-new")}
             >
               Add new idea
             </Button>
@@ -73,7 +73,7 @@ function KabinetDashboard(props) {
               format="MMM yyyy"
               value={selectedDate}
               onChange={handleDateChange}
-              views={['month', 'year']}
+              views={["month", "year"]}
             />
           </Grid>
         </Grid>
@@ -89,8 +89,8 @@ function KabinetDashboard(props) {
         alignItems="center"
         spacing={3}
       >
-        {mockData.map((item) => (
-          <Grid item>
+        {mockData.map((item, idx) => (
+          <Grid item key={idx}>
             <IdeaCard className="card" {...item} />
           </Grid>
         ))}

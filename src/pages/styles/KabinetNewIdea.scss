@@ -16,3 +16,13 @@
     margin-right: 0.5rem;
   }
 }
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  &-nav {
+    button:not(:last-child) {
+      margin-right: 1rem;
+    }
+  }
+}
