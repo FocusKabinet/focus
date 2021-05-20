@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import {
   Card,
   CardHeader,
@@ -9,8 +9,8 @@ import {
   Typography,
   Menu,
   MenuItem,
-} from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
+} from "@material-ui/core";
+import { MoreVert } from "@material-ui/icons";
 
 export default function IdeaCard(props) {
   const { title, description, img_url, subheader } = props;
@@ -37,7 +37,7 @@ export default function IdeaCard(props) {
               anchorEl={menu}
               id="simple-menu"
               keepMounted
-              open={menu}
+              open={Boolean(menu)}
               onClose={handleToggle}
             >
               <MenuItem onClick={handleToggle}>Edit</MenuItem>

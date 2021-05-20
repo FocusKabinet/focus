@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from "react";
 import {
   Grid,
   Button,
@@ -9,27 +9,34 @@ import {
   Dialog,
   Chip,
   Box,
-} from '@material-ui/core';
-import './styles/KabinetNewIdea.scss';
-import { DateTimePicker } from '@material-ui/pickers';
-import Picker from 'emoji-picker-react';
+} from "@material-ui/core";
+import "./styles/KabinetNewIdea.scss";
+import { DateTimePicker } from "@material-ui/pickers";
+import Picker from "emoji-picker-react";
 
 export default function KabinetNewIdea(props) {
   const defaultEmoji = {
-    activeSkinTone: 'neutral',
-    emoji: '💡',
-    names: (2)[('electric light bulb', 'bulb')],
-    originalUnified: '1f4a1',
-    unified: '1f4a1',
+    activeSkinTone: "neutral",
+    emoji: "💡",
+    names: (2)[("electric light bulb", "bulb")],
+    originalUnified: "1f4a1",
+    unified: "1f4a1",
   };
-  const [chosenEmoji, setChosenEmoji] = React.useState(defaultEmoji);
   const [pickerDialog, pickerDialogToggle] = React.useState(false);
-  const [keywords, editKeywords] = React.useState([]);
-  const [keywordField, changeKeywordField] = React.useState('');
+  const [keywordField, changeKeywordField] = React.useState("");
+  const [form, updateForm] = React.useState({
+    title: "",
+    emoji: defaultEmoji,
+    keywords: [],
+    description: "",
+    reminder: null,
+  });
 
+  const handleUpdateForm = (e) => {
+    return updateForm({ ...form, [e.target.id]: e.target.value });
+  };
   const onEmojiClick = (event, emojiObject) => {
-    console.log(emojiObject);
-    setChosenEmoji(emojiObject);
+    return updateForm({ ...form, emoji: emojiObject });
   };
 
   const handleTogglePicker = () => {
@@ -38,14 +45,38 @@ export default function KabinetNewIdea(props) {
 
   const handleChangeKeywords = (e) => {
     if (e.keyCode === 13 && !!keywordField) {
-      if (!keywords.find((item) => item === keywordField)) {
-        editKeywords([...keywords, keywordField]);
+      if (!form.keywords.find((item) => item === keywordField)) {
+        changeKeywordField("");
+        return updateForm({
+          ...form,
+          keywords: [...form.keywords, keywordField],
+        });
       }
-      changeKeywordField('');
-      return;
-    } else {
-      editKeywords(keywords.filter((key, idx) => idx !== e));
+      changeKeywordField("");
     }
+    return updateForm({
+      ...form,
+      keywords: form.keywords.filter((key, idx) => idx !== e),
+    });
+  };
+
+  const handleDateChange = (date) => {
+    return updateForm({ ...form, reminder: date });
+  };
+
+  const clearForm = () => {
+    return updateForm({
+      title: "",
+      emoji: defaultEmoji,
+      keywords: [],
+      description: "",
+      reminder: null,
+    });
+  };
+
+  const handleSubmit = () => {
+    form.createdAt = Date.now();
+    console.log("Submit", form);
   };
   return (
     <div>
@@ -62,12 +93,13 @@ export default function KabinetNewIdea(props) {
               label="A short title for your idea"
               variant="outlined"
               size="small"
-              // value={search}
-              // onChange={handleSearch}
+              id="title"
+              value={form.title}
+              onChange={handleUpdateForm}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="start">
-                    <span>{chosenEmoji.emoji}</span>
+                    <span>{form.emoji.emoji}</span>
                   </InputAdornment>
                 ),
               }}
@@ -84,6 +116,7 @@ export default function KabinetNewIdea(props) {
               select emoji
             </Button>
             <EmojiPicker
+              id="emoji"
               open={pickerDialog}
               onEmojiClick={onEmojiClick}
               handleClose={handleTogglePicker}
@@ -98,14 +131,14 @@ export default function KabinetNewIdea(props) {
               size="small"
               value={keywordField}
               onKeyDown={handleChangeKeywords}
-              // value={search}
               onChange={(e) => changeKeywordField(e.target.value)}
             />
           </Grid>
-          {!!keywords.length && (
+          {!!form.keywords.length && (
             <Grid item>
               <KeywordTags
-                keywords={keywords}
+                id="keywords"
+                keywords={form.keywords}
                 handleChange={handleChangeKeywords}
               />
             </Grid>
@@ -113,18 +146,47 @@ export default function KabinetNewIdea(props) {
           <Grid item>
             <TextField
               fullWidth
+              id="description"
               multiline
               rows={5}
               className="title-field"
               placeholder="Describe your idea, set goals, to-do list, more details, etc"
               variant="outlined"
               size="small"
-              // value={search}
-              // onChange={handleSearch}
+              value={form.description}
+              onChange={handleUpdateForm}
             />
           </Grid>
           <Grid item>
-            <DateTimePicker label="Set reminder ?" />
+            <DateTimePicker
+              label="Set reminder ?"
+              value={form.reminder}
+              onChange={handleDateChange}
+            />
+          </Grid>
+          <Grid item>
+            <div className="form-actions">
+              <Button color="secondary" onClick={clearForm}>
+                Clear
+              </Button>
+              <div className="form-actions-nav">
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  onClick={() => props.history.goBack()}
+                >
+                  Back
+                </Button>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={handleSubmit}
+                  disabled={!form.title}
+                >
+                  Submit
+                </Button>
+              </div>
+            </div>
           </Grid>
         </Grid>
       </Paper>
@@ -147,6 +209,7 @@ function KeywordTags(props) {
     <Box className="keyword-container">
       {props.keywords.map((key, idx) => (
         <Chip
+          key={key}
           className="tag"
           label={key}
           onDelete={() => props.handleChange(idx)}
