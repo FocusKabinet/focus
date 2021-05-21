@@ -176,9 +176,9 @@ export default function KabinetNewIdea(props) {
             />
           </Grid>
           <Grid item>
-            <Button size="small" color="primary" onClick={handleTogglePicker}>
+            <Typography variant="body1" gutterBottom>
               Add a photo
-            </Button>
+            </Typography>
             <Paper className="photo-tabs">
               <Tabs
                 value={tab}

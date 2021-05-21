@@ -15,13 +15,13 @@ import Settings from "./pages/Settings";
 import Datapage from "./pages/Datapage";
 import BlockedLogin from "./components/generic/BlockedLogin";
 import KabinetDashboard from "./pages/KabinetDashboard";
-import Page from "./components/Page";
+import Page from "./components/kabinet/Page";
 import KabinetNewIdea from "./pages/KabinetNewIdea";
 import Breakthrough from "./pages/Breakthrough";
 import { fire } from "./app/firebase";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { UserActionCreators } from "./redux/actions/user"; 
+import { UserActionCreators } from "./redux/actions/user";
 
 function App() {
   const history = useHistory();
@@ -51,9 +51,14 @@ function App() {
     const res = fireHandleLogin(email, password);
     res
       .then(() => {
-        dispatch(UserActionCreators.login({
-          user,email,password,loggedIn:true
-        }));
+        dispatch(
+          UserActionCreators.login({
+            user,
+            email,
+            password,
+            loggedIn: true,
+          })
+        );
         handleHistory("breakthrough");
       })
       .catch((e) => {
@@ -75,9 +80,14 @@ function App() {
     const res = fireHandleRegister(email, password);
     res
       .then(() => {
-        dispatch(UserActionCreators.addProfile({
-          user,email,password,loggedIn:true
-        }));
+        dispatch(
+          UserActionCreators.addProfile({
+            user,
+            email,
+            password,
+            loggedIn: true,
+          })
+        );
         handleHistory("home");
       })
       .catch((e) => {
@@ -97,9 +107,14 @@ function App() {
     const res = firehandleLogout();
     res
       .then(() => {
-        dispatch(UserActionCreators.logout({
-          user,email,password,loggedIn:false
-        }));
+        dispatch(
+          UserActionCreators.logout({
+            user,
+            email,
+            password,
+            loggedIn: false,
+          })
+        );
         handleHistory("login");
       })
       .catch((e) => {
@@ -137,13 +152,34 @@ function App() {
         <Route path="/login">
           <Navbar loggedIn={isLogged} />
           <Login
-            {...{email,setEmail,password,setPassword,handleLogin,hasAccount,setHasAccount,emailError,passwordError}}
+            {...{
+              email,
+              setEmail,
+              password,
+              setPassword,
+              handleLogin,
+              hasAccount,
+              setHasAccount,
+              emailError,
+              passwordError,
+            }}
           />
         </Route>
         <Route path="/register">
           <Navbar loggedIn={isLogged} />
           <Register
-            {...{email,setEmail,password,setPassword,handleLogin,handleRegister,hasAccount,setHasAccount,emailError,passwordError}}
+            {...{
+              email,
+              setEmail,
+              password,
+              setPassword,
+              handleLogin,
+              handleRegister,
+              hasAccount,
+              setHasAccount,
+              emailError,
+              passwordError,
+            }}
           />
         </Route>
         <Route
