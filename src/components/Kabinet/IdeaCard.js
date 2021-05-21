@@ -11,7 +11,7 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import { MoreVert } from "@material-ui/icons";
-import empty from "../assets/empty-state-photo.png";
+import empty from "../../assets/empty-state-photo.png";
 
 export default function IdeaCard(props) {
   const { title, description, img_url, subheader } = props;

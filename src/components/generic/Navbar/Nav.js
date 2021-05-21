@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../styles/nav.scss';
-import menu from '../../assets/menu.svg';
+import '../../styles/nav.scss';
+import menu from '../../../assets/menu.svg';
 
 function Nav({ title, ...props }) {
   const [open, setOpen] = React.useState(false);
@@ -28,7 +28,7 @@ function Nav({ title, ...props }) {
         <Link to={'/register'} disabled={title === 'Register'}>
           <h6>Register</h6>
         </Link>
-        <Link to={'/:id'} disabled={title === 'Home'}>
+        <Link to={'/home'} disabled={title === 'Home'}>
           <h6>Home</h6>
         </Link>
         <Link to={'/profile:id'} disabled={title === 'Profile'}>

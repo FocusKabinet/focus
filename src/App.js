@@ -5,7 +5,7 @@ import {
   fireHandleRegister,
   firehandleLogout,
 } from "./helpers/firebaseHelpers";
-import Navbar from "./components/Navbar/Navbar";
+import Navbar from "./components/generic/Navbar/Navbar";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -13,20 +13,20 @@ import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import Datapage from "./pages/Datapage";
-import BlockedLogin from "./components/BlockedLogin";
+import BlockedLogin from "./components/generic/BlockedLogin";
 import KabinetDashboard from "./pages/KabinetDashboard";
-import Page from "./components/Page";
+import Page from "./components/Kabinet/Page";
 import KabinetNewIdea from "./pages/KabinetNewIdea";
 import { fire } from "./app/firebase";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
-import { logIn, logOut } from "./redux/actions/index";
+import { UserActionCreators } from "./redux/actions/user"; 
 
 function App() {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const isLogged = useSelector((state) => state.isLogged);
+  const isLogged = useSelector((state) => state.user.profile.loggedIn);
 
   const [user, setUser] = useState("");
   const [email, setEmail] = useState("");
@@ -50,7 +50,10 @@ function App() {
     const res = fireHandleLogin(email, password);
     res
       .then(() => {
-        dispatch(logIn());
+        // dispatch(logIn());
+        dispatch(UserActionCreators.login({
+          user,email,password,loggedIn:true
+        }));
         handleHistory("home");
       })
       .catch((e) => {
@@ -72,7 +75,10 @@ function App() {
     const res = fireHandleRegister(email, password);
     res
       .then(() => {
-        dispatch(logIn());
+        // dispatch(logIn());
+        dispatch(UserActionCreators.addProfile({
+          user,email,password,loggedIn:true
+        }));
         handleHistory("home");
       })
       .catch((e) => {
@@ -92,7 +98,10 @@ function App() {
     const res = firehandleLogout();
     res
       .then(() => {
-        dispatch(logOut());
+        // dispatch(logOut());
+        dispatch(UserActionCreators.logout({
+          user,email,password,loggedIn:false
+        }));
         handleHistory("login");
       })
       .catch((e) => {
@@ -123,28 +132,12 @@ function App() {
   return (
     <div className="App">
       <Switch>
-        <Route
-          path="/kabinet-home"
-          render={(routeProps) => (
-            <Page>
-              <KabinetDashboard {...routeProps} />
-            </Page>
-          )}
-        ></Route>
-        <Route
-          path="/kabinet-new"
-          render={(routeProps) => (
-            <Page>
-              <KabinetNewIdea {...routeProps} />
-            </Page>
-          )}
-        ></Route>
         <Route exact path="/">
-          <Navbar loggedIn={false} />
+          <Navbar loggedIn={isLogged} />
           <Landing />
         </Route>
         <Route path="/login">
-          <Navbar loggedIn={false} />
+          <Navbar loggedIn={isLogged} />
           <Login
             email={email}
             setEmail={setEmail}
@@ -189,6 +182,26 @@ function App() {
             <Route path="/datapage:id">
               <Navbar title={"Data"} loggedIn={isLogged} />
               <Datapage />
+            </Route>
+            <Route
+              path="/kabinet-home"
+              render={(routeProps) => (
+                <Page>
+                  <KabinetDashboard {...routeProps} />
+                </Page>
+              )}
+            >
+              <Navbar title={"Kabinet"} loggedIn={isLogged} />
+            </Route>
+            <Route
+              path="/kabinet-new"
+              render={(routeProps) => (
+                <Page>
+                  <KabinetNewIdea {...routeProps} />
+                </Page>
+              )}
+            >
+              <Navbar title={"New Kabinet"} loggedIn={isLogged} />
             </Route>
           </>
         ) : (
