@@ -15,8 +15,9 @@ import Settings from "./pages/Settings";
 import Datapage from "./pages/Datapage";
 import BlockedLogin from "./components/generic/BlockedLogin";
 import KabinetDashboard from "./pages/KabinetDashboard";
-import Page from "./components/Kabinet/Page";
+import Page from "./components/Page";
 import KabinetNewIdea from "./pages/KabinetNewIdea";
+import Breakthrough from "./pages/Breakthrough";
 import { fire } from "./app/firebase";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -50,11 +51,10 @@ function App() {
     const res = fireHandleLogin(email, password);
     res
       .then(() => {
-        // dispatch(logIn());
         dispatch(UserActionCreators.login({
           user,email,password,loggedIn:true
         }));
-        handleHistory("home");
+        handleHistory("breakthrough");
       })
       .catch((e) => {
         switch (e.code) {
@@ -75,7 +75,6 @@ function App() {
     const res = fireHandleRegister(email, password);
     res
       .then(() => {
-        // dispatch(logIn());
         dispatch(UserActionCreators.addProfile({
           user,email,password,loggedIn:true
         }));
@@ -98,7 +97,6 @@ function App() {
     const res = firehandleLogout();
     res
       .then(() => {
-        // dispatch(logOut());
         dispatch(UserActionCreators.logout({
           user,email,password,loggedIn:false
         }));
@@ -139,31 +137,34 @@ function App() {
         <Route path="/login">
           <Navbar loggedIn={isLogged} />
           <Login
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            handleLogin={handleLogin}
-            hasAccount={hasAccount}
-            setHasAccount={setHasAccount}
-            emailError={emailError}
-            passwordError={passwordError}
+            {...{email,setEmail,password,setPassword,handleLogin,hasAccount,setHasAccount,emailError,passwordError}}
           />
         </Route>
         <Route path="/register">
           <Navbar loggedIn={isLogged} />
           <Register
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            handleLogin={handleLogin}
-            handleRegister={handleRegister}
-            hasAccount={hasAccount}
-            setHasAccount={setHasAccount}
-            emailError={emailError}
-            passwordError={passwordError}
+            {...{email,setEmail,password,setPassword,handleLogin,handleRegister,hasAccount,setHasAccount,emailError,passwordError}}
           />
+        </Route>
+        <Route
+          path="/kabinet-home"
+          render={(routeProps) => (
+            <Page>
+              <KabinetDashboard {...routeProps} />
+            </Page>
+          )}
+        >
+          <Navbar title={"Kabinet"} loggedIn={isLogged} />
+        </Route>
+        <Route
+          path="/kabinet-new"
+          render={(routeProps) => (
+            <Page>
+              <KabinetNewIdea {...routeProps} />
+            </Page>
+          )}
+        >
+          <Navbar title={"New Kabinet"} loggedIn={isLogged} />
         </Route>
         {isLogged ? (
           <>
@@ -183,25 +184,9 @@ function App() {
               <Navbar title={"Data"} loggedIn={isLogged} />
               <Datapage />
             </Route>
-            <Route
-              path="/kabinet-home"
-              render={(routeProps) => (
-                <Page>
-                  <KabinetDashboard {...routeProps} />
-                </Page>
-              )}
-            >
-              <Navbar title={"Kabinet"} loggedIn={isLogged} />
-            </Route>
-            <Route
-              path="/kabinet-new"
-              render={(routeProps) => (
-                <Page>
-                  <KabinetNewIdea {...routeProps} />
-                </Page>
-              )}
-            >
-              <Navbar title={"New Kabinet"} loggedIn={isLogged} />
+            <Route path="/breakthrough">
+              <Navbar title={"Breakthrough"} loggedIn={isLogged} />
+              <Breakthrough handleLogout={handleLogout} />
             </Route>
           </>
         ) : (

@@ -2,7 +2,7 @@ import React from "react";
 import { Grid, Button, TextField, Paper, Typography } from "@material-ui/core";
 import "./styles/KabinetDashboard.scss";
 import { DatePicker } from "@material-ui/pickers";
-import IdeaCard from "../components/Kabinet/IdeaCard";
+import IdeaCard from "../components/IdeaCard";
 
 function KabinetDashboard(props) {
   const [selectedDate, setSelectedDate] = React.useState(Date.now());
