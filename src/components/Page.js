@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/Page.scss";
+import "./styles/Page.scss";
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider } from "@material-ui/pickers";
 
