@@ -32,7 +32,6 @@ function Breakthrough({ handleLogout, ...props }) {
 				<Grid item xs={8}>
 					<Timer />
 				</Grid>
-				<Grid item xs={12}></Grid>
 			</Grid>
 			<button onClick={handleLogout}>logout</button>
 		</div>
