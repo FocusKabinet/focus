@@ -7,7 +7,7 @@ function Page(props) {
   return (
     <div className="page">
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        {props.children}
+        <div className="page-content">{props.children}</div>
       </MuiPickersUtilsProvider>
     </div>
   );

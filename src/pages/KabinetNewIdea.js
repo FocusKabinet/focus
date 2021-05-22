@@ -13,7 +13,16 @@ import {
   Tabs,
   Tab,
   CardMedia,
+  IconButton,
+  ListItem,
+  ListItemIcon,
+  Checkbox,
+  ListItemText,
+  ListItemSecondaryAction,
+  List,
+  Collapse,
 } from "@material-ui/core";
+import { AddCircle, Delete, RemoveCircle } from "@material-ui/icons";
 import "./styles/KabinetNewIdea.scss";
 import { DateTimePicker } from "@material-ui/pickers";
 import Picker from "emoji-picker-react";
@@ -29,6 +38,8 @@ export default function KabinetNewIdea(props) {
   };
   const [pickerDialog, pickerDialogToggle] = React.useState(false);
   const [keywordField, changeKeywordField] = React.useState("");
+  const [todoField, changeTodoField] = React.useState("");
+
   const [form, updateForm] = React.useState({
     title: "",
     emoji: defaultEmoji,
@@ -37,6 +48,7 @@ export default function KabinetNewIdea(props) {
     reminder: null,
     imageUpload: null,
     imageURL: "",
+    checklist: [],
   });
   const [tab, setTab] = React.useState(0);
   const handleUpdateForm = (e) => {
@@ -50,8 +62,26 @@ export default function KabinetNewIdea(props) {
     pickerDialogToggle(!pickerDialog);
   };
 
+  const addToChecklist = (e) => {
+    if (e === "add" || (e.keyCode === 13 && !!todoField)) {
+      changeTodoField("");
+
+      return updateForm({
+        ...form,
+        checklist: [...form.checklist, { label: todoField, checked: false }],
+      });
+    }
+  };
+
+  const handleUpdateCheckList = (arr) => {
+    return updateForm({
+      ...form,
+      checklist: [...arr],
+    });
+  };
+
   const handleChangeKeywords = (e) => {
-    if (e.keyCode === 13 && !!keywordField) {
+    if ((e === "add" || e.keyCode === 13) && !!keywordField) {
       if (!form.keywords.find((item) => item === keywordField)) {
         changeKeywordField("");
         return updateForm({
@@ -80,6 +110,7 @@ export default function KabinetNewIdea(props) {
       reminder: null,
       imageUpload: null,
       imageURL: "",
+      checklist: [],
     });
   };
 
@@ -101,9 +132,8 @@ export default function KabinetNewIdea(props) {
       <Typography className="list-title" align="left" variant="h5" gutterBottom>
         What are you thinking about?
       </Typography>
-
       <Paper className="new-idea-form">
-        <Grid container spacing={2}>
+        <Grid container spacing={2} direction="column">
           <Grid item>
             <TextField
               fullWidth
@@ -117,29 +147,74 @@ export default function KabinetNewIdea(props) {
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="start">
-                    <span>{form.emoji.emoji}</span>
+                    <IconButton
+                      onClick={handleTogglePicker}
+                      color="primary"
+                      size="small"
+                      variant="contained"
+                    >
+                      {form.emoji.emoji}
+                    </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
           </Grid>
+          <EmojiPicker
+            id="emoji"
+            open={pickerDialog}
+            onEmojiClick={onEmojiClick}
+            handleClose={handleTogglePicker}
+          />
           <Grid item>
-            <Button
-              size="small"
+            <TextField
+              fullWidth
+              id="description"
+              multiline
+              rows={3}
+              className="title-field"
+              placeholder="Describe your idea"
               variant="outlined"
-              color="primary"
-              className="emoji-selector"
-              onClick={handleTogglePicker}
-            >
-              select emoji
-            </Button>
-            <EmojiPicker
-              id="emoji"
-              open={pickerDialog}
-              onEmojiClick={onEmojiClick}
-              handleClose={handleTogglePicker}
+              size="small"
+              value={form.description}
+              onChange={handleUpdateForm}
             />
           </Grid>
+          <Grid item>
+            <Typography variant="body1" gutterBottom>
+              Create a checklist for this idea
+            </Typography>
+            <TextField
+              fullWidth
+              className="title-field"
+              label="Add a to-do"
+              variant="outlined"
+              size="small"
+              value={todoField}
+              onKeyDown={addToChecklist}
+              onChange={(e) => changeTodoField(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={(e) => addToChecklist("add")}
+                      color="primary"
+                      disabled={!todoField}
+                    >
+                      <AddCircle />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            {!!form.checklist.length && (
+              <CheckList
+                list={form.checklist}
+                handleUpdate={handleUpdateCheckList}
+              />
+            )}
+          </Grid>
+
           <Grid item>
             <TextField
               fullWidth
@@ -150,30 +225,27 @@ export default function KabinetNewIdea(props) {
               value={keywordField}
               onKeyDown={handleChangeKeywords}
               onChange={(e) => changeKeywordField(e.target.value)}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => handleChangeKeywords("add")}
+                      color="primary"
+                      disabled={!keywordField}
+                    >
+                      <AddCircle />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-          </Grid>
-          {!!form.keywords.length && (
-            <Grid item>
+            {!!form.keywords.length && (
               <KeywordTags
                 id="keywords"
                 keywords={form.keywords}
                 handleChange={handleChangeKeywords}
               />
-            </Grid>
-          )}
-          <Grid item>
-            <TextField
-              fullWidth
-              id="description"
-              multiline
-              rows={5}
-              className="title-field"
-              placeholder="Describe your idea, set goals, to-do list, more details, etc"
-              variant="outlined"
-              size="small"
-              value={form.description}
-              onChange={handleUpdateForm}
-            />
+            )}
           </Grid>
           <Grid item>
             <Typography variant="body1" gutterBottom>
@@ -300,5 +372,94 @@ function TabPanel(props) {
     <div role="tabpanel" hidden={value !== index} {...other}>
       {value === index && <Box p={2}>{children}</Box>}
     </div>
+  );
+}
+
+function CheckList(props) {
+  const { handleUpdate, list } = props;
+  const [checkListExpanded, updateChecklistExpanded] = React.useState([]);
+
+  const handleUpdateCheckList = (e) => {
+    let newList = list;
+    const itemId = Number(e.target.id);
+    if (e.target.name === "checkbox") {
+      newList[itemId].checked = !list[itemId].checked;
+    }
+    if (e.target.name === "delete") {
+      newList = newList.filter((item, idx) => {
+        return idx !== itemId;
+      });
+    }
+
+    handleUpdate([...newList]);
+  };
+
+  const handleToggleExpand = (e, key) => {
+    if (e.target.name !== "checkbox") {
+      checkListExpanded.indexOf(key) > -1
+        ? updateChecklistExpanded(
+            checkListExpanded.filter((item) => item !== key)
+          )
+        : updateChecklistExpanded([...checkListExpanded, key]);
+    }
+  };
+
+  return (
+    <Box className="keyword-container">
+      <List>
+        {list.map((todo, idx) => {
+          return (
+            <Paper
+              className="checklist-item"
+              onClick={(e) => {
+                e.target.id = idx;
+                handleToggleExpand(e, todo.label);
+              }}
+            >
+              <ListItem key={todo.label} dense button>
+                <ListItemIcon>
+                  <Checkbox
+                    edge="start"
+                    checked={todo.checked}
+                    // tabIndex={-1}
+                    disableRipple
+                    id={String(idx)}
+                    name="checkbox"
+                    onChange={handleUpdateCheckList}
+                    color="primary"
+                  />
+                </ListItemIcon>
+                <ListItemText disableTypography>
+                  <Typography noWrap>{todo.label}</Typography>
+                </ListItemText>
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    onClick={(e) => {
+                      e.target.id = idx;
+                      e.target.name = "delete";
+                      handleToggleExpand(e, todo.label);
+                      handleUpdateCheckList(e);
+                    }}
+                    size="small"
+                  >
+                    <RemoveCircle className="delete-list-item" />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+              <Collapse
+                in={checkListExpanded.includes(todo.label)}
+                timeout="auto"
+                unmountOnExit
+              >
+                <ListItem style={{ "overflow-wrap": "break-word" }}>
+                  <ListItemText>{todo.label}</ListItemText>
+                </ListItem>
+              </Collapse>
+            </Paper>
+          );
+        })}
+      </List>
+    </Box>
   );
 }
