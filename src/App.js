@@ -149,6 +149,24 @@ function App() {
           <Navbar loggedIn={isLogged} />
           <Landing />
         </Route>
+        <Route
+          exact
+          path="/kabinet-home"
+          render={(routeProps) => (
+            <Page>
+              <KabinetDashboard {...routeProps} />
+            </Page>
+          )}
+        ></Route>
+        <Route
+          exact
+          path="/kabinet-new"
+          render={(routeProps) => (
+            <Page>
+              <KabinetNewIdea {...routeProps} />
+            </Page>
+          )}
+        ></Route>
         <Route path="/login">
           <Navbar loggedIn={isLogged} />
           <Login
@@ -181,26 +199,6 @@ function App() {
               passwordError,
             }}
           />
-        </Route>
-        <Route
-          path="/kabinet-home"
-          render={(routeProps) => (
-            <Page>
-              <KabinetDashboard {...routeProps} />
-            </Page>
-          )}
-        >
-          <Navbar title={"Kabinet"} loggedIn={isLogged} />
-        </Route>
-        <Route
-          path="/kabinet-new"
-          render={(routeProps) => (
-            <Page>
-              <KabinetNewIdea {...routeProps} />
-            </Page>
-          )}
-        >
-          <Navbar title={"New Kabinet"} loggedIn={isLogged} />
         </Route>
         {isLogged ? (
           <>
