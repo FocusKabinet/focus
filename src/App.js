@@ -5,7 +5,7 @@ import {
   fireHandleRegister,
   firehandleLogout,
 } from './helpers/firebaseHelpers';
-import Navbar from './components/Navbar/Navbar';
+import Navbar from './components/generic/Navbar/Navbar';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -13,13 +13,21 @@ import Home from './pages/Home';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Datapage from './pages/Datapage';
-import BlockedLogin from './components/BlockedLogin';
+import BlockedLogin from './components/generic/BlockedLogin';
 import KabinetDashboard from './pages/KabinetDashboard';
+import Page from './components/kabinet/Page';
+import KabinetNewIdea from './pages/KabinetNewIdea';
+import Breakthrough from './pages/Breakthrough';
 import { fire } from './app/firebase';
-import Page from './components/Page';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { UserActionCreators } from './redux/actions/user';
 
 function App() {
   const history = useHistory();
+  const dispatch = useDispatch();
+
+  const isLogged = useSelector((state) => state.user.profile.loggedIn);
 
   const [user, setUser] = useState('');
   const [email, setEmail] = useState('');
@@ -43,7 +51,15 @@ function App() {
     const res = fireHandleLogin(email, password);
     res
       .then(() => {
-        handleHistory('home');
+        dispatch(
+          UserActionCreators.login({
+            user,
+            email,
+            password,
+            loggedIn: true,
+          })
+        );
+        handleHistory('breakthrough');
       })
       .catch((e) => {
         switch (e.code) {
@@ -64,6 +80,14 @@ function App() {
     const res = fireHandleRegister(email, password);
     res
       .then(() => {
+        dispatch(
+          UserActionCreators.addProfile({
+            user,
+            email,
+            password,
+            loggedIn: true,
+          })
+        );
         handleHistory('home');
       })
       .catch((e) => {
@@ -82,7 +106,17 @@ function App() {
   const handleLogout = () => {
     const res = firehandleLogout();
     res
-      .then(() => handleHistory('login'))
+      .then(() => {
+        dispatch(
+          UserActionCreators.logout({
+            user,
+            email,
+            password,
+            loggedIn: false,
+          })
+        );
+        handleHistory('login');
+      })
       .catch((e) => {
         alert('There was an error logging out');
         console.log(e.message);
@@ -112,55 +146,81 @@ function App() {
     <div className="App">
       <Switch>
         <Route exact path="/">
-          <Navbar loggedIn={false} />
+          <Navbar loggedIn={isLogged} />
           <Landing />
         </Route>
+        <Route
+          exact
+          path="/kabinet-home"
+          render={(routeProps) => (
+            <Page>
+              <KabinetDashboard {...routeProps} />
+            </Page>
+          )}
+        ></Route>
+        <Route
+          exact
+          path="/kabinet-new"
+          render={(routeProps) => (
+            <Page>
+              <KabinetNewIdea {...routeProps} />
+            </Page>
+          )}
+        ></Route>
         <Route path="/login">
-          <Navbar loggedIn={false} />
+          <Navbar loggedIn={isLogged} />
           <Login
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            handleLogin={handleLogin}
-            hasAccount={hasAccount}
-            setHasAccount={setHasAccount}
-            emailError={emailError}
-            passwordError={passwordError}
+            {...{
+              email,
+              setEmail,
+              password,
+              setPassword,
+              handleLogin,
+              hasAccount,
+              setHasAccount,
+              emailError,
+              passwordError,
+            }}
           />
         </Route>
         <Route path="/register">
-          <Navbar loggedIn={false} />
+          <Navbar loggedIn={isLogged} />
           <Register
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            handleLogin={handleLogin}
-            handleRegister={handleRegister}
-            hasAccount={hasAccount}
-            setHasAccount={setHasAccount}
-            emailError={emailError}
-            passwordError={passwordError}
+            {...{
+              email,
+              setEmail,
+              password,
+              setPassword,
+              handleLogin,
+              handleRegister,
+              hasAccount,
+              setHasAccount,
+              emailError,
+              passwordError,
+            }}
           />
         </Route>
-        {user ? (
+        {isLogged ? (
           <>
             <Route path="/home">
-              <Navbar title={'Home'} loggedIn={true} />
+              <Navbar title={'Home'} loggedIn={isLogged} />
               <Home handleLogout={handleLogout} />
             </Route>
             <Route path="/profile:id">
-              <Navbar title={'Profile'} loggedIn={true} />
+              <Navbar title={'Profile'} loggedIn={isLogged} />
               <Profile />
             </Route>
             <Route path="/settings:id">
-              <Navbar title={'Settings'} loggedIn={true} />
+              <Navbar title={'Settings'} loggedIn={isLogged} />
               <Settings />
             </Route>
             <Route path="/datapage:id">
-              <Navbar title={'Data'} loggedIn={true} />
+              <Navbar title={'Data'} loggedIn={isLogged} />
               <Datapage />
+            </Route>
+            <Route path="/breakthrough">
+              <Navbar title={'Breakthrough'} loggedIn={isLogged} />
+              <Breakthrough handleLogout={handleLogout} />
             </Route>
           </>
         ) : (
