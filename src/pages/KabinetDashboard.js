@@ -28,6 +28,12 @@ function KabinetDashboard(props) {
         'https://images.unsplash.com/photo-1541913299-273fd84d10c4?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1189&q=80',
       keywords: ['application', 'react'],
       reminder: null,
+      createdAt: 1621812290280,
+      checklist: [
+        { label: 'item 1', checked: true },
+        { label: 'item 2', checked: false },
+        { label: 'item 3', checked: true },
+      ],
     },
     {
       id: '2',
@@ -38,6 +44,12 @@ function KabinetDashboard(props) {
       img_url: 'https://media.giphy.com/media/cGdPHFcAZ6oJq/giphy.gif',
       keywords: ['suicide', 'pain'],
       reminder: null,
+      createdAt: 1621812290280,
+      checklist: [
+        { label: 'item 1', checked: true },
+        { label: 'item 2', checked: false },
+        { label: 'item 3', checked: true },
+      ],
     },
     {
       id: '3',
@@ -50,6 +62,12 @@ function KabinetDashboard(props) {
         'https://images.unsplash.com/photo-1494158064015-7ff877b5bb2b?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1400&q=80',
       keywords: ['rebel'],
       reminder: null,
+      createdAt: 1621812290280,
+      checklist: [
+        { label: 'item 1', checked: true },
+        { label: 'item 2', checked: false },
+        { label: 'item 3', checked: true },
+      ],
     },
   ];
   return (
@@ -102,7 +120,7 @@ function KabinetDashboard(props) {
       >
         {mockData.map((item, idx) => (
           <Grid item key={idx}>
-            <IdeaCard className="card" {...item} />
+            <IdeaCard className="card" {...item} history={props.history} />
           </Grid>
         ))}
       </Grid>

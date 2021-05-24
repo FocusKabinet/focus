@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import {
   Card,
   CardHeader,
@@ -9,13 +9,22 @@ import {
   Typography,
   Menu,
   MenuItem,
-} from "@material-ui/core";
-import { MoreVert } from "@material-ui/icons";
-import empty from "../../assets/empty-state-photo.png";
+  Collapse,
+  Grid,
+  Divider,
+} from '@material-ui/core';
+import { MoreVert, ExpandMore, Share, Favorite } from '@material-ui/icons';
+import empty from '../../assets/empty-state-photo.png';
+import { format } from 'date-fns';
+import { KeywordTags } from './KeywordTags';
+import { CheckList } from './Checklist';
+import './styles/IdeaCard.scss';
 
 export default function IdeaCard(props) {
-  const { title, description, img_url, subheader } = props;
+  const { title, description, img_url, subheader, createdAt, id, history } =
+    props;
   const [menu, menuToggle] = React.useState(null);
+  const [expanded, expandToggle] = React.useState(false);
 
   const handleToggle = (e) => {
     menuToggle(Boolean(menu) ? false : e.currentTarget);
@@ -24,7 +33,7 @@ export default function IdeaCard(props) {
     <Card className="card-idea">
       <CardHeader
         title={title}
-        subheader={subheader}
+        subheader={format(new Date(createdAt), 'MMM do, yyyy')}
         action={
           <>
             <IconButton
@@ -41,7 +50,9 @@ export default function IdeaCard(props) {
               open={Boolean(menu)}
               onClose={handleToggle}
             >
-              <MenuItem onClick={handleToggle}>Edit</MenuItem>
+              <MenuItem onClick={() => history.push(`/kabinet-edit/${id}`)}>
+                Edit
+              </MenuItem>
               <MenuItem onClick={handleToggle} className="menu-item-delete">
                 Delete
               </MenuItem>
@@ -55,12 +66,38 @@ export default function IdeaCard(props) {
         component="img"
         onError={(e) => (e.target.src = empty)}
       />
-      <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          {description}
-        </Typography>
-      </CardContent>
-      <CardActions />
+      <CardActions disableSpacing>
+        <IconButton disabled>
+          <Favorite />
+        </IconButton>
+        <IconButton disabled>
+          <Share />
+        </IconButton>
+        <IconButton
+          onClick={() => expandToggle(!expanded)}
+          className="expand-button"
+        >
+          <ExpandMore />
+        </IconButton>
+      </CardActions>
+      <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Divider />
+        <CardContent>
+          <Grid container direction="column" spacing={1}>
+            <Grid item>
+              <Typography paragraph>{description}</Typography>
+            </Grid>
+            <Grid item>
+              <Typography>Keywords: </Typography>
+              <KeywordTags readOnly keywords={props.keywords} />
+            </Grid>
+            <Grid item>
+              <Typography>Checklist: </Typography>
+              <CheckList list={props.checklist} readOnly />
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Collapse>
     </Card>
   );
 }

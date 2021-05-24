@@ -22,6 +22,7 @@ import { fire } from './app/firebase';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { UserActionCreators } from './redux/actions/user';
+import KabinetEditIdea from './pages/KabinetEditIdea';
 
 function App() {
   const history = useHistory();
@@ -157,7 +158,7 @@ function App() {
               <KabinetDashboard {...routeProps} />
             </Page>
           )}
-        ></Route>
+        />
         <Route
           exact
           path="/kabinet-new"
@@ -166,7 +167,16 @@ function App() {
               <KabinetNewIdea {...routeProps} />
             </Page>
           )}
-        ></Route>
+        />
+        <Route
+          exact
+          path="/kabinet-edit/:id"
+          render={(routeProps) => (
+            <Page>
+              <KabinetEditIdea {...routeProps} />
+            </Page>
+          )}
+        />
         <Route path="/login">
           <Navbar loggedIn={isLogged} />
           <Login
