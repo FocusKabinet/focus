@@ -4,7 +4,7 @@ const data = [
     emojiObject: {
       activeSkinTone: 'neutral',
       emoji: '💡',
-      names: (2)[('electric light bulb', 'bulb')],
+      // names: (2)[('electric light bulb', 'bulb')],
       originalUnified: '1f4a1',
       unified: '1f4a1',
     },
@@ -29,7 +29,7 @@ const data = [
     emojiObject: {
       activeSkinTone: 'neutral',
       emoji: '💡',
-      names: (2)[('electric light bulb', 'bulb')],
+      // names: (2)[('electric light bulb', 'bulb')],
       originalUnified: '1f4a1',
       unified: '1f4a1',
     },
@@ -52,7 +52,7 @@ const data = [
     emojiObject: {
       activeSkinTone: 'neutral',
       emoji: '💡',
-      names: (2)[('electric light bulb', 'bulb')],
+      // names: (2)[('electric light bulb', 'bulb')],
       originalUnified: '1f4a1',
       unified: '1f4a1',
     },
@@ -75,3 +75,10 @@ const data = [
 ];
 
 export default data;
+
+// function uploadData() {
+//   data.forEach(async (card) => {
+//     const docRef = await firestore.collection('kabinet').doc(card.id).set(card);
+// });
+// }
+// uploadData();

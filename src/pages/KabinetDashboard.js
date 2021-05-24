@@ -3,20 +3,21 @@ import { Grid, Button, TextField, Paper, Typography } from '@material-ui/core';
 import './styles/KabinetDashboard.scss';
 import { DatePicker } from '@material-ui/pickers';
 import IdeaCard from '../components/kabinet/IdeaCard';
-import { fetchCards } from '../helpers/kabinetHelpers';
+import { deleteCard, fetchCards } from '../helpers/kabinetHelpers';
 
 function KabinetDashboard(props) {
   const [selectedDate, setSelectedDate] = React.useState(Date.now());
   const [search, setSearch] = React.useState('');
   const [cards, updateCards] = React.useState([]);
 
+  async function fetchData() {
+    const data = await fetchCards();
+    updateCards(data);
+  }
+
   React.useEffect(() => {
-    function fetchData() {
-      const data = fetchCards();
-      updateCards(data);
-    }
     fetchData();
-  }, []);
+  }, [props]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -24,6 +25,11 @@ function KabinetDashboard(props) {
 
   const handleSearch = (e) => {
     setSearch(e.target.value);
+  };
+
+  const handleDelete = async (id) => {
+    await deleteCard(id);
+    await fetchData();
   };
 
   return (
@@ -81,7 +87,12 @@ function KabinetDashboard(props) {
       >
         {cards.map((item, idx) => (
           <Grid item key={idx}>
-            <IdeaCard className="card" {...item} history={props.history} />
+            <IdeaCard
+              className="card"
+              {...item}
+              history={props.history}
+              deleteCard={handleDelete}
+            />
           </Grid>
         ))}
       </Grid>

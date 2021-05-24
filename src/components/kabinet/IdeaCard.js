@@ -31,6 +31,7 @@ export default function IdeaCard(props) {
     id,
     history,
     emojiObject,
+    deleteCard,
   } = props;
   const [menu, menuToggle] = React.useState(null);
   const [expanded, expandToggle] = React.useState(false);
@@ -38,6 +39,7 @@ export default function IdeaCard(props) {
   const handleToggle = (e) => {
     menuToggle(Boolean(menu) ? false : e.currentTarget);
   };
+
   return (
     <Card className="card-idea">
       <CardHeader
@@ -62,7 +64,13 @@ export default function IdeaCard(props) {
               <MenuItem onClick={() => history.push(`/kabinet-edit/${id}`)}>
                 Edit
               </MenuItem>
-              <MenuItem onClick={handleToggle} className="menu-item-delete">
+              <MenuItem
+                onClick={() => {
+                  deleteCard(id);
+                  menuToggle(null);
+                }}
+                className="menu-item-delete"
+              >
                 Delete
               </MenuItem>
             </Menu>

@@ -21,7 +21,7 @@ import Picker from 'emoji-picker-react';
 import ImageUploader from 'react-images-upload';
 import { KeywordTags } from './KeywordTags';
 import { CheckList } from './Checklist';
-import { fetchCard } from '../../helpers/kabinetHelpers';
+import { addCard, fetchCard, updateCard } from '../../helpers/kabinetHelpers';
 
 export default function KabinetForm(props) {
   const {
@@ -29,12 +29,13 @@ export default function KabinetForm(props) {
       params: { id },
     },
     edit,
+    history,
   } = props;
 
   const defaultEmoji = {
     activeSkinTone: 'neutral',
     emoji: '💡',
-    names: (2)[('electric light bulb', 'bulb')],
+    // names: (2)[('electric light bulb', 'bulb')],
     originalUnified: '1f4a1',
     unified: '1f4a1',
   };
@@ -57,8 +58,8 @@ export default function KabinetForm(props) {
   const [form, updateForm] = React.useState(emptyForm);
 
   React.useEffect(() => {
-    function fetchData() {
-      const data = fetchCard(id);
+    async function fetchData() {
+      const data = await fetchCard(id);
       updateForm(data);
     }
     if (!isDirty && edit) fetchData();
@@ -72,8 +73,9 @@ export default function KabinetForm(props) {
     return updateForm({ ...form, [e.target.id]: e.target.value });
   };
   const onEmojiClick = (event, emojiObject) => {
+    const { names, activeSkinTone = null, ...others } = emojiObject;
     changeDirty(true);
-    return updateForm({ ...form, emojiObject: emojiObject });
+    return updateForm({ ...form, emojiObject: { ...others, activeSkinTone } });
   };
 
   const handleTogglePicker = () => {
@@ -137,10 +139,12 @@ export default function KabinetForm(props) {
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     form.createdAt = Date.now();
     tab === 0 ? (form.imageUpload = null) : (form.imageURL = null);
-    console.log('Submit', form);
+    // console.log('Submit', form);
+    const res = !edit ? await addCard(form) : await updateCard(id, form);
+    history.goBack();
   };
 
   return (
