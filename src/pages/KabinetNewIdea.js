@@ -2,5 +2,5 @@ import React from 'react';
 import KabinetForm from '../components/kabinet/KabinetForm';
 
 export default function KabinetEditIdea(props) {
-  return <KabinetForm new history={props.history} />;
+  return <KabinetForm new {...props} />;
 }

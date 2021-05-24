@@ -21,8 +21,16 @@ import Picker from 'emoji-picker-react';
 import ImageUploader from 'react-images-upload';
 import { KeywordTags } from './KeywordTags';
 import { CheckList } from './Checklist';
+import { fetchCard } from '../../helpers/kabinetHelpers';
 
 export default function KabinetForm(props) {
+  const {
+    match: {
+      params: { id },
+    },
+    edit,
+  } = props;
+
   const defaultEmoji = {
     activeSkinTone: 'neutral',
     emoji: '💡',
@@ -30,33 +38,51 @@ export default function KabinetForm(props) {
     originalUnified: '1f4a1',
     unified: '1f4a1',
   };
-  const [pickerDialog, pickerDialogToggle] = React.useState(false);
-  const [keywordField, changeKeywordField] = React.useState('');
-  const [todoField, changeTodoField] = React.useState('');
 
-  const [form, updateForm] = React.useState({
+  const emptyForm = {
     title: '',
-    emoji: defaultEmoji,
+    emojiObject: defaultEmoji,
     keywords: [],
     description: '',
     reminder: null,
     imageUpload: null,
     imageURL: '',
     checklist: [],
-  });
-  const [tab, setTab] = React.useState(0);
+  };
+
+  const [pickerDialog, pickerDialogToggle] = React.useState(false);
+  const [keywordField, changeKeywordField] = React.useState('');
+  const [todoField, changeTodoField] = React.useState('');
+  const [isDirty, changeDirty] = React.useState(false);
+  const [form, updateForm] = React.useState(emptyForm);
+
+  React.useEffect(() => {
+    function fetchData() {
+      const data = fetchCard(id);
+      updateForm(data);
+    }
+    if (!isDirty && edit) fetchData();
+  }, [edit, isDirty, id]);
+
+  const defaultTab = form.imageUpload ? 1 : 0;
+  const [tab, setTab] = React.useState(defaultTab);
+
   const handleUpdateForm = (e) => {
+    changeDirty(true);
     return updateForm({ ...form, [e.target.id]: e.target.value });
   };
   const onEmojiClick = (event, emojiObject) => {
-    return updateForm({ ...form, emoji: emojiObject });
+    changeDirty(true);
+    return updateForm({ ...form, emojiObject: emojiObject });
   };
 
   const handleTogglePicker = () => {
+    changeDirty(true);
     pickerDialogToggle(!pickerDialog);
   };
 
   const addToChecklist = (e) => {
+    changeDirty(true);
     if (e === 'add' || (e.keyCode === 13 && !!todoField)) {
       changeTodoField('');
 
@@ -68,6 +94,7 @@ export default function KabinetForm(props) {
   };
 
   const handleUpdateCheckList = (arr) => {
+    changeDirty(true);
     return updateForm({
       ...form,
       checklist: [...arr],
@@ -75,6 +102,7 @@ export default function KabinetForm(props) {
   };
 
   const handleChangeKeywords = (e) => {
+    changeDirty(true);
     if ((e === 'add' || e.keyCode === 13) && !!keywordField) {
       if (!form.keywords.find((item) => item === keywordField)) {
         changeKeywordField('');
@@ -92,23 +120,17 @@ export default function KabinetForm(props) {
   };
 
   const handleDateChange = (date) => {
+    changeDirty(true);
     return updateForm({ ...form, reminder: date });
   };
 
   const clearForm = () => {
-    return updateForm({
-      title: '',
-      emoji: defaultEmoji,
-      keywords: [],
-      description: '',
-      reminder: null,
-      imageUpload: null,
-      imageURL: '',
-      checklist: [],
-    });
+    changeDirty(true);
+    return updateForm(emptyForm);
   };
 
   const handleUpload = (files) => {
+    changeDirty(true);
     return updateForm({
       ...form,
       imageUpload: files[0],
@@ -117,7 +139,7 @@ export default function KabinetForm(props) {
 
   const handleSubmit = () => {
     form.createdAt = Date.now();
-    tab === 0 ? (form.imageUpload = null) : (form.imageURL = '');
+    tab === 0 ? (form.imageUpload = null) : (form.imageURL = null);
     console.log('Submit', form);
   };
 
@@ -126,10 +148,10 @@ export default function KabinetForm(props) {
       <Typography
         className="list-title"
         align="center"
-        variant="h5"
+        variant="h4"
         gutterBottom
       >
-        {props.edit ? 'Refind your idea' : 'What are you thinking about?'}
+        {props.edit ? 'Refine your idea' : 'What are you thinking about?'}
       </Typography>
       <Paper className="new-idea-form">
         <Grid container spacing={2} direction="column">
@@ -152,7 +174,7 @@ export default function KabinetForm(props) {
                       size="small"
                       variant="contained"
                     >
-                      {form.emoji.emoji}
+                      {form.emojiObject.emoji}
                     </IconButton>
                   </InputAdornment>
                 ),
@@ -213,7 +235,6 @@ export default function KabinetForm(props) {
               />
             )}
           </Grid>
-
           <Grid item>
             <TextField
               fullWidth

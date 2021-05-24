@@ -6,9 +6,6 @@
   height: 150px;
 }
 
-.expand-button {
-  margin-left: auto;
-}
 .card-description {
   margin: 0 1rem;
 }
@@ -25,4 +22,7 @@
 }
 .MuiCardHeader-title.MuiTypography-h5 {
   font-size: 1rem;
+}
+.MuiButtonBase-root.expand-button {
+  margin-left: auto;
 }

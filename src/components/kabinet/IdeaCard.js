@@ -21,8 +21,17 @@ import { CheckList } from './Checklist';
 import './styles/IdeaCard.scss';
 
 export default function IdeaCard(props) {
-  const { title, description, img_url, subheader, createdAt, id, history } =
-    props;
+  const {
+    title,
+    description,
+    imageURL,
+    imageUpload,
+    subheader,
+    createdAt,
+    id,
+    history,
+    emojiObject,
+  } = props;
   const [menu, menuToggle] = React.useState(null);
   const [expanded, expandToggle] = React.useState(false);
 
@@ -32,7 +41,7 @@ export default function IdeaCard(props) {
   return (
     <Card className="card-idea">
       <CardHeader
-        title={title}
+        title={`${emojiObject ? emojiObject.emoji : ''} ${title}`}
         subheader={format(new Date(createdAt), 'MMM do, yyyy')}
         action={
           <>
@@ -62,7 +71,7 @@ export default function IdeaCard(props) {
       />
       <CardMedia
         className="card-img"
-        image={img_url}
+        src={imageURL || imageUpload}
         component="img"
         onError={(e) => (e.target.src = empty)}
       />
