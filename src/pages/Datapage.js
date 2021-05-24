@@ -1,11 +1,7 @@
-import React from 'react'
+import React from 'react';
 
 function Datapage() {
-    return (
-        <div>
-            Data
-        </div>
-    )
+	return <div>Data Page</div>;
 }
 
-export default Datapage
+export default Datapage;
