@@ -9,5 +9,8 @@
 }
 
 .page-content {
-  max-width: 95vw;
+  width: 60vw;
+  &.xs {
+    width: 95vw;
+  }
 }

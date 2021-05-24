@@ -107,8 +107,13 @@ function KabinetDashboard(props) {
           </Grid>
         </Grid>
       </Paper>
-      <Typography className="list-title" align="left" variant="h5" gutterBottom>
-        Your idea catalog:
+      <Typography
+        className="list-title"
+        align="center"
+        variant="h5"
+        gutterBottom
+      >
+        Your drawer
       </Typography>
       <Grid
         container

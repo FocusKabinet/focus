@@ -123,8 +123,13 @@ export default function KabinetForm(props) {
 
   return (
     <div>
-      <Typography className="list-title" align="left" variant="h5" gutterBottom>
-        What are you thinking about?
+      <Typography
+        className="list-title"
+        align="center"
+        variant="h5"
+        gutterBottom
+      >
+        {props.edit ? 'Refind your idea' : 'What are you thinking about?'}
       </Typography>
       <Paper className="new-idea-form">
         <Grid container spacing={2} direction="column">
