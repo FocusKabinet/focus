@@ -123,6 +123,7 @@ export default function KabinetForm(props) {
 
   const handleDateChange = (date) => {
     changeDirty(true);
+    console.log(date);
     return updateForm({ ...form, reminder: date });
   };
 
@@ -294,7 +295,7 @@ export default function KabinetForm(props) {
                   variant="outlined"
                   size="small"
                   id="imageURL"
-                  value={form.imageURL}
+                  value={form.imageURL || ''}
                   onChange={handleUpdateForm}
                 />
                 {form.imageURL && (
@@ -326,13 +327,13 @@ export default function KabinetForm(props) {
               </TabPanel>
             </Paper>
           </Grid>
-          <Grid item>
+          {/* <Grid item>
             <DateTimePicker
               label="Set reminder ?"
               value={form.reminder}
               onChange={handleDateChange}
             />
-          </Grid>
+          </Grid> */}
           <Grid item>
             <div className="form-actions">
               <Button color="secondary" onClick={clearForm}>
