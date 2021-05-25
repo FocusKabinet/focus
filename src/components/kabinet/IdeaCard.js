@@ -70,6 +70,7 @@ export default function IdeaCard(props) {
                   menuToggle(null);
                 }}
                 className="menu-item-delete"
+                disabled={id < 5}
               >
                 Delete
               </MenuItem>

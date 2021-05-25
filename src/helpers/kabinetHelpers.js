@@ -34,7 +34,9 @@ export async function addCard(data, img) {
 export async function updateCard(id, data, img) {
   const cardsRef = firestore.collection('kabinet').doc(id);
   const url = await uploadImage(id, img);
-  const res = await cardsRef.update({ ...data, imageURL: url });
+  const res = url
+    ? await cardsRef.update({ ...data, imageURL: url })
+    : await cardsRef.update(data);
   return res;
 }
 
@@ -45,6 +47,7 @@ export async function deleteCard(id) {
 
 async function uploadImage(id, img) {
   deleteImage(id);
+  if (!img) return;
   let imageURL = '';
   const metadata = {
     name: id,

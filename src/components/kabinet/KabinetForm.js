@@ -142,7 +142,6 @@ export default function KabinetForm(props) {
 
   const handleSubmit = async () => {
     if (!form.createdAt) form.createdAt = Date.now();
-    tab === 0 ? (form.imageUpload = null) : (form.imageURL = null);
     const file = form.imageUpload;
     delete form.imageUpload;
     const res = !edit
@@ -322,10 +321,19 @@ export default function KabinetForm(props) {
                   withPreview={false}
                 />
                 {form.imageUpload && (
-                  <CardMedia
-                    className="image-preview"
-                    image={URL.createObjectURL(form.imageUpload)}
-                  />
+                  <div>
+                    <CardMedia
+                      className="image-preview"
+                      image={URL.createObjectURL(form.imageUpload)}
+                    />
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={() => updateForm({ ...form, imageUpload: null })}
+                    >
+                      Discard
+                    </Button>
+                  </div>
                 )}
               </TabPanel>
             </Paper>
