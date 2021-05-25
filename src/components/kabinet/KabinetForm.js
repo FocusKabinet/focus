@@ -141,10 +141,13 @@ export default function KabinetForm(props) {
   };
 
   const handleSubmit = async () => {
-    form.createdAt = Date.now();
+    if (!form.createdAt) form.createdAt = Date.now();
     tab === 0 ? (form.imageUpload = null) : (form.imageURL = null);
-    // console.log('Submit', form);
-    const res = !edit ? await addCard(form) : await updateCard(id, form);
+    const file = form.imageUpload;
+    delete form.imageUpload;
+    const res = !edit
+      ? await addCard(form, file)
+      : await updateCard(id, form, file);
     history.goBack();
   };
 
