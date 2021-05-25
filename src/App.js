@@ -1,11 +1,6 @@
 import { Switch, Route, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import {
-	createMuiTheme,
-	responsiveFontSizes,
-	MuiThemeProvider,
-} from '@material-ui/core/styles';
-import {
 	fireHandleLogin,
 	fireHandleRegister,
 	firehandleLogout,
