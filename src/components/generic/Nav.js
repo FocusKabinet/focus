@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import '../../styles/nav.scss';
-import menu from '../../../assets/menu.svg';
+import './styles/nav.scss';
+import menu from '../../assets/menu.svg';
 
 function Nav({ title, ...props }) {
 	const [open, setOpen] = React.useState(false);
