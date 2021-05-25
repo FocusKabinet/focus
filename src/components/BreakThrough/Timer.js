@@ -1,9 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import '.././styles/Timer.scss';
 import { Button, Grid, Paper } from '@material-ui/core';
+import timerAlarm from '../../assets/audio/timer_alarm.mp3';
+import { Howl, Howler } from 'howler';
 
 function Timer() {
-	const [time, setTime] = useState(minToMilli(24));
+	const sound = new Howl({
+		src: [timerAlarm],
+	});
+
+	var timerAlarm = sound.play();
+
+	const [time, setTime] = useState(minToMilli(1.1));
 	const [heldTime, setHeldTime] = useState(0);
 	const [breakTime, setBreakTime] = useState({
 		break: 1,
@@ -17,7 +25,20 @@ function Timer() {
 
 		if (timerOn) {
 			interval = setInterval(() => {
-				setTime((prevTime) => prevTime - 10);
+				if (Math.floor((time / 60000) % 60) < 0) {
+					alert('here');
+				} else {
+					setTime((prevTime) => {
+						if (
+							Math.floor((prevTime / 60000) % 60) <= 0 &&
+							Math.floor((prevTime / 1000) % 60) <= 0
+						) {
+							alert('here');
+						} else {
+							return prevTime - 10;
+						}
+					});
+				}
 			}, 10);
 		} else {
 			clearInterval(interval);
