@@ -72,11 +72,14 @@ function KabinetDashboard(props) {
               format="MMM yyyy"
               value={selectedDate}
               onChange={handleDateChange}
-              views={['month', 'year']}
+              views={["month", "year"]}
             />
           </Grid>
         </Grid>
       </Paper>
+      <Typography className="list-title" align="left" variant="h5" gutterBottom>
+        Your idea catalog:
+      </Typography>
       <Grid
         container
         className="grid-container list"

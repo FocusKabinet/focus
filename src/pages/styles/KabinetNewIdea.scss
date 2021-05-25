@@ -1,0 +1,36 @@
+.new-idea-form {
+  padding: 1rem;
+  margin-bottom: 2rem;
+}
+
+.keyword-container {
+  padding-top: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  background-color: #efe9db;
+
+  .tag {
+    margin-bottom: 0.5rem;
+  }
+  .tag:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  &-nav {
+    button:not(:last-child) {
+      margin-right: 1rem;
+    }
+  }
+}
+
+.MuiPaper-root.photo-tabs {
+  background-color: #d7dee1;
+}
+.image-preview {
+  margin-top: 1rem;
+  height: 10rem;
+}
