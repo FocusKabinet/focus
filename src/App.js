@@ -17,11 +17,17 @@ import BlockedLogin from './components/generic/BlockedLogin';
 import KabinetDashboard from './pages/KabinetDashboard';
 import Page from './components/kabinet/Page';
 import KabinetNewIdea from './pages/KabinetNewIdea';
-import Breakthrough from './pages/Breakthrough';
+import Focus from './pages/Focus';
 import { fire } from './app/firebase';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { UserActionCreators } from './redux/actions/user';
+import {
+	createMuiTheme,
+	responsiveFontSizes,
+	MuiThemeProvider,
+} from '@material-ui/core/styles';
+
 import KabinetEditIdea from './pages/KabinetNewIdea';
 
 function App() {
@@ -68,7 +74,7 @@ function App() {
 						loggedIn: true,
 					})
 				);
-				handleHistory('breakthrough');
+				handleHistory('focus');
 			})
 			.catch((e) => {
 				switch (e.code) {
@@ -241,9 +247,9 @@ function App() {
 							<Navbar title={'Data'} loggedIn={isLogged} />
 							<Datapage />
 						</Route>
-						<Route path='/breakthrough'>
-							<Navbar title={'Breakthrough'} loggedIn={isLogged} />
-							<Breakthrough handleLogout={handleLogout} />
+						<Route path='/focus'>
+							<Navbar title={'Focus'} loggedIn={isLogged} />
+							<Focus handleLogout={handleLogout} />
 						</Route>
 					</MuiThemeProvider>
 				) : (

@@ -1,0 +1,35 @@
+.timer-container {
+	padding: 20px;
+	background-color: #75a27c;
+	color: #fff !important;
+
+	& .timer {
+		margin: 50px !important;
+	}
+
+	& .timer-buttons {
+		min-width: 160px;
+		color: #fff;
+	}
+
+	& .start-button,
+	.stop-button {
+		font-size: 2.5em;
+		color: #fff;
+		border: 2px solid #fff;
+	}
+	& .stop-button {
+		color: #cf142b;
+		border: 2px solid #cf142b;
+	}
+
+	& .icons {
+		font-size: 0.4em;
+		margin: 50px;
+		cursor: pointer;
+
+		&:hover {
+			color: #59b2ff;
+		}
+	}
+}
