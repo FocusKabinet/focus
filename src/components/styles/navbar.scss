@@ -1,42 +1,42 @@
 @import './variables';
 
 .navbar {
-    background: #fff;
-    box-shadow: 0 0.3rem 0.7rem rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    position: relative;
-    width: 100%;
-    height: $spacer;
-    z-index: 10000;
-  
-    h1 {
-      font-size: 1.8rem;
-      font-weight: 900;
-      line-height: 1;
-      white-space: nowrap;
-    }
-  
-    h1 + * {
-      margin-left: auto;
-    }
-  
-    button:not(.nav_toggle) {
-      background: $highlight;
-      border: 0;
-      border-radius: 4px;
-      color: #fff;
-      cursor: pointer;
-      font-size: 1.3rem;
-      font-weight: bold;
-      padding: 0 1rem;
-      white-space: nowrap;
-      min-width: 6rem;
-      height: 3rem;
-  
-      &:disabled {
-        cursor: default;
-        opacity: 0.2;
-      }
-    }
+	background: #fff;
+	box-shadow: 0 0.3rem 0.7rem rgba(0, 0, 0, 0.1);
+	display: flex;
+	align-items: center;
+	position: relative;
+	width: 100%;
+	height: $spacer;
+	z-index: 10000;
+
+	h1 {
+		font-size: 1.8rem;
+		font-weight: 900;
+		line-height: 1;
+		white-space: nowrap;
+	}
+
+	h1 + * {
+		margin-left: auto;
+	}
+
+	button:not(.nav_toggle) {
+		background: $highlight;
+		border: 0;
+		border-radius: 4px;
+		color: #fff;
+		cursor: pointer;
+		font-size: 1.3rem;
+		font-weight: bold;
+		padding: 0 1rem;
+		white-space: nowrap;
+		min-width: 6rem;
+		height: 3rem;
+
+		&:disabled {
+			cursor: default;
+			opacity: 0.2;
+		}
+	}
 }
