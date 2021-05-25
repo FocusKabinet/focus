@@ -2,6 +2,12 @@ import React from 'react';
 import './styles/Breakthrough.scss';
 import { Grid, Typography, Button } from '@material-ui/core';
 import Timer from '../components/BreakThrough/Timer';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+	faTasks,
+	faHourglassHalf,
+	faCog,
+} from '@fortawesome/free-solid-svg-icons';
 
 function Breakthrough({ handleLogout, ...props }) {
 	return (
@@ -15,17 +21,22 @@ function Breakthrough({ handleLogout, ...props }) {
 					item
 					xs={12}
 				>
-					<Grid item xs={10}>
+					<Grid item xs={9}>
 						<Typography variant='h2'>Timer Title</Typography>
 					</Grid>
 					<Grid item xs={1}>
 						<Button variant='contained' size='large'>
-							Tasks
+							<FontAwesomeIcon icon={faTasks} />
 						</Button>
 					</Grid>
 					<Grid item xs={1}>
 						<Button variant='contained' size='large'>
-							Data
+							<FontAwesomeIcon icon={faHourglassHalf} />
+						</Button>
+					</Grid>
+					<Grid item xs={1}>
+						<Button variant='contained' size='large'>
+							<FontAwesomeIcon icon={faCog} />
 						</Button>
 					</Grid>
 				</Grid>

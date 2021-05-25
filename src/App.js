@@ -1,11 +1,16 @@
 import { Switch, Route, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import {
-  fireHandleLogin,
-  fireHandleRegister,
-  firehandleLogout,
+	createMuiTheme,
+	responsiveFontSizes,
+	MuiThemeProvider,
+} from '@material-ui/core/styles';
+import {
+	fireHandleLogin,
+	fireHandleRegister,
+	firehandleLogout,
 } from './helpers/firebaseHelpers';
-import Navbar from './components/generic/Navbar/Navbar';
+import Navbar from './components/generic/Navbar';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -25,240 +30,248 @@ import { UserActionCreators } from './redux/actions/user';
 import KabinetEditIdea from './pages/KabinetNewIdea';
 
 function App() {
-  const history = useHistory();
-  const dispatch = useDispatch();
+	let theme = createMuiTheme({
+		typography: {
+			fontSize: 20,
+		},
+	});
 
-  const isLogged = useSelector((state) => state.user.profile.loggedIn);
+	theme = responsiveFontSizes(theme);
 
-  const [user, setUser] = useState('');
-  const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [hasAccount, setHasAccount] = useState(false);
+	const history = useHistory();
+	const dispatch = useDispatch();
 
-  const clearAllInputs = () => {
-    setEmail('');
-    setPassword('');
-  };
+	const isLogged = useSelector((state) => state.user.profile.loggedIn);
 
-  const clearAllErr = () => {
-    setEmailError('');
-    setPasswordError('');
-  };
+	const [user, setUser] = useState('');
+	const [email, setEmail] = useState('');
+	const [emailError, setEmailError] = useState('');
+	const [password, setPassword] = useState('');
+	const [passwordError, setPasswordError] = useState('');
+	const [hasAccount, setHasAccount] = useState(false);
 
-  const handleLogin = () => {
-    clearAllErr();
-    const res = fireHandleLogin(email, password);
-    res
-      .then(() => {
-        dispatch(
-          UserActionCreators.login({
-            user,
-            email,
-            password,
-            loggedIn: true,
-          })
-        );
-        handleHistory('breakthrough');
-      })
-      .catch((e) => {
-        switch (e.code) {
-          case 'auth/invalid-email':
-          case 'auth/user-disabled':
-          case 'auth/user-not-found':
-            setEmailError(e.message);
-            break;
-          case 'auth/wrong-password':
-            setPasswordError(e.message);
-            break;
-          default:
-            setEmailError(e.message);
-            setPasswordError(e.message);
-            break;
-        }
-      });
-  };
+	const clearAllInputs = () => {
+		setEmail('');
+		setPassword('');
+	};
 
-  const handleRegister = () => {
-    clearAllErr();
-    const res = fireHandleRegister(email, password);
-    res
-      .then(() => {
-        dispatch(
-          UserActionCreators.addProfile({
-            user,
-            email,
-            password,
-            loggedIn: true,
-          })
-        );
-        handleHistory('home');
-      })
-      .catch((e) => {
-        switch (e.code) {
-          case 'auth/email-already-in-use':
-          case 'auth/invalid-email':
-            setEmailError(e.message);
-            break;
-          case 'auth/weak-password':
-            setPasswordError(e.message);
-            break;
-          default:
-            setEmailError(e.message);
-            setPasswordError(e.message);
-            break;
-        }
-      });
-  };
+	const clearAllErr = () => {
+		setEmailError('');
+		setPasswordError('');
+	};
 
-  const handleLogout = () => {
-    const res = firehandleLogout();
-    res
-      .then(() => {
-        dispatch(
-          UserActionCreators.logout({
-            user,
-            email,
-            password,
-            loggedIn: false,
-          })
-        );
-        handleHistory('login');
-      })
-      .catch((e) => {
-        alert('There was an error logging out');
-        console.log(e.message);
-      });
-  };
+	const handleLogin = () => {
+		clearAllErr();
+		const res = fireHandleLogin(email, password);
+		res
+			.then(() => {
+				dispatch(
+					UserActionCreators.login({
+						user,
+						email,
+						password,
+						loggedIn: true,
+					})
+				);
+				handleHistory('breakthrough');
+			})
+			.catch((e) => {
+				switch (e.code) {
+					case 'auth/invalid-email':
+					case 'auth/user-disabled':
+					case 'auth/user-not-found':
+						setEmailError(e.message);
+						break;
+					case 'auth/wrong-password':
+						setPasswordError(e.message);
+						break;
+					default:
+						setEmailError(e.message);
+						setPasswordError(e.message);
+						break;
+				}
+			});
+	};
 
-  const authListener = () => {
-    fire.auth().onAuthStateChanged((user) => {
-      if (user) {
-        clearAllInputs();
-        setUser(user);
-      } else {
-        setUser('');
-      }
-    });
-  };
+	const handleRegister = () => {
+		clearAllErr();
+		const res = fireHandleRegister(email, password);
+		res
+			.then(() => {
+				dispatch(
+					UserActionCreators.addProfile({
+						user,
+						email,
+						password,
+						loggedIn: true,
+					})
+				);
+				handleHistory('home');
+			})
+			.catch((e) => {
+				switch (e.code) {
+					case 'auth/email-already-in-use':
+					case 'auth/invalid-email':
+						setEmailError(e.message);
+						break;
+					case 'auth/weak-password':
+						setPasswordError(e.message);
+						break;
+					default:
+						setEmailError(e.message);
+						setPasswordError(e.message);
+						break;
+				}
+			});
+	};
 
-  useEffect(() => {
-    authListener();
-  }, []);
+	const handleLogout = () => {
+		const res = firehandleLogout();
+		res
+			.then(() => {
+				dispatch(
+					UserActionCreators.logout({
+						user,
+						email,
+						password,
+						loggedIn: false,
+					})
+				);
+				handleHistory('login');
+			})
+			.catch((e) => {
+				alert('There was an error logging out');
+				console.log(e.message);
+			});
+	};
 
-  const handleHistory = (path) => {
-    history.push(`/${path}`);
-  };
+	const authListener = () => {
+		fire.auth().onAuthStateChanged((user) => {
+			if (user) {
+				clearAllInputs();
+				setUser(user);
+			} else {
+				setUser('');
+			}
+		});
+	};
 
-  return (
-    <div className="App">
-      <Switch>
-        <Route exact path="/">
-          <Navbar loggedIn={isLogged} />
-          <Landing />
-        </Route>
-        <Route path="/login">
-          <Navbar loggedIn={isLogged} />
-          <Login
-            {...{
-              email,
-              setEmail,
-              password,
-              setPassword,
-              handleLogin,
-              hasAccount,
-              setHasAccount,
-              emailError,
-              passwordError,
-            }}
-          />
-        </Route>
-        <Route path="/register">
-          <Navbar loggedIn={isLogged} />
-          <Register
-            {...{
-              email,
-              setEmail,
-              password,
-              setPassword,
-              handleLogin,
-              handleRegister,
-              hasAccount,
-              setHasAccount,
-              emailError,
-              passwordError,
-            }}
-          />
-        </Route>
-        <Route
-          path="/kabinet-home"
-          render={(routeProps) => (
-            <Page>
-              <KabinetDashboard {...routeProps} />
-            </Page>
-          )}
-        />
-        <Route
-          path="/kabinet-new"
-          render={(routeProps) => (
-            <Page>
-              <KabinetNewIdea {...routeProps} />
-            </Page>
-          )}
-        />
-        <Route
-          path="/kabinet-edit/:id"
-          render={(routeProps) => (
-            <Page>
-              <KabinetEditIdea {...routeProps} />
-            </Page>
-          )}
-        />
-        {isLogged ? (
-          <>
-            <Route path="/home">
-              <Navbar title={'Home'} loggedIn={isLogged} />
-              <Home handleLogout={handleLogout} />
-            </Route>
-            <Route path="/profile:id">
-              <Navbar title={'Profile'} loggedIn={isLogged} />
-              <Profile />
-            </Route>
-            <Route path="/settings:id">
-              <Navbar title={'Settings'} loggedIn={isLogged} />
-              <Settings />
-            </Route>
-            <Route path="/datapage:id">
-              <Navbar title={'Data'} loggedIn={isLogged} />
-              <Datapage />
-            </Route>
-            <Route path="/breakthrough">
-              <Navbar title={'Breakthrough'} loggedIn={isLogged} />
-              <Breakthrough handleLogout={handleLogout} />
-            </Route>
-          </>
-        ) : (
-          <>
-            <div>
-              <BlockedLogin />
-              <Login
-                email={email}
-                setEmail={setEmail}
-                password={password}
-                setPassword={setPassword}
-                handleLogin={handleLogin}
-                hasAccount={hasAccount}
-                setHasAccount={setHasAccount}
-                emailError={emailError}
-                passwordError={passwordError}
-              />
-            </div>
-          </>
-        )}
-      </Switch>
-    </div>
-  );
+	useEffect(() => {
+		authListener();
+	}, []);
+
+	const handleHistory = (path) => {
+		history.push(`/${path}`);
+	};
+
+	return (
+		<div className='App'>
+			<Switch>
+				<Route exact path='/'>
+					<Navbar loggedIn={isLogged} />
+					<Landing />
+				</Route>
+				<Route path='/login'>
+					<Navbar loggedIn={isLogged} />
+					<Login
+						{...{
+							email,
+							setEmail,
+							password,
+							setPassword,
+							handleLogin,
+							hasAccount,
+							setHasAccount,
+							emailError,
+							passwordError,
+						}}
+					/>
+				</Route>
+				<Route path='/register'>
+					<Navbar loggedIn={isLogged} />
+					<Register
+						{...{
+							email,
+							setEmail,
+							password,
+							setPassword,
+							handleLogin,
+							handleRegister,
+							hasAccount,
+							setHasAccount,
+							emailError,
+							passwordError,
+						}}
+					/>
+				</Route>
+				<Route
+					path='/kabinet-home'
+					render={(routeProps) => (
+						<Page>
+							<KabinetDashboard {...routeProps} />
+						</Page>
+					)}
+				/>
+				<Route
+					path='/kabinet-new'
+					render={(routeProps) => (
+						<Page>
+							<KabinetNewIdea {...routeProps} />
+						</Page>
+					)}
+				/>
+				<Route
+					path='/kabinet-edit/:id'
+					render={(routeProps) => (
+						<Page>
+							<KabinetEditIdea {...routeProps} />
+						</Page>
+					)}
+				/>
+				{isLogged ? (
+					<MuiThemeProvider theme={theme}>
+						<Route path='/home'>
+							<Navbar title={'Home'} loggedIn={isLogged} />
+							<Home handleLogout={handleLogout} />
+						</Route>
+						<Route path='/profile:id'>
+							<Navbar title={'Profile'} loggedIn={isLogged} />
+							<Profile />
+						</Route>
+						<Route path='/settings:id'>
+							<Navbar title={'Settings'} loggedIn={isLogged} />
+							<Settings />
+						</Route>
+						<Route path='/datapage:id'>
+							<Navbar title={'Data'} loggedIn={isLogged} />
+							<Datapage />
+						</Route>
+						<Route path='/breakthrough'>
+							<Navbar title={'Breakthrough'} loggedIn={isLogged} />
+							<Breakthrough handleLogout={handleLogout} />
+						</Route>
+					</MuiThemeProvider>
+				) : (
+					<>
+						<div>
+							<BlockedLogin />
+							<Login
+								email={email}
+								setEmail={setEmail}
+								password={password}
+								setPassword={setPassword}
+								handleLogin={handleLogin}
+								hasAccount={hasAccount}
+								setHasAccount={setHasAccount}
+								emailError={emailError}
+								passwordError={passwordError}
+							/>
+						</div>
+					</>
+				)}
+			</Switch>
+		</div>
+	);
 }
 
 export default App;

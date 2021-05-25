@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import '.././styles/Timer.scss';
-import { Button, Grid, Paper } from '@material-ui/core';
+import './styles/Timer.scss';
+import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import { Howl } from 'howler';
 import timerAlarm from '../../assets/audio/timer_alarm.mp3';
-import { Howl, Howler } from 'howler';
 
 function Timer() {
 	const sound = new Howl({
 		src: [timerAlarm],
 	});
 
-	var timerAlarm = sound.play();
-
-	const [time, setTime] = useState(minToMilli(1.1));
+	const [time, setTime] = useState(minToMilli(24));
 	const [heldTime, setHeldTime] = useState(0);
 	const [breakTime, setBreakTime] = useState({
 		break: 1,
@@ -25,20 +23,18 @@ function Timer() {
 
 		if (timerOn) {
 			interval = setInterval(() => {
-				if (Math.floor((time / 60000) % 60) < 0) {
-					alert('here');
-				} else {
-					setTime((prevTime) => {
-						if (
-							Math.floor((prevTime / 60000) % 60) <= 0 &&
-							Math.floor((prevTime / 1000) % 60) <= 0
-						) {
-							alert('here');
-						} else {
-							return prevTime - 10;
-						}
-					});
-				}
+				setTime((prevTime) => {
+					if (
+						Math.floor((prevTime / 60000) % 60) <= 0 &&
+						Math.floor((prevTime / 1000) % 60) <= 0
+					) {
+						let timerSound = sound.play();
+						sound.fade(0, 1, 5000, timerSound);
+						resetTime();
+					} else {
+						return prevTime - 10;
+					}
+				});
 			}, 10);
 		} else {
 			clearInterval(interval);
@@ -56,14 +52,12 @@ function Timer() {
 			if (breakTime.break === 1) {
 				setHeldTime(time);
 			}
-			setTime(breakTime.short);
-			setBreakTime({ ...breakTime, break: 2 });
+			timerBreak(breakTime.short, 2);
 		} else {
 			if (breakTime.break === 1) {
 				setHeldTime(time);
 			}
-			setTime(breakTime.long);
-			setBreakTime({ ...breakTime, break: 3 });
+			timerBreak(breakTime.long, 3);
 		}
 	};
 
@@ -72,14 +66,11 @@ function Timer() {
 		if (breakTime.break === 1) {
 			alert('choose timer');
 		} else if (breakTime.break === 2) {
-			setTime(heldTime);
-			setBreakTime({ ...breakTime, break: 1 });
+			timerBreak(heldTime, 1);
 		} else if (breakTime.break === 3) {
-			setTime(heldTime);
-			setBreakTime({ ...breakTime, break: 1 });
+			timerBreak(heldTime, 1);
 		} else {
-			setTime(minToMilli(24));
-			setBreakTime({ ...breakTime, break: 1 });
+			timerBreak(minToMilli(24), 1);
 		}
 	};
 
@@ -96,6 +87,12 @@ function Timer() {
 		}
 	};
 
+	const timerBreak = (t, b) => {
+		setTimerOn(false);
+		setTime(t);
+		setBreakTime({ ...breakTime, break: b });
+	};
+
 	return (
 		<Paper elevation={3} className='timer-container'>
 			<Grid container justify='center' alignItems='center'>
@@ -105,11 +102,11 @@ function Timer() {
 						<Button onClick={() => startBreak(true)}>Short Break</Button>
 						<Button onClick={() => startBreak(false)}>Long Break</Button>
 					</Grid>
-					<h1>
+					<Typography variant='h1' className='timer'>
 						<span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}</span>:
 						<span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}</span>
 						{/* :<span>{('0' + Math.floor(((time  / 10) % 100)).slice(-2)}</span> */}
-					</h1>
+					</Typography>
 					<Grid item container justify='space-evenly'>
 						{timerOn ? (
 							<Button onClick={() => setTimerOn(false)}>Stop</Button>
