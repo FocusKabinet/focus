@@ -1,0 +1,21 @@
+#dataVisible {
+	padding: 96px 20px;
+	width: 30vw;
+	height: 50vh;
+	background-color: rgb(129, 127, 127);
+	position: fixed;
+	bottom: 17%;
+	left: 0;
+	transition: transform 0.3s cubic-bezier(0, 0.52, 0, 1);
+	overflow: hidden;
+	z-index: 1000;
+
+	&.hide {
+		transform: translate3d(100vw, 0, 0);
+	}
+
+	&.show {
+		transform: translate3d(70vw, 0, 0);
+		overflow: hidden;
+	}
+}

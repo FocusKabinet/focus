@@ -4,9 +4,13 @@ import timerAlarm from '../../assets/audio/timer_alarm.mp3';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import { Howl } from 'howler';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUndoAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+	faUndoAlt,
+	faTasks,
+	faHourglassHalf,
+} from '@fortawesome/free-solid-svg-icons';
 
-function Timer(props) {
+function Timer({ visible, setVisible, ...props }) {
 	const sound = new Howl({
 		src: [timerAlarm],
 	});
@@ -107,7 +111,12 @@ function Timer(props) {
 
 	const setColor = (pageCol, timerCol) => {
 		props.changePageBackground(pageCol);
-		setBackground({ backgroundColor: timerCol });
+		setBackground({
+			backgroundColor: timerCol,
+			transition: 'all .8s ease',
+			WebkitTransition: 'all .8s ease',
+			MozTransition: 'all .8s ease',
+		});
 	};
 
 	return (
@@ -137,7 +146,12 @@ function Timer(props) {
 							/>
 						</Grid>
 					</Typography>
-					<Grid item container justify='center'>
+					<Grid item container justify='space-between'>
+						<Button size='medium'>
+							<Typography variant='subtitle1'>
+								<FontAwesomeIcon icon={faTasks} className='act-icons' /> Tasks
+							</Typography>
+						</Button>
 						<Button
 							onClick={() => {
 								if (timerOn) {
@@ -149,6 +163,14 @@ function Timer(props) {
 							className={timerOn ? 'stop-button' : 'start-button'}
 						>
 							{timerOn ? <>Stop</> : <>Start</>}
+						</Button>
+						<Button
+							// variant='contained'
+							size='medium'
+							onClick={() => setVisible(!visible)}
+						>
+							<FontAwesomeIcon icon={faHourglassHalf} className='act-icons ' />
+							Data
 						</Button>
 					</Grid>
 				</Grid>
