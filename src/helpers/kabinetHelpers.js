@@ -1,10 +1,12 @@
 import data from './kabinetMockData';
 import { firestore, storageRef } from '../app/firebase';
+// import googleTrendsAPI from 'google-trends-api';
+import axios from 'axios';
 
 export async function fetchCards() {
   let cards = [];
   const cardsRef = firestore.collection('kabinet');
-  const cardsSnapshot = await cardsRef.get();
+  const cardsSnapshot = await cardsRef.orderBy('createdAt', 'desc').get();
   cardsSnapshot.forEach((doc) => {
     cards.push({ ...doc.data(), id: doc.id });
   });
@@ -73,4 +75,28 @@ async function deleteImage(id) {
     .catch((e) => {
       console.warn(e);
     });
+}
+
+export async function getCurrentCountry() {
+  let code = 'CA';
+  await axios
+    .get('http://ip-api.com/json/?fields=countryCode')
+    .then((res) => {
+      code = res.data.countryCode;
+    })
+    .catch((e) =>
+      console.warn(
+        'Cannot get location. Most likely due to AdBlock. Defaulted to US\n',
+        e
+      )
+    );
+  return code;
+}
+
+export async function getGoogleTrends(countryCode) {
+  let data = {};
+  await axios('http://localhost:5000/api/' + countryCode)
+    .then((response) => (data = response.data[0]))
+    .catch((e) => console.error(e));
+  return data;
 }

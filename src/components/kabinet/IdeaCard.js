@@ -100,7 +100,7 @@ export default function IdeaCard(props) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <Divider />
-        <CardContent>
+        <CardContent className="card-content">
           <Grid container direction="column" spacing={1}>
             <Grid item>
               <Typography paragraph>{description}</Typography>

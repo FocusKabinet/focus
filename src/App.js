@@ -14,9 +14,6 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Datapage from './pages/Datapage';
 import BlockedLogin from './components/generic/BlockedLogin';
-import KabinetDashboard from './pages/KabinetDashboard';
-import Page from './components/kabinet/Page';
-import KabinetNewIdea from './pages/KabinetNewIdea';
 import Focus from './pages/Focus';
 import { fire } from './app/firebase';
 import { useSelector } from 'react-redux';
@@ -28,7 +25,10 @@ import {
 	MuiThemeProvider,
 } from '@material-ui/core/styles';
 
-import KabinetEditIdea from './pages/KabinetNewIdea';
+import Page from './components/kabinet/Page';
+import KabinetDashboard from './pages/KabinetDashboard';
+import KabinetEditIdea from './pages/KabinetEditIdea';
+import KabinetNewIdea from './pages/KabinetNewIdea';
 
 function App() {
 	let theme = createMuiTheme({

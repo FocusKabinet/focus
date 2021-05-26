@@ -1,0 +1,44 @@
+.trends-container {
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.list-container {
+  width: 100%;
+}
+
+.whatshot-icon {
+  margin-right: 0.5rem;
+  color: #f64b4b;
+}
+
+.trendup-icon {
+  color: #2fa5d8;
+}
+
+.MuiPaper-root.accordion {
+  // background-color: #efe9db;
+}
+
+.trend-title {
+  color: #393a73;
+}
+
+.dialog-content {
+  padding-bottom: 1rem;
+  background-color: #0d3b66;
+}
+
+.dialog-title {
+  background-color: #faf0ca;
+  .MuiTypography-h6 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.dialog-content-bottom {
+  display: flex;
+  justify-content: space-between;
+}
