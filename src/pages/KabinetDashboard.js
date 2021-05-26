@@ -1,23 +1,50 @@
 import React from 'react';
-import { Grid, Button, TextField, Paper, Typography } from '@material-ui/core';
+import {
+  Grid,
+  Button,
+  TextField,
+  Paper,
+  Typography,
+  IconButton,
+} from '@material-ui/core';
+import { Clear } from '@material-ui/icons';
 import './styles/KabinetDashboard.scss';
 import { DatePicker } from '@material-ui/pickers';
 import IdeaCard from '../components/kabinet/IdeaCard';
-import { deleteCard, fetchCards } from '../helpers/kabinetHelpers';
+import {
+  deleteCard,
+  fetchCards,
+  getCurrentCountry,
+  getGoogleTrends,
+} from '../helpers/kabinetHelpers';
+import { getVisibleCards } from '../helpers/kabinetSelectors';
+import GoogleTrends from '../components/kabinet/GoogleTrends';
 
 function KabinetDashboard(props) {
-  const [selectedDate, setSelectedDate] = React.useState(Date.now());
+  const [selectedDate, setSelectedDate] = React.useState(null);
   const [search, setSearch] = React.useState('');
   const [cards, updateCards] = React.useState([]);
-
+  const [initialCards, updateInitialCards] = React.useState([]);
+  const [trends, updateTrends] = React.useState({});
   async function fetchData() {
+    const countryCode = await getCurrentCountry();
+    const trendsData = await getGoogleTrends(countryCode);
+    console.log(trendsData);
     const data = await fetchCards();
+    updateTrends(trendsData);
+    updateInitialCards(data);
     updateCards(data);
   }
 
   React.useEffect(() => {
     fetchData();
   }, [props]);
+
+  React.useEffect(() => {
+    updateCards(
+      getVisibleCards(initialCards, { text: search, date: selectedDate })
+    );
+  }, [search, selectedDate, initialCards]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -32,6 +59,10 @@ function KabinetDashboard(props) {
     await fetchData();
   };
 
+  const handleClearFilter = () => {
+    setSelectedDate(null);
+    setSearch('');
+  };
   return (
     <div className="kabinet-home">
       <Typography
@@ -42,41 +73,24 @@ function KabinetDashboard(props) {
       >
         Your drawer
       </Typography>
-      <Paper className="actions">
-        <Grid container className="grid-container actions" spacing={3}>
-          <Grid item xs={12} sm={4}>
-            <Button
-              className="add-button"
-              variant="contained"
-              color="primary"
-              onClick={() => props.history.push('/kabinet-new')}
-            >
-              Add new idea
-            </Button>
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <TextField
-              fullWidth
-              className="search-field"
-              label="Search"
-              variant="outlined"
-              size="small"
-              value={search}
-              onChange={handleSearch}
-            />
-          </Grid>
-          <Grid item xs={12} sm={4}>
-            <DatePicker
-              id="date-picker-dialog"
-              label="Filter by month"
-              format="MMM yyyy"
-              value={selectedDate}
-              onChange={handleDateChange}
-              views={['month', 'year']}
-            />
-          </Grid>
-        </Grid>
-      </Paper>
+      <Button
+        className="add-button"
+        variant="contained"
+        color="primary"
+        onClick={() => props.history.push('/kabinet-new')}
+        fullWidth
+      >
+        Add new idea
+      </Button>
+      <GoogleTrends {...trends} />
+
+      <SearchBar
+        search={search}
+        handleSearch={handleSearch}
+        selectedDate={selectedDate}
+        handleDateChange={handleDateChange}
+        handleClearFilter={handleClearFilter}
+      />
       <Grid
         container
         className="grid-container list"
@@ -101,3 +115,48 @@ function KabinetDashboard(props) {
 }
 
 export default KabinetDashboard;
+
+function SearchBar(props) {
+  const {
+    search,
+    handleSearch,
+    selectedDate,
+    handleDateChange,
+    handleClearFilter,
+  } = props;
+  return (
+    <Paper className="actions">
+      <Grid container className="grid-container actions" spacing={2}>
+        <Grid item xs={12} sm={7}>
+          <TextField
+            fullWidth
+            className="search-field"
+            label="Search"
+            variant="outlined"
+            size="small"
+            value={search}
+            onChange={handleSearch}
+          />
+        </Grid>
+        <Grid item xs={10} sm={4}>
+          <DatePicker
+            id="date-picker-dialog"
+            label="Filter"
+            format="MMM yyyy"
+            value={selectedDate}
+            onChange={handleDateChange}
+            views={['month', 'year']}
+            inputVariant="outlined"
+            disableFuture
+            size="small"
+          />
+        </Grid>
+        <Grid item xs={2} sm={1}>
+          <IconButton size="small" edge="start" onClick={handleClearFilter}>
+            <Clear />
+          </IconButton>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+}
