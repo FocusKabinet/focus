@@ -13,7 +13,6 @@ import BlockedLogin from './components/generic/BlockedLogin';
 import Focus from './pages/Focus';
 import FocusHome from './pages/FocusHome';
 import { fire } from './app/firebase';
-import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { UserActionCreators } from './redux/actions/user';
 import {
@@ -190,16 +189,15 @@ function App() {
 						}}
 					/>
 				</Route>
-				<KabinetRoutes />
+				
 				{/* {isLogged ? ( */}
-				<MuiThemeProvider theme={theme}>
 					<Route path='/home'>
 						<Navbar title={'Home'} loggedIn={false} />
 						<Home handleLogout={handleLogout} />
 					</Route>
 					<Route path='/profile/:id'>
 						<Navbar title={'Profile'} loggedIn={false} />
-						<Profile />
+						<Profile />						
 					</Route>
 					<Route path='/settings/:id'>
 						<Navbar title={'Settings'} loggedIn={false} />
@@ -211,13 +209,16 @@ function App() {
 					</Route>
 					<Route path='/focus-timer'>
 						<Navbar title={'Focus'} loggedIn={false} />
-						<Focus handleLogout={handleLogout} />
+						<MuiThemeProvider theme={theme}>
+							<Focus handleLogout={handleLogout} />
+						</MuiThemeProvider>
 					</Route>
 					<Route path='/focus'>
 						<Navbar title={'Focus'} loggedIn={false} />
-						<FocusHome handleLogout={handleLogout} />
+						<MuiThemeProvider theme={theme}>
+							<FocusHome handleLogout={handleLogout} />
+						</MuiThemeProvider>
 					</Route>
-				</MuiThemeProvider>
 				{/* ) : (
 					<>
 						<div>
@@ -236,6 +237,7 @@ function App() {
 						</div>
 					</>
 				)} */}
+				<KabinetRoutes />
 			</Switch>
 		</div>
 	);

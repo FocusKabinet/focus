@@ -45,17 +45,7 @@ const timerReducer = (state = initialState, action) => {
 			};
 
 		case Types.CLEAR_STATE:
-			return {
-				studies_attempted: 0,
-				studies: 0,
-				study_times: [],
-				short_breaks_taken: 0,
-				long_breaks_taken: 0,
-				short_breaks: [],
-				long_breaks: [],
-				session_times: [],
-				sessions: 0,
-			};
+			return initialState;
 		default:
 			return state;
 	}
