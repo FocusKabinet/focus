@@ -2,11 +2,9 @@ import React from 'react';
 import './styles/Focus.scss';
 import { Grid, Typography } from '@material-ui/core';
 import Timer from '../components/Focus/Timer';
-import DataPopup from '../components/Focus/DataPopup';
 
 function Focus({ handleLogout, ...props }) {
 	const [background, setBackground] = React.useState({ backgroundColor: '' });
-	const [dataVisible, setDataVisible] = React.useState(false);
 
 	const changeBackground = (color) => {
 		setBackground({ backgroundColor: color });
@@ -28,15 +26,10 @@ function Focus({ handleLogout, ...props }) {
 					sapcing={3}
 				>
 					<Grid item xs={6}>
-						<Timer
-							visible={dataVisible}
-							setVisible={setDataVisible}
-							changePageBackground={changeBackground}
-						/>
+						<Timer changeBackground={changeBackground} />
 					</Grid>
 				</Grid>
 			</Grid>
-			{/* <DataPopup visible={dataVisible} setVisible={setDataVisible} /> */}
 			<button onClick={handleLogout}>logout</button>
 		</div>
 	);

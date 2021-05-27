@@ -1,9 +1,10 @@
 import userReducer from './user';
-
-import {combineReducers} from 'redux';
+import studyReducer from './studyData';
+import { combineReducers } from 'redux';
 
 const allReducers = combineReducers({
-    user : userReducer
-})
+	user: userReducer,
+	studyData: studyReducer,
+});
 
 export default allReducers;

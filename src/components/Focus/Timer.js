@@ -9,20 +9,26 @@ import {
 	faTasks,
 	faHourglassHalf,
 } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch } from 'react-redux';
+import { StudyActionCreators } from '../../redux/actions/studyData';
+import DataPopup from './DataPopup';
 
-function Timer({ visible, setVisible, ...props }) {
+function Timer({ changeBackground, ...props }) {
+	const dispatch = useDispatch();
+
 	const sound = new Howl({
 		src: [timerAlarm],
 	});
 
+	const [studyStart, setStudyStart] = useState({
+		hours: 0,
+		minutes: 0,
+		seconds: 0,
+	});
 	const [time, setTime] = useState(minToMilli(24));
 	const [heldTime, setHeldTime] = useState(0);
 	const [backgroundColor, setBackground] = useState({
 		backgroundColor: '#75a27c',
-	});
-	const [buttonColor, setButtonCol] = useState({
-		color: '#5dc245',
-		border: '2px solid #5dc245',
 	});
 	const [breakTime, setBreakTime] = useState({
 		break: 1,
@@ -30,6 +36,16 @@ function Timer({ visible, setVisible, ...props }) {
 		long: minToMilli(10),
 	});
 	const [timerOn, setTimerOn] = useState(false);
+	const [openData, setOpenData] = React.useState(false);
+	const [openTask, setOpenTask] = React.useState(false);
+
+	const handleOpen = () => {
+		setOpenData(true);
+	};
+
+	const handleClose = () => {
+		setOpenData(false);
+	};
 
 	useEffect(() => {
 		let interval = null;
@@ -56,8 +72,17 @@ function Timer({ visible, setVisible, ...props }) {
 		return () => clearInterval(interval);
 	}, [timerOn]);
 
-	function minToMilli(min) {
-		return min * 60000;
+	function minToMilli(milli, choice) {
+		switch (choice) {
+			case 'hour':
+				return Math.floor((milli / (1000 * 60 * 60)) % 24);
+			case 'min':
+				return Math.floor((milli / 60000) % 60);
+			case 'sec':
+				return Math.floor((milli / 1000) % 60);
+			default:
+				return milli * 60000;
+		}
 	}
 
 	const startBreak = (bool) => {
@@ -110,13 +135,41 @@ function Timer({ visible, setVisible, ...props }) {
 	};
 
 	const setColor = (pageCol, timerCol) => {
-		props.changePageBackground(pageCol);
+		changeBackground(pageCol);
 		setBackground({
 			backgroundColor: timerCol,
 			transition: 'all .8s ease',
 			WebkitTransition: 'all .8s ease',
 			MozTransition: 'all .8s ease',
 		});
+	};
+
+	const toggleTimer = () => {
+		let d = new Date();
+		if (timerOn) {
+			if (breakTime.break === 1) {
+				dispatch(
+					StudyActionCreators.addStudy({
+						start: studyStart,
+						end: {
+							hours: minToMilli(time, 'hour'),
+							minutes: minToMilli(time, 'min'),
+							seconds: minToMilli(time, 'sec'),
+						},
+					})
+				);
+			}
+			setTimerOn(false);
+		} else {
+			if (breakTime.break === 1) {
+				setStudyStart({
+					hours: minToMilli(time, 'hour'),
+					minutes: minToMilli(time, 'min'),
+					seconds: minToMilli(time, 'sec'),
+				});
+			}
+			setTimerOn(true);
+		}
 	};
 
 	return (
@@ -136,7 +189,10 @@ function Timer({ visible, setVisible, ...props }) {
 					</Grid>
 					<Typography variant='h1' className='timer'>
 						<Grid item container justify='center' alignItems='center'>
-							<span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}</span>:
+							<span>
+								{('0' + Math.floor((time / (1000 * 60 * 60)) % 24)).slice(-2)}
+							</span>
+							:<span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}</span>:
 							<span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}</span>
 							{/* :<span>{('0' + Math.floor(((time  / 10) % 100)).slice(-2)}</span> */}
 							<FontAwesomeIcon
@@ -153,28 +209,19 @@ function Timer({ visible, setVisible, ...props }) {
 							</Typography>
 						</Button>
 						<Button
-							onClick={() => {
-								if (timerOn) {
-									setTimerOn(false);
-								} else {
-									setTimerOn(true);
-								}
-							}}
+							onClick={toggleTimer}
 							className={timerOn ? 'stop-button' : 'start-button'}
 						>
 							{timerOn ? <>Stop</> : <>Start</>}
 						</Button>
-						<Button
-							// variant='contained'
-							size='medium'
-							onClick={() => setVisible(!visible)}
-						>
+						<Button size='medium' onClick={handleOpen}>
 							<FontAwesomeIcon icon={faHourglassHalf} className='act-icons ' />
 							Data
 						</Button>
 					</Grid>
 				</Grid>
 			</Grid>
+			<DataPopup open={openData} handleClose={handleClose} />
 		</Paper>
 	);
 }
