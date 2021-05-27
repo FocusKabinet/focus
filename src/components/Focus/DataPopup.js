@@ -28,18 +28,23 @@ function DataPopup({ open, handleClose }) {
 					</IconButton>
 				</Grid>
 				<div>
-					<Typography gutterBottom>{studies}</Typography>
 					<Typography gutterBottom>
-						{/* <ul>
-							{study_times.map((time) => {
-								<li>{time}</li>;
-							})}
-						</ul> */}
+						Number of Pomodoro Sessions: {studies}
 					</Typography>
-					<Typography gutterBottom>
-						Aenean lacinia bibendum nulla sed consectetur. Praesent commodo
-						cursus magna, vel scelerisque nisl consectetur et. Donec sed odio
-						dui. Donec ullamcorper nulla non metus auctor fringilla.
+					<Typography gutterBottom>Number of Short Breaks: </Typography>
+					<Typography gutterBottom>Number of Long Breaks: </Typography>
+					<Typography gutterBottom>Current Study Session Time: </Typography>
+					<Typography variant='h6' gutterBottom>
+						Your Pomodoro Sessions:
+						<ul>
+							{study_times.map((time) => (
+								<li>
+									start: {time.start.hours}:{time.start.minutes}:
+									{time.start.seconds}, end: {time.start.hours}:
+									{time.start.minutes}:{time.start.seconds}
+								</li>
+							))}
+						</ul>
 					</Typography>
 				</div>
 				<Button autoFocus onClick={handleClose} color='primary'>

@@ -21,7 +21,7 @@ function Timer({ changeBackground, ...props }) {
 	});
 
 	const [studyStart, setStudyStart] = useState({
-		hours: 0,
+		hours: -1,
 		minutes: 0,
 		seconds: 0,
 	});
@@ -86,6 +86,18 @@ function Timer({ changeBackground, ...props }) {
 	}
 
 	const startBreak = (bool) => {
+		if (breakTime.break === 1 && studyStart.hours !== -1) {
+			dispatch(
+				StudyActionCreators.addStudy({
+					start: studyStart,
+					end: {
+						hours: minToMilli(time, 'hour'),
+						minutes: minToMilli(time, 'min'),
+						seconds: minToMilli(time, 'sec'),
+					},
+				})
+			);
+		}
 		if (bool) {
 			setColor('#437ea8', '#3597d6');
 			if (breakTime.break === 1) {
@@ -147,7 +159,7 @@ function Timer({ changeBackground, ...props }) {
 	const toggleTimer = () => {
 		let d = new Date();
 		if (timerOn) {
-			if (breakTime.break === 1) {
+			if (breakTime.break === 1 && studyStart.hours !== -1) {
 				dispatch(
 					StudyActionCreators.addStudy({
 						start: studyStart,
