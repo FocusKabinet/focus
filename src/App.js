@@ -229,30 +229,30 @@ function App() {
 						</Page>
 					)}
 				/>
-				{isLogged ? (
-					<MuiThemeProvider theme={theme}>
-						<Route path='/home'>
-							<Navbar title={'Home'} loggedIn={isLogged} />
-							<Home handleLogout={handleLogout} />
-						</Route>
-						<Route path='/profile:id'>
-							<Navbar title={'Profile'} loggedIn={isLogged} />
-							<Profile />
-						</Route>
-						<Route path='/settings:id'>
-							<Navbar title={'Settings'} loggedIn={isLogged} />
-							<Settings />
-						</Route>
-						<Route path='/datapage:id'>
-							<Navbar title={'Data'} loggedIn={isLogged} />
-							<Datapage />
-						</Route>
-						<Route path='/focus'>
-							<Navbar title={'Focus'} loggedIn={isLogged} />
-							<Focus handleLogout={handleLogout} />
-						</Route>
-					</MuiThemeProvider>
-				) : (
+				{/* {isLogged ? ( */}
+				<MuiThemeProvider theme={theme}>
+					<Route path='/home'>
+						<Navbar title={'Home'} loggedIn={isLogged} />
+						<Home handleLogout={handleLogout} />
+					</Route>
+					<Route path='/profile:id'>
+						<Navbar title={'Profile'} loggedIn={isLogged} />
+						<Profile />
+					</Route>
+					<Route path='/settings:id'>
+						<Navbar title={'Settings'} loggedIn={isLogged} />
+						<Settings />
+					</Route>
+					<Route path='/datapage:id'>
+						<Navbar title={'Data'} loggedIn={isLogged} />
+						<Datapage />
+					</Route>
+					<Route path='/focus'>
+						<Navbar title={'Focus'} loggedIn={isLogged} />
+						<Focus handleLogout={handleLogout} />
+					</Route>
+				</MuiThemeProvider>
+				{/* ) : (
 					<>
 						<div>
 							<BlockedLogin />
@@ -269,7 +269,7 @@ function App() {
 							/>
 						</div>
 					</>
-				)}
+				)} */}
 			</Switch>
 		</div>
 	);
