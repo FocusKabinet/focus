@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './styles/Timer.scss';
 import timerAlarm from '../../assets/audio/timer_alarm.mp3';
+import { convertMilli } from './helpers/convertMilli';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import { Howl } from 'howler';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-	faUndoAlt,
-	faTasks,
-	faHourglassHalf,
-} from '@fortawesome/free-solid-svg-icons';
+import { faUndoAlt, faTasks, faHourglassHalf } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch } from 'react-redux';
 import { StudyActionCreators } from '../../redux/actions/studyData';
 import DataPopup from './DataPopup';
@@ -25,19 +22,25 @@ function Timer({ changeBackground, ...props }) {
 		minutes: 0,
 		seconds: 0,
 	});
-	const [time, setTime] = useState(minToMilli(24));
+	const [time, setTime] = useState(convertMilli(24));
 	const [heldTime, setHeldTime] = useState(0);
 	const [backgroundColor, setBackground] = useState({
 		backgroundColor: '#75a27c',
 	});
 	const [breakTime, setBreakTime] = useState({
 		break: 1,
-		short: minToMilli(5),
-		long: minToMilli(10),
+		short: convertMilli(5),
+		long: convertMilli(10),
 	});
 	const [timerOn, setTimerOn] = useState(false);
 	const [openData, setOpenData] = React.useState(false);
 	const [openTask, setOpenTask] = React.useState(false);
+	const [session, setSession] = React.useState({
+		started: false,
+		start: 0,
+		end: 0,
+		currentTime: 0,
+	});
 
 	const handleOpen = () => {
 		setOpenData(true);
@@ -53,18 +56,15 @@ function Timer({ changeBackground, ...props }) {
 		if (timerOn) {
 			interval = setInterval(() => {
 				setTime((prevTime) => {
-					if (
-						Math.floor((prevTime / 60000) % 60) <= 0 &&
-						Math.floor((prevTime / 1000) % 60) <= 0
-					) {
+					if (Math.floor((prevTime / 60000) % 60) <= 0 && Math.floor((prevTime / 1000) % 60) <= 0) {
 						let timerSound = sound.play();
-						sound.fade(0, 1, 5000, timerSound);
+						sound.fade(0, 0.1, 5000, timerSound);
 						resetTime();
 					} else {
-						return prevTime - 10;
+						return prevTime - 1000;
 					}
 				});
-			}, 10);
+			}, 1000);
 		} else {
 			clearInterval(interval);
 		}
@@ -72,18 +72,23 @@ function Timer({ changeBackground, ...props }) {
 		return () => clearInterval(interval);
 	}, [timerOn]);
 
-	function minToMilli(milli, choice) {
-		switch (choice) {
-			case 'hour':
-				return Math.floor((milli / (1000 * 60 * 60)) % 24);
-			case 'min':
-				return Math.floor((milli / 60000) % 60);
-			case 'sec':
-				return Math.floor((milli / 1000) % 60);
-			default:
-				return milli * 60000;
+	useEffect(() => {
+		let interval = null;
+
+		if (session.started) {
+			interval = setInterval(() => {
+				setSession((prevTime) => {
+					return {
+						...session,
+						currentTime: prevTime.currentTime + 1000,
+					};
+				});
+			}, 1000);
+		} else {
+			clearInterval(interval);
 		}
-	}
+		return () => clearInterval(interval);
+	}, [timerOn]);
 
 	const startBreak = (bool) => {
 		if (breakTime.break === 1 && studyStart.hours !== -1) {
@@ -91,9 +96,9 @@ function Timer({ changeBackground, ...props }) {
 				StudyActionCreators.addStudy({
 					start: studyStart,
 					end: {
-						hours: minToMilli(time, 'hour'),
-						minutes: minToMilli(time, 'min'),
-						seconds: minToMilli(time, 'sec'),
+						hours: convertMilli(time, 'hour'),
+						minutes: convertMilli(time, 'min'),
+						seconds: convertMilli(time, 'sec'),
 					},
 				})
 			);
@@ -123,20 +128,20 @@ function Timer({ changeBackground, ...props }) {
 		} else if (breakTime.break === 3) {
 			timerBreak(heldTime, 1);
 		} else {
-			timerBreak(minToMilli(24), 1);
+			timerBreak(convertMilli(24), 1);
 		}
 	};
 
 	const resetTime = () => {
 		setTimerOn(false);
 		if (breakTime.break === 1) {
-			setTime(minToMilli(24));
+			setTime(convertMilli(24));
 		} else if (breakTime.break === 2) {
 			setTime(breakTime.short);
 		} else if (breakTime.break === 3) {
 			setTime(breakTime.long);
 		} else {
-			setTime(minToMilli(24));
+			setTime(convertMilli(24));
 		}
 	};
 
@@ -158,15 +163,24 @@ function Timer({ changeBackground, ...props }) {
 
 	const toggleTimer = () => {
 		let d = new Date();
+		if (!session.started) {
+			setSession({
+				...session,
+				started: true,
+				start: d,
+				currentTime: 0,
+			});
+			console.log('session');
+		}
 		if (timerOn) {
 			if (breakTime.break === 1 && studyStart.hours !== -1) {
 				dispatch(
 					StudyActionCreators.addStudy({
 						start: studyStart,
 						end: {
-							hours: minToMilli(time, 'hour'),
-							minutes: minToMilli(time, 'min'),
-							seconds: minToMilli(time, 'sec'),
+							hours: convertMilli(time, 'hour'),
+							minutes: convertMilli(time, 'min'),
+							seconds: convertMilli(time, 'sec'),
 						},
 					})
 				);
@@ -175,9 +189,9 @@ function Timer({ changeBackground, ...props }) {
 		} else {
 			if (breakTime.break === 1) {
 				setStudyStart({
-					hours: minToMilli(time, 'hour'),
-					minutes: minToMilli(time, 'min'),
-					seconds: minToMilli(time, 'sec'),
+					hours: convertMilli(time, 'hour'),
+					minutes: convertMilli(time, 'min'),
+					seconds: convertMilli(time, 'sec'),
 				});
 			}
 			setTimerOn(true);
@@ -201,17 +215,9 @@ function Timer({ changeBackground, ...props }) {
 					</Grid>
 					<Typography variant='h1' className='timer'>
 						<Grid item container justify='center' alignItems='center'>
-							<span>
-								{('0' + Math.floor((time / (1000 * 60 * 60)) % 24)).slice(-2)}
-							</span>
-							:<span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}</span>:
-							<span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}</span>
+							<span>{('0' + Math.floor((time / (1000 * 60 * 60)) % 24)).slice(-2)}</span>:<span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}</span>:<span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}</span>
 							{/* :<span>{('0' + Math.floor(((time  / 10) % 100)).slice(-2)}</span> */}
-							<FontAwesomeIcon
-								icon={faUndoAlt}
-								className='icons'
-								onClick={() => resetTime()}
-							/>
+							<FontAwesomeIcon icon={faUndoAlt} className='icons' onClick={() => resetTime()} />
 						</Grid>
 					</Typography>
 					<Grid item container justify='space-between'>
@@ -220,10 +226,7 @@ function Timer({ changeBackground, ...props }) {
 								<FontAwesomeIcon icon={faTasks} className='act-icons' /> Tasks
 							</Typography>
 						</Button>
-						<Button
-							onClick={toggleTimer}
-							className={timerOn ? 'stop-button' : 'start-button'}
-						>
+						<Button onClick={toggleTimer} className={timerOn ? 'stop-button' : 'start-button'}>
 							{timerOn ? <>Stop</> : <>Start</>}
 						</Button>
 						<Button size='medium' onClick={handleOpen}>
@@ -233,7 +236,7 @@ function Timer({ changeBackground, ...props }) {
 					</Grid>
 				</Grid>
 			</Grid>
-			<DataPopup open={openData} handleClose={handleClose} />
+			<DataPopup session={session} open={openData} handleClose={handleClose} />
 		</Paper>
 	);
 }
