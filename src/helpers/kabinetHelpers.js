@@ -86,7 +86,7 @@ export async function getCurrentCountry() {
     })
     .catch((e) =>
       console.warn(
-        'Cannot get location. Most likely due to AdBlock. Defaulted to US\n',
+        'Cannot get location. Most likely due to AdBlock. Defaulted to CA\n',
         e
       )
     );
