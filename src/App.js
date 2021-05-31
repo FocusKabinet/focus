@@ -1,10 +1,6 @@
 import { Switch, Route, useHistory } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import {
-	fireHandleLogin,
-	fireHandleRegister,
-	firehandleLogout,
-} from './helpers/firebaseHelpers';
+import { fireHandleLogin, fireHandleRegister, firehandleLogout } from './helpers/firebaseHelpers';
 import Navbar from './components/generic/Navbar';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
@@ -15,15 +11,12 @@ import Settings from './pages/Settings';
 import Datapage from './pages/Datapage';
 import BlockedLogin from './components/generic/BlockedLogin';
 import Focus from './pages/Focus';
+import FocusHome from './pages/FocusHome';
 import { fire } from './app/firebase';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { UserActionCreators } from './redux/actions/user';
-import {
-	createMuiTheme,
-	responsiveFontSizes,
-	MuiThemeProvider,
-} from '@material-ui/core/styles';
+import { createMuiTheme, responsiveFontSizes, MuiThemeProvider } from '@material-ui/core/styles';
 
 import Page from './components/kabinet/Page';
 import KabinetDashboard from './pages/KabinetDashboard';
@@ -42,7 +35,7 @@ function App() {
 	const history = useHistory();
 	const dispatch = useDispatch();
 
-	const isLogged = useSelector((state) => state.user.profile.loggedIn);
+	// const isLogged = useSelector((state) => state.user.profile.loggedIn);
 
 	const [user, setUser] = useState('');
 	const [email, setEmail] = useState('');
@@ -130,14 +123,7 @@ function App() {
 		const res = firehandleLogout();
 		res
 			.then(() => {
-				dispatch(
-					UserActionCreators.logout({
-						user,
-						email,
-						password,
-						loggedIn: false,
-					})
-				);
+				dispatch(UserActionCreators.logout());
 				handleHistory('login');
 			})
 			.catch((e) => {
@@ -146,18 +132,17 @@ function App() {
 			});
 	};
 
-	const authListener = () => {
-		fire.auth().onAuthStateChanged((user) => {
-			if (user) {
-				clearAllInputs();
-				setUser(user);
-			} else {
-				setUser('');
-			}
-		});
-	};
-
 	useEffect(() => {
+		const authListener = () => {
+			fire.auth().onAuthStateChanged((user) => {
+				if (user) {
+					clearAllInputs();
+					setUser(user);
+				} else {
+					setUser('');
+				}
+			});
+		};
 		authListener();
 	}, []);
 
@@ -169,11 +154,11 @@ function App() {
 		<div className='App'>
 			<Switch>
 				<Route exact path='/'>
-					<Navbar loggedIn={isLogged} />
+					<Navbar loggedIn={false} />
 					<Landing />
 				</Route>
 				<Route path='/login'>
-					<Navbar loggedIn={isLogged} />
+					<Navbar loggedIn={false} />
 					<Login
 						{...{
 							email,
@@ -189,7 +174,7 @@ function App() {
 					/>
 				</Route>
 				<Route path='/register'>
-					<Navbar loggedIn={isLogged} />
+					<Navbar loggedIn={false} />
 					<Register
 						{...{
 							email,
@@ -232,24 +217,28 @@ function App() {
 				{/* {isLogged ? ( */}
 				<MuiThemeProvider theme={theme}>
 					<Route path='/home'>
-						<Navbar title={'Home'} loggedIn={isLogged} />
+						<Navbar title={'Home'} loggedIn={false} />
 						<Home handleLogout={handleLogout} />
 					</Route>
-					<Route path='/profile:id'>
-						<Navbar title={'Profile'} loggedIn={isLogged} />
+					<Route path='/profile/:id'>
+						<Navbar title={'Profile'} loggedIn={false} />
 						<Profile />
 					</Route>
-					<Route path='/settings:id'>
-						<Navbar title={'Settings'} loggedIn={isLogged} />
+					<Route path='/settings/:id'>
+						<Navbar title={'Settings'} loggedIn={false} />
 						<Settings />
 					</Route>
-					<Route path='/datapage:id'>
-						<Navbar title={'Data'} loggedIn={isLogged} />
+					<Route path='/datapage/:id'>
+						<Navbar title={'Data'} loggedIn={false} />
 						<Datapage />
 					</Route>
-					<Route path='/focus'>
-						<Navbar title={'Focus'} loggedIn={isLogged} />
+					<Route path='/focus-timer'>
+						<Navbar title={'Focus'} loggedIn={false} />
 						<Focus handleLogout={handleLogout} />
+					</Route>
+					<Route path='/focus'>
+						<Navbar title={'Focus'} loggedIn={false} />
+						<FocusHome handleLogout={handleLogout} />
 					</Route>
 				</MuiThemeProvider>
 				{/* ) : (

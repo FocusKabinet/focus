@@ -1,0 +1,16 @@
+.card-container {
+	margin: 20px;
+
+	& .card-bck {
+		height: 140px;
+	}
+
+	& .link {
+		text-decoration: none;
+		color: black;
+	}
+
+	& .expandOpen {
+		transform: rotate(180deg);
+	}
+}
