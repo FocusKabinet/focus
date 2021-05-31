@@ -9,9 +9,15 @@ import { faUndoAlt, faTasks, faHourglassHalf } from '@fortawesome/free-solid-svg
 import { useDispatch } from 'react-redux';
 import { StudyActionCreators } from '../../redux/actions/studyData';
 import DataPopup from './DataPopup';
+import LeavePrompt from './Prompt';
+import { Prompt, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
-function Timer({ changeBackground, ...props }) {
+function Timer({ changeBackground, inSession, setInSession }) {
 	const dispatch = useDispatch();
+
+	const studyTime = useSelector((state) => state.timer.study);
+	const deepStudy = useSelector((state) => state.timer.deep_study);
 
 	const sound = new Howl({
 		src: [timerAlarm],
@@ -22,7 +28,7 @@ function Timer({ changeBackground, ...props }) {
 		minutes: 0,
 		seconds: 0,
 	});
-	const [time, setTime] = useState(convertMilli(24));
+	const [time, setTime] = useState(convertMilli(studyTime));
 	const [heldTime, setHeldTime] = useState(0);
 	const [backgroundColor, setBackground] = useState({
 		backgroundColor: '#75a27c',
@@ -42,6 +48,73 @@ function Timer({ changeBackground, ...props }) {
 		currentTime: 0,
 	});
 
+	const [showExitPrompt, setShowExitPrompt] = LeavePrompt(false);
+
+	useEffect(() => {
+		let interval = null;
+
+		if (timerOn || session.started) {
+			interval = setInterval(() => {
+				if (timerOn) {
+					setTime((prevTime) => {
+						if (Math.floor((prevTime / 60000) % 60) <= 0 && Math.floor((prevTime / 1000) % 60) <= 0) {
+							let timerSound = sound.play();
+							sound.fade(0, 0.1, 5000, timerSound);
+							resetTime();
+						} else {
+							return prevTime - 1000;
+						}
+					});
+				}
+				if (session.started && deepStudy && inSession) {
+					setSession((prevTime) => {
+						return {
+							...session,
+							currentTime: prevTime.currentTime + 1000,
+						};
+					});
+				}
+			}, 1000);
+		} else {
+			clearInterval(interval);
+		}
+		return () => clearInterval(interval);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [timerOn]);
+
+	useEffect(() => {
+		return () => {
+			if (inSession) setShowExitPrompt(false);
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		if (!inSession && session.start) {
+			let d = new Date();
+			dispatch(
+				StudyActionCreators.addSession({
+					start: session.start,
+					end: d,
+				})
+			);
+			setSession({
+				started: false,
+				start: 0,
+				end: 0,
+				currentTime: 0,
+			});
+			resetTime();
+			alert('session done');
+		} else if (!inSession) {
+			alert('not in session');
+		} else if (inSession) {
+			alert('in session but not ended');
+		} else {
+			alert('problem');
+		}
+	}, [inSession]);
+
 	const handleOpen = () => {
 		setOpenData(true);
 	};
@@ -50,48 +123,8 @@ function Timer({ changeBackground, ...props }) {
 		setOpenData(false);
 	};
 
-	useEffect(() => {
-		let interval = null;
-
-		if (timerOn) {
-			interval = setInterval(() => {
-				setTime((prevTime) => {
-					if (Math.floor((prevTime / 60000) % 60) <= 0 && Math.floor((prevTime / 1000) % 60) <= 0) {
-						let timerSound = sound.play();
-						sound.fade(0, 0.1, 5000, timerSound);
-						resetTime();
-					} else {
-						return prevTime - 1000;
-					}
-				});
-			}, 1000);
-		} else {
-			clearInterval(interval);
-		}
-
-		return () => clearInterval(interval);
-	}, [timerOn]);
-
-	useEffect(() => {
-		let interval = null;
-
-		if (session.started) {
-			interval = setInterval(() => {
-				setSession((prevTime) => {
-					return {
-						...session,
-						currentTime: prevTime.currentTime + 1000,
-					};
-				});
-			}, 1000);
-		} else {
-			clearInterval(interval);
-		}
-		return () => clearInterval(interval);
-	}, [timerOn]);
-
 	const startBreak = (bool) => {
-		if (breakTime.break === 1 && studyStart.hours !== -1) {
+		if (breakTime.break === 1 && studyStart.hours !== -1 && deepStudy) {
 			dispatch(
 				StudyActionCreators.addStudy({
 					start: studyStart,
@@ -128,20 +161,32 @@ function Timer({ changeBackground, ...props }) {
 		} else if (breakTime.break === 3) {
 			timerBreak(heldTime, 1);
 		} else {
-			timerBreak(convertMilli(24), 1);
+			timerBreak(convertMilli(studyTime), 1);
 		}
 	};
 
 	const resetTime = () => {
 		setTimerOn(false);
 		if (breakTime.break === 1) {
-			setTime(convertMilli(24));
+			if (studyStart.hours !== -1 && time !== convertMilli(studyTime) && deepStudy) {
+				dispatch(
+					StudyActionCreators.addStudy({
+						start: studyStart,
+						end: {
+							hours: convertMilli(time, 'hour'),
+							minutes: convertMilli(time, 'min'),
+							seconds: convertMilli(time, 'sec'),
+						},
+					})
+				);
+			}
+			setTime(convertMilli(studyTime));
 		} else if (breakTime.break === 2) {
 			setTime(breakTime.short);
 		} else if (breakTime.break === 3) {
 			setTime(breakTime.long);
 		} else {
-			setTime(convertMilli(24));
+			setTime(convertMilli(studyTime));
 		}
 	};
 
@@ -162,18 +207,17 @@ function Timer({ changeBackground, ...props }) {
 	};
 
 	const toggleTimer = () => {
-		let d = new Date();
-		if (!session.started) {
+		if (!session.started && deepStudy) {
+			let d = new Date();
 			setSession({
 				...session,
 				started: true,
 				start: d,
 				currentTime: 0,
 			});
-			console.log('session');
 		}
 		if (timerOn) {
-			if (breakTime.break === 1 && studyStart.hours !== -1) {
+			if (breakTime.break === 1 && studyStart.hours !== -1 && deepStudy) {
 				dispatch(
 					StudyActionCreators.addStudy({
 						start: studyStart,
@@ -194,8 +238,10 @@ function Timer({ changeBackground, ...props }) {
 					seconds: convertMilli(time, 'sec'),
 				});
 			}
+			if (!inSession) setInSession(true);
 			setTimerOn(true);
 		}
+		if (deepStudy) setShowExitPrompt(true);
 	};
 
 	return (
@@ -203,40 +249,53 @@ function Timer({ changeBackground, ...props }) {
 			<Grid container justify='center' alignItems='center'>
 				<Grid item container justify='center' alignItems='center' xs={12}>
 					<Grid item container justify='space-around'>
-						<Button onClick={() => startTimer()} className='timer-buttons'>
+						<Button onClick={() => startTimer()} className='timer-buttons' disabled={breakTime.break === 1}>
 							Timer
 						</Button>
-						<Button onClick={() => startBreak(false)} className='timer-buttons'>
+						<Button onClick={() => startBreak(false)} className='timer-buttons' disabled={breakTime.break === 3}>
 							Long Break
 						</Button>
-						<Button onClick={() => startBreak(true)} className='timer-buttons'>
+						<Button onClick={() => startBreak(true)} className='timer-buttons' disabled={breakTime.break === 2}>
 							Short Break
 						</Button>
 					</Grid>
 					<Typography variant='h1' className='timer'>
 						<Grid item container justify='center' alignItems='center'>
-							<span>{('0' + Math.floor((time / (1000 * 60 * 60)) % 24)).slice(-2)}</span>:<span>{('0' + Math.floor((time / 60000) % 60)).slice(-2)}</span>:<span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}</span>
+							<span>{(time / (1000 * 60 * 60)) % 24 > 0.9 && ('0' + Math.floor((time / (1000 * 60 * 60)) % 24)).slice(-2) + ':'}</span>
+							<span>{(time / 60000) % 60 > 0.9 && ('0' + Math.floor((time / 60000) % 60)).slice(-2) + ':'}</span>
+							<span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}</span>
 							{/* :<span>{('0' + Math.floor(((time  / 10) % 100)).slice(-2)}</span> */}
 							<FontAwesomeIcon icon={faUndoAlt} className='icons' onClick={() => resetTime()} />
 						</Grid>
 					</Typography>
 					<Grid item container justify='space-between'>
-						<Button size='medium'>
-							<Typography variant='subtitle1'>
-								<FontAwesomeIcon icon={faTasks} className='act-icons' /> Tasks
-							</Typography>
-						</Button>
+						<Grid item container justify='center' xs={4}>
+							{deepStudy && (
+								<Button size='medium' style={breakTime.break === 3 ? { color: '#fff' } : { color: '#000' }}>
+									<FontAwesomeIcon icon={faTasks} className='act-icons' /> Tasks
+								</Button>
+							)}
+						</Grid>
 						<Button onClick={toggleTimer} className={timerOn ? 'stop-button' : 'start-button'}>
 							{timerOn ? <>Stop</> : <>Start</>}
 						</Button>
-						<Button size='medium' onClick={handleOpen}>
-							<FontAwesomeIcon icon={faHourglassHalf} className='act-icons ' />
-							Data
-						</Button>
+						<Grid item container justify='center' xs={4}>
+							{deepStudy && (
+								<Button size='medium' onClick={handleOpen} style={breakTime.break === 3 ? { color: '#fff' } : { color: '#000' }}>
+									<FontAwesomeIcon icon={faHourglassHalf} className='act-icons ' />
+									Data
+								</Button>
+							)}
+						</Grid>
 					</Grid>
 				</Grid>
 			</Grid>
-			<DataPopup session={session} open={openData} handleClose={handleClose} />
+			{deepStudy && (
+				<>
+					<DataPopup session={session} open={openData} handleClose={handleClose} />
+					{inSession && <Prompt when={session.started} message='Leaving will end the session.' />}
+				</>
+			)}
 		</Paper>
 	);
 }
