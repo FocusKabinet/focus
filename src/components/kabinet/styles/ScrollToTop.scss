@@ -1,0 +1,16 @@
+.scroll-to-top {
+  z-index: 999;
+  position: fixed;
+  height: 100px;
+  bottom: 40px;
+  right: 20px;
+  &.visible {
+    visibility: visible;
+  }
+  &.hidden {
+    visibility: hidden;
+  }
+  .button {
+    background-color: #1b3191;
+  }
+}

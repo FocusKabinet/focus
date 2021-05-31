@@ -16,12 +16,12 @@ import { fire } from './app/firebase';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { UserActionCreators } from './redux/actions/user';
-import { createMuiTheme, responsiveFontSizes, MuiThemeProvider } from '@material-ui/core/styles';
-
-import Page from './components/kabinet/Page';
-import KabinetDashboard from './pages/KabinetDashboard';
-import KabinetEditIdea from './pages/KabinetEditIdea';
-import KabinetNewIdea from './pages/KabinetNewIdea';
+import {
+	createMuiTheme,
+	responsiveFontSizes,
+	MuiThemeProvider,
+} from '@material-ui/core/styles';
+import KabinetRoutes from './routes/KabinetRoutes';
 
 function App() {
 	let theme = createMuiTheme({
@@ -190,30 +190,7 @@ function App() {
 						}}
 					/>
 				</Route>
-				<Route
-					path='/kabinet-home'
-					render={(routeProps) => (
-						<Page>
-							<KabinetDashboard {...routeProps} />
-						</Page>
-					)}
-				/>
-				<Route
-					path='/kabinet-new'
-					render={(routeProps) => (
-						<Page>
-							<KabinetNewIdea {...routeProps} />
-						</Page>
-					)}
-				/>
-				<Route
-					path='/kabinet-edit/:id'
-					render={(routeProps) => (
-						<Page>
-							<KabinetEditIdea {...routeProps} />
-						</Page>
-					)}
-				/>
+				<KabinetRoutes />
 				{/* {isLogged ? ( */}
 				<MuiThemeProvider theme={theme}>
 					<Route path='/home'>

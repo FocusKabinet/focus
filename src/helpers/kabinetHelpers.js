@@ -78,11 +78,12 @@ async function deleteImage(id) {
 }
 
 export async function getCurrentCountry() {
-  let code = 'CA';
+  let code = { countryCode: 'CA', country: 'Canada' };
   await axios
-    .get('http://ip-api.com/json/?fields=countryCode')
+    .get('http://ip-api.com/json/?fields=countryCode,country')
     .then((res) => {
-      code = res.data.countryCode;
+      const { countryCode, country } = res.data;
+      code = { countryCode, country };
     })
     .catch((e) =>
       console.warn(
@@ -98,5 +99,19 @@ export async function getGoogleTrends(countryCode) {
   await axios('http://localhost:5000/api/' + countryCode)
     .then((response) => (data = response.data[0]))
     .catch((e) => console.error(e));
+  return data;
+}
+
+export async function getHeadLines(countryCode, page = 1, pageSize = 20) {
+  let data = {};
+  await axios(
+    `https://newsapi.org/v2/top-headlines?country=${countryCode}&pageSize=${pageSize}&page=${page}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
+  )
+    .then((res) => (data = res.data))
+    .catch((e) => console.error('News API error occured', e));
+  data['hasMore'] = data.totalResults - page * pageSize > 0;
+  data['page'] = page;
+  data['pageSize'] = pageSize;
+
   return data;
 }

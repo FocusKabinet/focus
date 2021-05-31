@@ -1,0 +1,20 @@
+.menu-navigation {
+  position: sticky;
+  bottom: 0;
+
+  .content {
+    background-color: #edeef2;
+  }
+
+  .Mui-selected {
+    .inbox-icon {
+      color: #292f31;
+    }
+    .trend-icon {
+      color: #b93114;
+    }
+    .MuiBottomNavigationAction-label {
+      color: #292f31;
+    }
+  }
+}

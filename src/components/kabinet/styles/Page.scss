@@ -9,7 +9,15 @@
 }
 
 .page-content {
-  width: 60vw;
+  &.lg {
+    width: 30vw;
+  }
+  &.md {
+    width: 40vw;
+  }
+  &.sm {
+    width: 50vw;
+  }
   &.xs {
     width: 95vw;
   }

@@ -24,6 +24,7 @@ import {
   Close,
   ExpandMore,
   OpenInNew,
+  Public,
   TrendingUp,
   Whatshot,
 } from '@material-ui/icons';
@@ -33,13 +34,13 @@ import { useTheme } from '@material-ui/core/styles';
 import HE from 'he';
 
 export default function GoogleTrends(props) {
-  const { formattedDate, trendingSearches = [] } = props;
+  const { formattedDate, trendingSearches = [], countryCode } = props;
   return (
     <Paper className="trends-container">
       <Accordion className="accordion">
         <AccordionSummary expandIcon={<ExpandMore />}>
-          <Whatshot className="whatshot-icon" />
-          <Typography>{`Latest trends today`}</Typography>
+          <Public color="primary" className="whatshot-icon" />
+          <Typography>{`Trending on Google (${countryCode})`}</Typography>
         </AccordionSummary>
         <Divider />
         <AccordionDetails>

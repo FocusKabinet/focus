@@ -11,27 +11,16 @@ import { Clear } from '@material-ui/icons';
 import './styles/KabinetDashboard.scss';
 import { DatePicker } from '@material-ui/pickers';
 import IdeaCard from '../components/kabinet/IdeaCard';
-import {
-  deleteCard,
-  fetchCards,
-  getCurrentCountry,
-  getGoogleTrends,
-} from '../helpers/kabinetHelpers';
+import { deleteCard, fetchCards } from '../helpers/kabinetHelpers';
 import { getVisibleCards } from '../helpers/kabinetSelectors';
-import GoogleTrends from '../components/kabinet/GoogleTrends';
 
 function KabinetDashboard(props) {
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [search, setSearch] = React.useState('');
   const [cards, updateCards] = React.useState([]);
   const [initialCards, updateInitialCards] = React.useState([]);
-  const [trends, updateTrends] = React.useState({});
   async function fetchData() {
-    const countryCode = await getCurrentCountry();
-    const trendsData = await getGoogleTrends(countryCode);
-    console.log(trendsData);
     const data = await fetchCards();
-    updateTrends(trendsData);
     updateInitialCards(data);
     updateCards(data);
   }
@@ -82,8 +71,6 @@ function KabinetDashboard(props) {
       >
         Add new idea
       </Button>
-      <GoogleTrends {...trends} />
-
       <SearchBar
         search={search}
         handleSearch={handleSearch}
