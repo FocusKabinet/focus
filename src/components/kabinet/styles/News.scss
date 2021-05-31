@@ -1,0 +1,24 @@
+.news-container {
+  margin-top: 2rem;
+}
+
+.title {
+  color: white;
+}
+
+.infinite-scroll {
+  overflow: scroll;
+}
+
+.eof-scroll {
+  color: white;
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+  svg {
+    color: #45c932;
+    margin-right: 0.5rem;
+  }
+}
