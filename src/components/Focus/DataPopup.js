@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './styles/DataPopup.scss';
 import Dialog from '@material-ui/core/Dialog';
 import Button from '@material-ui/core/Button';
@@ -13,7 +13,6 @@ function DataPopup({ session, open, handleClose }) {
 	const study_times = useSelector((state) => state.studyData.study_times);
 	const short_breaks = useSelector((state) => state.studyData.short_breaks_taken);
 	const long_breaks = useSelector((state) => state.studyData.long_breaks_taken);
-	const session_times = useSelector((state) => state.studyData.session_times);
 
 	return (
 		<Dialog onClose={handleClose} aria-labelledby='customized-dialog-title' open={open}>

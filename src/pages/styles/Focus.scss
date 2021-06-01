@@ -1,5 +1,8 @@
+@import '../../components/generic/styles/variables.scss';
+
 .page-container {
-	min-height: 98vh;
+	height: 100vh - $navHeight;
+	min-height: 92vh;
 	padding: 20px;
 	background-color: #8abd91;
 	color: #ffffff;
