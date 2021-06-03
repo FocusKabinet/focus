@@ -87,10 +87,15 @@ export async function updateCard(id, data, img) {
   try {
     store.dispatch(setLoadingState(true));
     const cardsRef = firestore.collection('kabinet').doc(id);
-    const url = await uploadImage(id, img);
-    const res = url
-      ? await cardsRef.update({ ...data, imageURL: url })
-      : await cardsRef.update(data);
+    const url = img && (await uploadImage(id, img));
+
+    if (url) {
+      await cardsRef.update({ ...data, imageURL: url });
+    } else {
+      await cardsRef.update(data);
+      const shouldDelete = (await doesImageExist(id)) !== data.imageURL;
+      shouldDelete && deleteImage(id);
+    }
     store.dispatch(setLoadingState(false));
     store.dispatch(
       setNotificationState({
@@ -171,15 +176,30 @@ async function uploadImage(id, img) {
 }
 
 async function deleteImage(id) {
-  const imgRef = await storageRef
-    .child(`kabinet-img/${id}`)
-    .delete()
-    .then(() => console.log('image overwritten successfuly'))
-    .catch((e) => {
-      console.warn(e);
-    });
+  const shouldDelete = await doesImageExist(id);
+  try {
+    shouldDelete &&
+      (await storageRef
+        .child(`kabinet-img/${id}`)
+        .delete()
+        .then(() => console.log('image overwritten successfuly'))
+        .catch((e) => {}));
+  } catch {
+    return;
+  }
 }
 
+async function doesImageExist(id) {
+  let url = '';
+  try {
+    await storageRef
+      .child(`kabinet-img/${id}`)
+      .getDownloadURL()
+      .then((resUrl) => (url = resUrl))
+      .catch();
+  } catch {}
+  return url;
+}
 export async function getCurrentCountry() {
   store.dispatch(setLoadingState(true));
 

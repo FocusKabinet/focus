@@ -56,6 +56,7 @@ export default function KabinetForm(props) {
   const [todoField, changeTodoField] = React.useState('');
   const [isDirty, changeDirty] = React.useState(false);
   const [form, updateForm] = React.useState(emptyForm);
+  const [initialForm, updateInitialForm] = React.useState({});
 
   React.useEffect(() => {
     async function fetchData() {
@@ -362,7 +363,7 @@ export default function KabinetForm(props) {
                   color="primary"
                   variant="contained"
                   onClick={handleSubmit}
-                  disabled={!form.title}
+                  disabled={!form.title || !isDirty}
                 >
                   Submit
                 </Button>
