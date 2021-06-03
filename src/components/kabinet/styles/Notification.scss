@@ -1,0 +1,39 @@
+.MuiSnackbarContent-root {
+  &.success {
+    background-color: #62a845;
+  }
+
+  &.info {
+    background-color: #e4e8e9;
+    .MuiSnackbarContent-message {
+      color: black;
+    }
+    .MuiSnackbarContent-action {
+      color: black;
+    }
+  }
+
+  &.error {
+    background-color: #dc4933;
+  }
+
+  &.warning {
+    .MuiSnackbarContent-message {
+      color: black;
+    }
+    .MuiSnackbarContent-action {
+      color: black;
+    }
+    background-color: #f0c220;
+  }
+}
+
+.noti-message {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  svg {
+    margin-right: 0.5rem;
+    font-size: 1.2rem;
+  }
+}
