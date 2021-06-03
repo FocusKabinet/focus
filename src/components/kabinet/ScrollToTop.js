@@ -25,6 +25,9 @@ export default function ScrollToTop() {
 
   React.useEffect(() => {
     window.addEventListener('scroll', toggleVisibility);
+    return () => {
+      window.removeEventListener('scroll', toggleVisibility);
+    };
   }, []);
 
   return (

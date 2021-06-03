@@ -4,11 +4,14 @@ import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
+import { connect } from 'react-redux';
+import LoadingOverlay from './LoadingOverlay';
 
 function Page(props) {
   const width = useWidth();
   return (
     <div className="page">
+      <LoadingOverlay open={props.loading || false} />
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <div className={`page-content ${width}`}>{props.children}</div>
       </MuiPickersUtilsProvider>
@@ -16,7 +19,13 @@ function Page(props) {
   );
 }
 
-export default Page;
+const mapStateToProps = (state) => {
+  return {
+    loading: state.loading,
+  };
+};
+
+export default connect(mapStateToProps)(Page);
 
 function useWidth() {
   const theme = useTheme();

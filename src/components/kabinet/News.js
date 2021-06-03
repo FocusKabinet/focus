@@ -26,6 +26,7 @@ export default function News(props) {
   } = props;
   const theme = useTheme();
 
+  if (!articles.length) return null;
   return (
     <div className="news-container">
       <Typography className="title" align="left" variant="h6" gutterBottom>
