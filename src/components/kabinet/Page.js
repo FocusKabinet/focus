@@ -6,12 +6,14 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import LoadingOverlay from './LoadingOverlay';
+import Notification from './Notification';
 
 function Page(props) {
   const width = useWidth();
   return (
     <div className="page">
       <LoadingOverlay open={props.loading || false} />
+      <Notification />
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <div className={`page-content ${width}`}>{props.children}</div>
       </MuiPickersUtilsProvider>

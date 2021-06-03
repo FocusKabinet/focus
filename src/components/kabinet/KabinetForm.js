@@ -60,7 +60,7 @@ export default function KabinetForm(props) {
   React.useEffect(() => {
     async function fetchData() {
       const data = await fetchCard(id);
-      updateForm(data);
+      if (data && Object.keys(data).length > 0) updateForm(data);
     }
     if (!isDirty && edit) fetchData();
   }, [edit, isDirty, id]);
@@ -147,7 +147,7 @@ export default function KabinetForm(props) {
     const res = !edit
       ? await addCard(form, file)
       : await updateCard(id, form, file);
-    history.goBack();
+    res !== 'error' && history.goBack();
   };
 
   return (

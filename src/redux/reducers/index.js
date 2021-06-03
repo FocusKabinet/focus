@@ -2,6 +2,7 @@ import userReducer from './user';
 import studyReducer from './studyData';
 import timerReducer from './timer';
 import loadingReducer from './loading';
+import notificationReducer from './notification';
 import { combineReducers } from 'redux';
 
 const allReducers = combineReducers({
@@ -9,6 +10,7 @@ const allReducers = combineReducers({
   studyData: studyReducer,
   timer: timerReducer,
   loading: loadingReducer,
+  notification: notificationReducer,
 });
 
 export default allReducers;
