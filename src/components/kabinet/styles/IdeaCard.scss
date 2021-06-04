@@ -1,3 +1,8 @@
+.menu {
+  svg {
+    margin-right: 0.5rem;
+  }
+}
 .card {
   margin-bottom: 2rem;
 }
@@ -29,4 +34,9 @@
 
 .MuiCardContent-root.card-content {
   background-color: #f6f7fb;
+}
+.expand-button {
+}
+.expanded {
+  transform: rotate(180deg);
 }

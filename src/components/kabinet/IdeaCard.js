@@ -13,7 +13,14 @@ import {
   Grid,
   Divider,
 } from '@material-ui/core';
-import { MoreVert, ExpandMore, Share, Favorite } from '@material-ui/icons';
+import {
+  MoreVert,
+  ExpandMore,
+  Share,
+  Favorite,
+  Edit,
+  Delete,
+} from '@material-ui/icons';
 import empty from '../../assets/empty-state-photo.png';
 import { format } from 'date-fns';
 import { KeywordTags } from './KeywordTags';
@@ -60,8 +67,10 @@ export default function IdeaCard(props) {
               keepMounted
               open={Boolean(menu)}
               onClose={handleToggle}
+              className="menu"
             >
               <MenuItem onClick={() => history.push(`/kabinet-edit/${id}`)}>
+                <Edit fontSize="small" />
                 Edit
               </MenuItem>
               <MenuItem
@@ -72,7 +81,7 @@ export default function IdeaCard(props) {
                 className="menu-item-delete"
                 disabled={id < 5}
               >
-                Delete
+                <Delete fontSize="small" /> Delete
               </MenuItem>
             </Menu>
           </>
@@ -93,7 +102,7 @@ export default function IdeaCard(props) {
         </IconButton>
         <IconButton
           onClick={() => expandToggle(!expanded)}
-          className="expand-button"
+          className={`expand-button ${expanded ? 'expanded' : ''}`}
         >
           <ExpandMore />
         </IconButton>

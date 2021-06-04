@@ -21,7 +21,7 @@ export default function Navigation(props) {
         className="content"
       >
         <BottomNavigationAction
-          label="Drawer"
+          label="Home"
           icon={<AllInbox className="inbox-icon" />}
         />
         <BottomNavigationAction

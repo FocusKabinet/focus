@@ -1,4 +1,5 @@
 import React from 'react';
+import empty from '../../assets/empty-state-photo.png';
 import {
   Typography,
   Card,
@@ -78,7 +79,12 @@ function ArticleItem(props) {
       <Card>
         <CardHeader title={`${name}`} />
         {urlToImage && (
-          <CardMedia component="img" height="250" image={urlToImage} />
+          <CardMedia
+            component="img"
+            height="250"
+            image={urlToImage}
+            onError={(e) => (e.target.src = empty)}
+          />
         )}
         <CardActionArea onClick={() => window.open(url, '_blank')}>
           <CardContent>

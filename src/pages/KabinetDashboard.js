@@ -7,12 +7,13 @@ import {
   Typography,
   IconButton,
 } from '@material-ui/core';
-import { Clear } from '@material-ui/icons';
+import { Clear, Create, DateRange, Search } from '@material-ui/icons';
 import './styles/KabinetDashboard.scss';
 import { DatePicker } from '@material-ui/pickers';
 import IdeaCard from '../components/kabinet/IdeaCard';
 import { deleteCard, fetchCards } from '../helpers/kabinetHelpers';
 import { getVisibleCards } from '../helpers/kabinetSelectors';
+import ScrollToTop from '../components/kabinet/ScrollToTop';
 
 function KabinetDashboard(props) {
   const [selectedDate, setSelectedDate] = React.useState(null);
@@ -60,7 +61,7 @@ function KabinetDashboard(props) {
         variant="h4"
         gutterBottom
       >
-        Your drawer
+        Kabinet
       </Typography>
       <Button
         className="add-button"
@@ -68,8 +69,9 @@ function KabinetDashboard(props) {
         color="primary"
         onClick={() => props.history.push('/kabinet-new')}
         fullWidth
+        startIcon={<Create />}
       >
-        Add new idea
+        New recipe
       </Button>
       <SearchBar
         search={search}
@@ -97,6 +99,7 @@ function KabinetDashboard(props) {
           </Grid>
         ))}
       </Grid>
+      <ScrollToTop />
     </div>
   );
 }
@@ -118,11 +121,14 @@ function SearchBar(props) {
           <TextField
             fullWidth
             className="search-field"
-            label="Search"
+            label="What are you looking for?"
             variant="outlined"
             size="small"
             value={search}
             onChange={handleSearch}
+            InputProps={{
+              endAdornment: <Search />,
+            }}
           />
         </Grid>
         <Grid item xs={10} sm={4}>
@@ -136,6 +142,9 @@ function SearchBar(props) {
             inputVariant="outlined"
             disableFuture
             size="small"
+            InputProps={{
+              endAdornment: <DateRange />,
+            }}
           />
         </Grid>
         <Grid item xs={2} sm={1}>

@@ -7,6 +7,7 @@ import {
 } from '../helpers/kabinetHelpers';
 import News from '../components/kabinet/News';
 import ScrollToTop from '../components/kabinet/ScrollToTop';
+import { Typography } from '@material-ui/core';
 
 export default function KabinetTrendings(props) {
   const [trends, updateTrends] = React.useState({});
@@ -41,6 +42,14 @@ export default function KabinetTrendings(props) {
 
   return (
     <>
+      <Typography
+        className="list-title"
+        align="center"
+        variant="h5"
+        gutterBottom
+      >
+        Here is what trending on the internet
+      </Typography>
       <ScrollToTop />
       <GoogleTrends {...trends} countryCode={countryObj.countryCode} />
       <News
