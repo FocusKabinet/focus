@@ -24,9 +24,10 @@
   color: #393a73;
 }
 
-.dialog-content {
-  padding-bottom: 1rem;
-  background-color: #0d3b66;
+.MuiDialogContent-root.dialog-content {
+  padding-top: 1rem;
+  padding-bottom: 3rem;
+  background-color: #292f31;
 }
 
 .dialog-title {
@@ -41,4 +42,31 @@
 .dialog-content-bottom {
   display: flex;
   justify-content: space-between;
+  flex-flow: column;
+}
+
+.article-container {
+  display: flex;
+  padding: 0.5rem;
+  justify-content: space-between;
+  .article-title {
+    color: #422fcc;
+  }
+  .article-content {
+    display: flex;
+    width: 80%;
+    margin-right: 1rem;
+    flex-flow: column;
+    justify-content: space-between;
+  }
+  .article-media {
+    flex-flow: column;
+    display: flex;
+    align-items: flex-end;
+  }
+  .article-thumbnail {
+    margin-bottom: 0.2rem;
+    width: unset;
+    border-radius: 5px;
+  }
 }

@@ -9,14 +9,17 @@
 }
 
 .page-content {
+  &.xl {
+    width: 25vw;
+  }
   &.lg {
-    width: 30vw;
+    width: 35vw;
   }
   &.md {
-    width: 40vw;
+    width: 55vw;
   }
   &.sm {
-    width: 50vw;
+    width: 70vw;
   }
   &.xs {
     width: 85vw;

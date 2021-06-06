@@ -13,8 +13,14 @@ import {
   Tab,
   CardMedia,
   IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Divider,
 } from '@material-ui/core';
-import { AddCircle } from '@material-ui/icons';
+import { AddCircle, Clear, Save, Settings } from '@material-ui/icons';
 import './styles/KabinetForm.scss';
 import { DateTimePicker } from '@material-ui/pickers';
 import Picker from 'emoji-picker-react';
@@ -49,6 +55,7 @@ export default function KabinetForm(props) {
     imageUpload: null,
     imageURL: '',
     checklist: [],
+    primaryKeyword: '',
   };
 
   const [pickerDialog, pickerDialogToggle] = React.useState(false);
@@ -57,11 +64,16 @@ export default function KabinetForm(props) {
   const [isDirty, changeDirty] = React.useState(false);
   const [form, updateForm] = React.useState(emptyForm);
   const [initialForm, updateInitialForm] = React.useState({});
+  const [showDrawer, setDrawer] = React.useState(false);
 
   React.useEffect(() => {
     async function fetchData() {
       const data = await fetchCard(id);
-      if (data && Object.keys(data).length > 0) updateForm(data);
+      if (data && Object.keys(data).length > 0)
+        updateForm({
+          ...data,
+          primaryKeyword: data.keywords[0],
+        });
     }
     if (!isDirty && edit) fetchData();
   }, [edit, isDirty, id]);
@@ -116,9 +128,13 @@ export default function KabinetForm(props) {
       }
       changeKeywordField('');
     }
+    const newKeywords = form.keywords.filter((key, idx) => idx !== e);
     return updateForm({
       ...form,
-      keywords: form.keywords.filter((key, idx) => idx !== e),
+      keywords: newKeywords,
+      primaryKeyword: newKeywords.includes(form.primaryKeyword)
+        ? form.primaryKeyword
+        : newKeywords[0],
     });
   };
 
@@ -129,6 +145,7 @@ export default function KabinetForm(props) {
   };
 
   const clearForm = () => {
+    setDrawer(false);
     changeDirty(true);
     return updateForm(emptyForm);
   };
@@ -151,6 +168,16 @@ export default function KabinetForm(props) {
     res !== 'error' && history.goBack();
   };
 
+  const handleSetPrimary = (e) => {
+    e.target.id = 'primaryKeyword';
+    console.log(e.target.value);
+    return handleUpdateForm(e);
+  };
+
+  const saveAsDraft = () => {
+    console.log('save as draft', form);
+    return setDrawer(false);
+  };
   return (
     <div>
       <Typography
@@ -200,7 +227,7 @@ export default function KabinetForm(props) {
               fullWidth
               id="description"
               multiline
-              rows={3}
+              rows={5}
               className="title-field"
               placeholder="Describe your idea"
               variant="outlined"
@@ -272,6 +299,8 @@ export default function KabinetForm(props) {
                 id="keywords"
                 keywords={form.keywords}
                 handleChange={handleChangeKeywords}
+                setPrimary={handleSetPrimary}
+                primaryKeyword={form.primaryKeyword || form.keywords[0]}
               />
             )}
           </Grid>
@@ -348,9 +377,33 @@ export default function KabinetForm(props) {
           </Grid> */}
           <Grid item>
             <div className="form-actions">
-              <Button color="secondary" onClick={clearForm}>
-                Clear
-              </Button>
+              <IconButton
+                size="small"
+                color="primary"
+                onClick={() => setDrawer(true)}
+              >
+                <Settings />
+              </IconButton>
+              <Drawer
+                anchor="bottom"
+                open={showDrawer}
+                onClose={() => setDrawer(false)}
+              >
+                <List>
+                  <ListItem button onClick={() => saveAsDraft()}>
+                    <ListItemIcon>
+                      <Save color="primary" />
+                    </ListItemIcon>
+                    <ListItemText>Save As Draft</ListItemText>
+                  </ListItem>
+                  <ListItem button onClick={() => clearForm()}>
+                    <ListItemIcon>
+                      <Clear color="secondary" />
+                    </ListItemIcon>
+                    <ListItemText>Clear</ListItemText>
+                  </ListItem>
+                </List>
+              </Drawer>
               <div className="form-actions-nav">
                 <Button
                   color="primary"
@@ -365,7 +418,7 @@ export default function KabinetForm(props) {
                   onClick={handleSubmit}
                   disabled={!form.title || !isDirty}
                 >
-                  Submit
+                  Publish
                 </Button>
               </div>
             </div>

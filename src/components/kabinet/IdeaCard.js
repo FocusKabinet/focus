@@ -69,7 +69,10 @@ export default function IdeaCard(props) {
               onClose={handleToggle}
               className="menu"
             >
-              <MenuItem onClick={() => history.push(`/kabinet-edit/${id}`)}>
+              <MenuItem
+                onClick={() => history.push(`/kabinet-edit/${id}`)}
+                disabled={id < 5}
+              >
                 <Edit fontSize="small" />
                 Edit
               </MenuItem>
@@ -116,7 +119,11 @@ export default function IdeaCard(props) {
             </Grid>
             <Grid item>
               <Typography>Keywords: </Typography>
-              <KeywordTags readOnly keywords={props.keywords} />
+              <KeywordTags
+                readOnly
+                keywords={props.keywords}
+                primaryKeyword={props.primaryKeyword}
+              />
             </Grid>
             <Grid item>
               <Typography>Checklist: </Typography>

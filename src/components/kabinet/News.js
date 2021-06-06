@@ -69,7 +69,6 @@ function ArticleItem(props) {
     description,
     publishedAt,
     url,
-    author,
     source: { name },
     content,
   } = article;
@@ -100,7 +99,7 @@ function ArticleItem(props) {
             >
               {description}
             </Typography>
-            <div className="dialog-content-bottom">
+            <div className="article-footer">
               <Typography variant="body2" color="textPrimary" component="p">
                 {new Date(publishedAt).toLocaleString()}
               </Typography>

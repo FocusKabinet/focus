@@ -6,6 +6,15 @@
 
   .tag {
     margin-bottom: 0.5rem;
+    background-color: #585bbc;
+    &.primary {
+      background-color: #e59a2f;
+    }
+    .star {
+      color: white;
+    }
+
+    color: white;
   }
   .tag:not(:last-child) {
     margin-right: 0.5rem;
