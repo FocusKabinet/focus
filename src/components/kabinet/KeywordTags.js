@@ -1,21 +1,46 @@
 import React from 'react';
 import { Chip, Box } from '@material-ui/core';
 import './styles/KeywordTags.scss';
+import { Stars } from '@material-ui/icons';
 
 export function KeywordTags(props) {
-  const { keywords = [], readOnly, handleChange } = props;
+  const {
+    keywords = [],
+    readOnly,
+    handleChange,
+    setPrimary,
+    primaryKeyword,
+  } = props;
+
   return (
     <Box className="keyword-container">
       {keywords.map((key, idx) => {
+        const avatar = key === primaryKeyword && (
+          <Stars
+            className="star"
+            color="disabled"
+            style={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}
+          />
+        );
         return readOnly ? (
-          <Chip key={key} className="tag" label={key} color="primary" />
+          <Chip
+            avatar={avatar}
+            key={key}
+            className={`tag${!!avatar ? ' primary' : ''}`}
+            label={key}
+          />
         ) : (
           <Chip
+            avatar={avatar}
             key={key}
-            className="tag"
+            className={`tag${!!avatar ? ' primary' : ''}`}
             label={key}
             onDelete={() => handleChange && props.handleChange(idx)}
-            color="primary"
+            clickable
+            onClick={(e) => {
+              e.target.value = key;
+              setPrimary(e);
+            }}
           />
         );
       })}
