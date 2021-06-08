@@ -8,13 +8,45 @@
 }
 
 .card-img {
-  height: 150px;
+  height: 250px;
 }
-
+.publisher-link {
+  display: flex;
+  align-items: center;
+  svg {
+    margin-right: 0.3rem;
+  }
+  cursor: pointer;
+}
+.publish-date {
+  display: flex;
+  align-items: center;
+  svg {
+    margin-right: 0.3rem;
+  }
+}
 .card-description {
   margin: 0 1rem;
 }
 
+.bookmark-button {
+  svg {
+    color: #f6a93c;
+  }
+}
+
+.likes {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.like-button {
+  svg {
+    color: #e44560;
+  }
+}
 .MuiButtonBase-root.menu-item-delete {
   color: #cd2b2c;
 }
@@ -34,6 +66,10 @@
 
 .MuiCardContent-root.card-content {
   background-color: #f6f7fb;
+}
+
+.MuiCardHeader-subheader.MuiTypography-root {
+  margin-top: 0.5rem;
 }
 .expand-button {
 }

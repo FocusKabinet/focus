@@ -6,8 +6,6 @@
 }
 .actions {
   padding: 0.5rem;
-  margin-bottom: 1.5rem;
-  margin-top: 1rem;
 }
 .grid-container {
   align-items: center;
@@ -19,4 +17,34 @@
 .list-title {
   color: white;
   margin-top: 2rem;
+}
+
+.popular-keywords {
+  width: 100%;
+}
+
+.MuiButton-root.add-button {
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.goback-button.MuiButton-outlinedPrimary {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  align-self: flex-start;
+  border: 1px solid #97989c;
+  &:hover {
+    border: 1px solid white;
+  }
+  span {
+    color: white;
+  }
+}
+
+.view-user-title {
+  display: flex;
+  align-items: center;
+  svg {
+    margin-right: 0.4rem;
+  }
 }

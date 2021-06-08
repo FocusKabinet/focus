@@ -32,7 +32,7 @@ function Snackbars(props) {
         open={props.open}
         onClose={handleClose}
         message={Message(props)}
-        autoHideDuration={3000}
+        autoHideDuration={2500}
         TransitionComponent={Transition}
         action={
           <React.Fragment>
@@ -46,7 +46,10 @@ function Snackbars(props) {
             </IconButton>
           </React.Fragment>
         }
-        ContentProps={{ className: props.severity }}
+        ContentProps={{
+          className: props.severity,
+          style: { display: 'flex', flexFlow: 'row' },
+        }}
       />
     </div>
   );

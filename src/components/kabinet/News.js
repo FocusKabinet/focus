@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardMedia,
 } from '@material-ui/core';
-import { CheckCircle, OpenInNew } from '@material-ui/icons';
+import { CheckCircle, OpenInNew, Today } from '@material-ui/icons';
 import './styles/GoogleTrends.scss';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
@@ -76,7 +76,7 @@ function ArticleItem(props) {
   return (
     <Grid item key={id + '-article'}>
       <Card>
-        <CardHeader title={`${name}`} />
+        <CardHeader title={`📰 ${name}`} />
         {urlToImage && (
           <CardMedia
             component="img"

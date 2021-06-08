@@ -13,15 +13,16 @@ export function KeywordTags(props) {
   } = props;
 
   return (
-    <Box className="keyword-container">
+    <Box className={`keyword-container ${readOnly ? 'readOnly' : ''}`}>
       {keywords.map((key, idx) => {
-        const avatar = key === primaryKeyword && (
-          <Stars
-            className="star"
-            color="disabled"
-            style={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}
-          />
-        );
+        const avatar =
+          key === primaryKeyword ? (
+            <Stars
+              className="star"
+              color="disabled"
+              style={{ backgroundColor: 'rgba(0, 0, 0, 0)' }}
+            />
+          ) : null;
         return readOnly ? (
           <Chip
             avatar={avatar}

@@ -69,4 +69,11 @@
     width: unset;
     border-radius: 5px;
   }
+  .ago {
+    display: flex;
+    align-items: flex-end;
+    svg {
+      margin-right: 0.3rem;
+    }
+  }
 }
