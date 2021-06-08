@@ -21,7 +21,10 @@ function Timer({ changeBackground, inSession, setInSession }) {
 	const dispatch = useDispatch();
 
 	const studyTime = useSelector((state) => state.timer.study);
+	const shortBreak = useSelector((state) => state.timer.short);
+	const longBreak = useSelector((state) => state.timer.long);
 	const deepStudy = useSelector((state) => state.timer.deep_study);
+	const rdxSession = useSelector((state) => state.studyData.session_times);
 
 	const sound = new Howl({
 		src: [timerAlarm],
@@ -39,8 +42,8 @@ function Timer({ changeBackground, inSession, setInSession }) {
 	});
 	const [breakTime, setBreakTime] = useState({
 		break: 1,
-		short: convertMilli(5),
-		long: convertMilli(10),
+		short: convertMilli(shortBreak),
+		long: convertMilli(longBreak),
 	});
 	const [timerOn, setTimerOn] = useState(false);
 	const [openData, setOpenData] = React.useState(false);
@@ -82,8 +85,11 @@ function Timer({ changeBackground, inSession, setInSession }) {
 	}, [timerOn]);
 
 	useEffect(() => {
-		if (inSession === 3 && timerOn) {
+		if (inSession === 2 && timerOn) {
 			setTimerOn(false);
+			resetTime();
+			timerBreak(convertMilli(studyTime), 1);
+			setColor('#8abd91', '#75a27c');
 		}
 		let interval = null;
 		if (session.started) {
@@ -97,9 +103,7 @@ function Timer({ changeBackground, inSession, setInSession }) {
 					});
 				}
 			}, 1000);
-		} else {
-			alert('problem');
-		}
+		} 
 		return () => clearInterval(interval);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [timerOn, inSession]);
@@ -112,7 +116,12 @@ function Timer({ changeBackground, inSession, setInSession }) {
 	}, []);
 
 	useEffect(() => {
-		if (inSession === 0 && session.start) {
+		if (inSession === 0) {
+			alert('not in session');
+		} else if (inSession === 1) {
+			alert('Session Started');
+		}else if(inSession === 2){
+			alert('Session Ended');
 			let d = new Date();
 			dispatch(
 				StudyActionCreators.addSession({
@@ -120,20 +129,17 @@ function Timer({ changeBackground, inSession, setInSession }) {
 					end: d,
 				})
 			);
-			setSession({
-				started: false,
-				start: 0,
-				end: 0,
-				currentTime: 0,
+			setSession((prevTime) => {
+				return {
+					...session,
+					currentTime: 0,
+					started: false,
+				};
 			});
-			resetTime();
-			alert('session done');
-		} else if (inSession === 0) {
-			alert('not in session');
-		} else if (inSession === 1) {
-			alert('in session but not ended');
+			//working here
+			console.log(rdxSession)
 		} else {
-			alert('problem');
+			alert('problem: '+ inSession + ".");
 		}
 	}, [inSession]);
 
@@ -233,8 +239,8 @@ function Timer({ changeBackground, inSession, setInSession }) {
 	};
 
 	const toggleTimer = () => {
+		let d = new Date();
 		if (!session.started && deepStudy) {
-			let d = new Date();
 			setSession({
 				...session,
 				started: true,
@@ -263,6 +269,26 @@ function Timer({ changeBackground, inSession, setInSession }) {
 					minutes: convertMilli(time, 'min'),
 					seconds: convertMilli(time, 'sec'),
 				});
+			}else if(breakTime.break === 2 && time === convertMilli(shortBreak)){
+				dispatch(
+					StudyActionCreators.addSBreak({
+						time: {
+							hours: d.getHours(),
+							minutes: d.getMinutes(),
+							seconds: d.getSeconds(),
+						},
+					})
+				);
+			}else if(breakTime.break === 3 && time === convertMilli(longBreak)){
+				dispatch(
+					StudyActionCreators.addLBreak({
+						time: {
+							hours: d.getHours(),
+							minutes: d.getMinutes(),
+							seconds: d.getSeconds(),
+						},
+					})
+				);
 			}
 			setInSession(1);
 			setTimerOn(true);

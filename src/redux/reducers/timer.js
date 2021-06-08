@@ -45,7 +45,14 @@ const timerReducer = (state = initialState, action) => {
 			};
 
 		case Types.CLEAR_STATE:
-			return initialState;
+			return {
+				...state,
+				auto_start: false,
+				auto_break: false,
+				long: 10,
+				short: 5,
+				study: 24,
+			};
 		default:
 			return state;
 	}

@@ -1,5 +1,6 @@
 export const studyDataType = {
-	ADD_BREAK: 'ADD_BREAK', //when a break is taken
+	ADD_LONG_BREAK: 'ADD_LONG_BREAK', //when a long break is taken
+	ADD_SHORT_BREAK: 'ADD_SHORT_BREAK', //when a long break is taken
 	ADD_STUDY: 'ADD_STUDY', //when a study is started
 	ADD_SESSION: 'ADD_SESSION', //when a study is ended
 	ADD_STUDY_ATTEMPTED: 'ADD_STUDY_ATTEMPTED', //number of studies attempted
@@ -7,9 +8,14 @@ export const studyDataType = {
 };
 
 export const StudyActionCreators = {
-	addBreak: (times, type) => ({
-		type: 'BREAK_START',
-		payload: { times, type },
+	addLBreak: (time) => ({
+		type: 'ADD_LONG_BREAK',
+		payload: time,
+	}),
+	
+	addSBreak: (time) => ({
+		type: 'ADD_SHORT_BREAK',
+		payload: time,
 	}),
 
 	addStudy: (times) => ({

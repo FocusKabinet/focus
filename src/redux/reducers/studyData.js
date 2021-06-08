@@ -14,21 +14,18 @@ const initialState = {
 
 const studyReducer = (state = initialState, action) => {
 	switch (action.type) {
-		case Types.BREAK_START:
-			if (action.payload.type === 0) {
-				return {
-					...state,
-					short_breaks_taken: state.short_breaks_taken + 1,
-					short_breaks: [...state.short_breaks, action.payload.times],
-				};
-			} else {
+		case Types.ADD_SHORT_BREAK:
+			return {
+				...state,
+				short_breaks_taken: state.short_breaks_taken + 1,
+				short_breaks: [...state.short_breaks, action.payload.time],
+			};
+		case Types.ADD_LONG_BREAK:	
 				return {
 					...state,
 					long_breaks_taken: state.long_breaks_taken + 1,
-					long_breaks: [...state.long_breaks, action.payload.times],
+					long_breaks: [...state.long_breaks, action.payload.time],
 				};
-			}
-
 		case Types.ADD_STUDY:
 			return {
 				...state,
