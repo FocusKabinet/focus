@@ -1,0 +1,44 @@
+.top-bar {
+  margin-bottom: 3rem;
+}
+
+.top-bar-title {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+
+  .MuiSvgIcon-root {
+    color: #4177a8;
+    margin-right: 0.5rem;
+  }
+}
+.top-bar-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.top-bar-buttons {
+  display: flex;
+  align-items: center;
+  button:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+}
+
+.profile-button {
+  .MuiSvgIcon-root {
+    color: #22366e;
+  }
+}
+.bookmarks-icon {
+  color: #f6a93c;
+}
+
+.draft-icon {
+  color: #7d7a73;
+}
+
+.MuiAppBar-colorInherit.app-bar {
+  background-color: #edeef2;
+}

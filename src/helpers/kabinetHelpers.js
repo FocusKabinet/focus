@@ -1,5 +1,4 @@
-import { firestore, storageRef } from '../app/firebase';
-import axios from 'axios';
+import { firestore, storageRef, auth, authObject } from '../app/firebase';
 import { projectStore as store } from '../redux/store';
 import { setLoadingState } from '../redux/actions/loading';
 import { setNotificationState } from '../redux/actions/notification';
@@ -9,7 +8,10 @@ export async function fetchCards() {
   try {
     store.dispatch(setLoadingState(true));
     const cardsRef = firestore.collection('kabinet');
-    const cardsSnapshot = await cardsRef.orderBy('createdAt', 'desc').get();
+    const cardsSnapshot = await cardsRef
+      .where('private', '==', false)
+      .orderBy('createdAt', 'desc')
+      .get();
     cardsSnapshot.forEach((doc) => {
       cards.push({ ...doc.data(), id: doc.id });
     });
@@ -51,11 +53,85 @@ export async function fetchCard(id) {
   return card;
 }
 
+export async function fetchUserCards(uid) {
+  let cards = [];
+  try {
+    store.dispatch(setLoadingState(true));
+    const userId = uid ? uid : store.getState().kabinet_user.uid;
+    const cardsRef = !uid
+      ? firestore
+          .collection('kabinet')
+          .orderBy('createdAt', 'desc')
+          .where('ownerId', '==', userId)
+      : firestore
+          .collection('kabinet')
+          .where('private', '==', false)
+          .where('ownerId', '==', userId)
+          .orderBy('createdAt', 'desc');
+
+    const cardsSnapshot = await cardsRef.get();
+    cardsSnapshot.forEach((doc) => {
+      cards.push({ ...doc.data(), id: doc.id });
+    });
+    store.dispatch(setLoadingState(false));
+  } catch (e) {
+    store.dispatch(setLoadingState(false));
+    console.error(e);
+    store.dispatch(
+      setNotificationState({
+        open: true,
+        message: 'Failed to load feed!',
+        severity: 'error',
+      })
+    );
+  }
+  return cards;
+}
+
+export async function fetchBookmarkedCards() {
+  let cards = [];
+  const { kabinet_bookmarks: bookmarks } = store.getState();
+
+  if (!!bookmarks.length) {
+    try {
+      store.dispatch(setLoadingState(true));
+      const cardsRef = firestore.collection('kabinet');
+      const cardsSnapshot = await cardsRef
+        .where('private', '==', false)
+        .where('id', 'in', bookmarks)
+        .orderBy('createdAt', 'desc')
+        .get();
+      cardsSnapshot.forEach((doc) => {
+        cards.push({ ...doc.data() });
+      });
+      store.dispatch(setLoadingState(false));
+    } catch (e) {
+      store.dispatch(setLoadingState(false));
+      console.error(e);
+      store.dispatch(
+        setNotificationState({
+          open: true,
+          message: 'Failed to load feed!',
+          severity: 'error',
+        })
+      );
+    }
+  }
+
+  return cards;
+}
+
 export async function addCard(data, img) {
   store.dispatch(setLoadingState(true));
   try {
+    const user = store.getState().kabinet_user;
+
+    data.ownerId = user.uid;
+    data.ownerName = user.displayName;
+    data.likes = [];
     const snapshot = await firestore.collection('kabinet').add(data);
     const id = snapshot.id;
+    await snapshot.update({ id: snapshot.id });
 
     if (img) {
       const url = await uploadImage(id, img);
@@ -119,11 +195,10 @@ export async function updateCard(id, data, img) {
 }
 
 export async function deleteCard(id) {
+  store.dispatch(setLoadingState(true));
   try {
-    store.dispatch(setLoadingState(true));
     deleteImage(id);
     await firestore.collection('kabinet').doc(id).delete();
-    store.dispatch(setLoadingState(false));
     store.dispatch(
       setNotificationState({
         open: true,
@@ -132,7 +207,6 @@ export async function deleteCard(id) {
       })
     );
   } catch (e) {
-    store.dispatch(setLoadingState(false));
     console.error(e);
     store.dispatch(
       setNotificationState({
@@ -142,6 +216,7 @@ export async function deleteCard(id) {
       })
     );
   }
+  store.dispatch(setLoadingState(false));
 }
 
 async function uploadImage(id, img) {
@@ -162,8 +237,6 @@ async function uploadImage(id, img) {
       });
     })
     .catch((e) => {
-      store.dispatch(setLoadingState(false));
-      console.error(e);
       store.dispatch(
         setNotificationState({
           open: true,
@@ -199,74 +272,4 @@ async function doesImageExist(id) {
       .catch();
   } catch {}
   return url;
-}
-export async function getCurrentCountry() {
-  store.dispatch(setLoadingState(true));
-
-  let code = { countryCode: 'CA', country: 'Canada' };
-  await axios
-    .get('http://ip-api.com/json/?fields=countryCode,country')
-    .then((res) => {
-      const { countryCode, country } = res.data;
-      code = { countryCode, country };
-    })
-    .catch((e) => {
-      console.warn(
-        'Cannot get location. Most likely due to AdBlock. Defaulted to US\n',
-        e
-      );
-      store.dispatch(
-        setNotificationState({
-          open: true,
-          message: 'Failed to get location! Defaulted to US',
-          severity: 'warning',
-        })
-      );
-    });
-  store.dispatch(setLoadingState(false));
-  return code;
-}
-
-export async function getGoogleTrends(countryCode) {
-  store.dispatch(setLoadingState(true));
-  let data = {};
-  await axios('http://localhost:5000/api/' + countryCode)
-    .then((response) => (data = response.data[0]))
-    .catch((e) => {
-      console.error(e);
-      store.dispatch(
-        setNotificationState({
-          open: true,
-          message: 'Failed to fetch Google Trends!',
-          severity: 'warning',
-        })
-      );
-    });
-  store.dispatch(setLoadingState(false));
-  return data;
-}
-
-export async function getHeadLines(countryCode, page = 1, pageSize = 20) {
-  store.dispatch(setLoadingState(true));
-  let data = {};
-  await axios(
-    `https://newsapi.org/v2/top-headlines?country=${countryCode}&pageSize=${pageSize}&page=${page}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
-  )
-    .then((res) => (data = res.data))
-    .catch((e) => {
-      console.error('News API error occured', e);
-      store.dispatch(
-        setNotificationState({
-          open: true,
-          message: 'Failed to fetch headlines!',
-          severity: 'warning',
-        })
-      );
-    });
-  data['hasMore'] = data.totalResults - page * pageSize > 0;
-  data['page'] = page;
-  data['pageSize'] = pageSize;
-
-  store.dispatch(setLoadingState(false));
-  return data;
 }

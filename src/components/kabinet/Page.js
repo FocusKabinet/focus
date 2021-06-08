@@ -7,16 +7,42 @@ import { useTheme } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import LoadingOverlay from './LoadingOverlay';
 import Notification from './Notification';
+import TopBar from './TopBar';
+import { auth } from '../../app/firebase';
+import { setProfile } from '../../redux/actions/kabinetUser';
+import { setLoadingState } from '../../redux/actions/loading';
+import { getUserBookmark } from '../../helpers/kabinetUserInteractions';
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+
+const theme = createMuiTheme({
+  typography: {
+    fontFamily: ['Inter', 'sans-serif'].join(','),
+  },
+});
 
 function Page(props) {
   const width = useWidth();
+
+  React.useEffect(() => {
+    async function getUser() {
+      auth.onAuthStateChanged((userAuth) => {
+        props.dispatch(setProfile(userAuth));
+        if (userAuth) getUserBookmark(userAuth.uid);
+      });
+    }
+    if (!props.user) getUser();
+  }, [props]);
+
   return (
-    <div className="page">
-      <LoadingOverlay open={props.loading || false} />
-      <Notification />
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <div className={`page-content ${width}`}>{props.children}</div>
-      </MuiPickersUtilsProvider>
+    <div className='page'>
+      <ThemeProvider theme={theme}>
+        <LoadingOverlay open={props.loading || false} />
+        <Notification />
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <TopBar {...props} />
+          <div className={`page-content ${width}`}>{props.children}</div>
+        </MuiPickersUtilsProvider>
+      </ThemeProvider>
     </div>
   );
 }
@@ -24,6 +50,7 @@ function Page(props) {
 const mapStateToProps = (state) => {
   return {
     loading: state.loading,
+    user: state.kabinet_user,
   };
 };
 

@@ -6,29 +6,77 @@ import {
   Paper,
   Typography,
   IconButton,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Divider,
 } from '@material-ui/core';
-import { Clear, Create, DateRange, Search } from '@material-ui/icons';
+import {
+  Book,
+  Clear,
+  Create,
+  DateRange,
+  ExpandMore,
+  Face,
+  KeyboardBackspace,
+  PhotoAlbum,
+  Search,
+} from '@material-ui/icons';
 import './styles/KabinetDashboard.scss';
 import { DatePicker } from '@material-ui/pickers';
 import IdeaCard from '../components/kabinet/IdeaCard';
-import { deleteCard, fetchCards } from '../helpers/kabinetHelpers';
+import {
+  deleteCard,
+  fetchBookmarkedCards,
+  fetchCards,
+  fetchUserCards,
+} from '../helpers/kabinetHelpers';
+import { getPublicUser } from '../helpers/kabinetProfile';
 import { getVisibleCards } from '../helpers/kabinetSelectors';
 import ScrollToTop from '../components/kabinet/ScrollToTop';
+import { connect } from 'react-redux';
+import { KeywordTags } from '../components/kabinet/KeywordTags';
 
 function KabinetDashboard(props) {
   const [selectedDate, setSelectedDate] = React.useState(null);
   const [search, setSearch] = React.useState('');
   const [cards, updateCards] = React.useState([]);
   const [initialCards, updateInitialCards] = React.useState([]);
-  async function fetchData() {
+  const [viewProfile, setViewProfile] = React.useState({});
+
+  const fetchData = React.useCallback(async () => {
+    if (props.collection) {
+      const data = await fetchUserCards();
+      updateInitialCards(data);
+      updateCards(data);
+      return;
+    }
+
+    if (props.bookmarked) {
+      const data = await fetchBookmarkedCards();
+      updateInitialCards(data);
+      updateCards(data);
+      return;
+    }
+    if (props.viewUser) {
+      const publicId = props.match.params.uid;
+      const data = await fetchUserCards(publicId);
+      const user = await getPublicUser(publicId);
+      setViewProfile(user);
+      updateInitialCards(data);
+      updateCards(data);
+      return;
+    }
     const data = await fetchCards();
     updateInitialCards(data);
     updateCards(data);
-  }
+  }, [props]);
 
   React.useEffect(() => {
-    fetchData();
-  }, [props]);
+    if (props.user) {
+      fetchData();
+    }
+  }, [props.user, fetchData]);
 
   React.useEffect(() => {
     updateCards(
@@ -55,31 +103,64 @@ function KabinetDashboard(props) {
   };
   return (
     <div className="kabinet-home">
-      <Typography
-        className="list-title"
-        align="center"
-        variant="h4"
-        gutterBottom
-      >
-        Kabinet
-      </Typography>
-      <Button
-        className="add-button"
-        variant="contained"
-        color="primary"
-        onClick={() => props.history.push('/kabinet-new')}
-        fullWidth
-        startIcon={<Create />}
-      >
-        New recipe
-      </Button>
-      <SearchBar
-        search={search}
-        handleSearch={handleSearch}
-        selectedDate={selectedDate}
-        handleDateChange={handleDateChange}
-        handleClearFilter={handleClearFilter}
-      />
+      {props.collection && (
+        <>
+          <Typography
+            className="list-title"
+            align="left"
+            variant="h5"
+            gutterBottom
+          >
+            <div className="view-user-title">
+              <PhotoAlbum /> Your collection
+            </div>
+          </Typography>
+          <Button
+            className="add-button"
+            variant="contained"
+            color="primary"
+            onClick={() =>
+              props.user
+                ? props.history.push('/kabinet-new')
+                : props.history.push('/kabinet-login')
+            }
+            fullWidth
+            startIcon={<Create />}
+          >
+            Publish
+          </Button>
+        </>
+      )}
+      {props.bookmarked && (
+        <>
+          <Typography
+            className="list-title"
+            align="left"
+            variant="h5"
+            gutterBottom
+          >
+            <div className="view-user-title">
+              <Book /> Your bookmarks
+            </div>
+          </Typography>
+          <GoBackButton {...props} />
+        </>
+      )}
+      {props.viewUser && (
+        <>
+          <Typography
+            className="list-title"
+            align="left"
+            variant="h5"
+            gutterBottom
+          >
+            <div className="view-user-title">
+              <Face /> {`${viewProfile.displayName}'s collection`}
+            </div>
+          </Typography>
+          <GoBackButton {...props} />
+        </>
+      )}
       <Grid
         container
         className="grid-container list"
@@ -88,6 +169,18 @@ function KabinetDashboard(props) {
         alignItems="center"
         spacing={3}
       >
+        <Grid item>
+          <PopularKeywords cards={initialCards} />
+        </Grid>
+        <Grid item>
+          <SearchBar
+            search={search}
+            handleSearch={handleSearch}
+            selectedDate={selectedDate}
+            handleDateChange={handleDateChange}
+            handleClearFilter={handleClearFilter}
+          />
+        </Grid>
         {cards.map((item, idx) => (
           <Grid item key={idx}>
             <IdeaCard
@@ -95,6 +188,8 @@ function KabinetDashboard(props) {
               {...item}
               history={props.history}
               deleteCard={handleDelete}
+              collection={props.collection}
+              params={props.match.params}
             />
           </Grid>
         ))}
@@ -103,8 +198,14 @@ function KabinetDashboard(props) {
     </div>
   );
 }
+const mapStateToProps = (state) => {
+  return {
+    user: state.kabinet_user,
+    bookmarks: state.kabinet_bookmarks,
+  };
+};
 
-export default KabinetDashboard;
+export default connect(mapStateToProps)(KabinetDashboard);
 
 function SearchBar(props) {
   const {
@@ -154,5 +255,58 @@ function SearchBar(props) {
         </Grid>
       </Grid>
     </Paper>
+  );
+}
+
+function PopularKeywords(props) {
+  const [expanded, setExpand] = React.useState(false);
+  const keywords = accumulateKeywords(props.cards);
+
+  return (
+    <div className="popular-keywords">
+      <Accordion expanded={expanded} onChange={() => setExpand(!expanded)}>
+        <AccordionSummary expandIcon={<ExpandMore />}>
+          <Typography>Keywords</Typography>
+        </AccordionSummary>
+        <Divider />
+        <AccordionDetails>
+          <KeywordTags keywords={keywords.map((key) => key[0])} readOnly />
+        </AccordionDetails>
+      </Accordion>
+    </div>
+  );
+}
+
+function accumulateKeywords(cards) {
+  let keywords = [];
+  let accum = {};
+  let data = [];
+  cards.forEach((card) => {
+    keywords = [...keywords, ...card.keywords];
+  });
+  keywords.forEach((key) => {
+    accum[key] = (accum[key] || 0) + 1;
+  });
+
+  for (let key in accum) {
+    data.push([key, accum[key]]);
+  }
+  data.sort((a, b) => {
+    return b[1] - a[1];
+  });
+  return data;
+}
+
+function GoBackButton(props) {
+  return (
+    <Button
+      className="goback-button"
+      variant="outlined"
+      color="primary"
+      onClick={() => props.history.goBack()}
+      startIcon={<KeyboardBackspace />}
+    >
+      Back
+    </Button>
   );
 }

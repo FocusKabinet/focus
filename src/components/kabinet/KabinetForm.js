@@ -19,8 +19,17 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  Switch,
 } from '@material-ui/core';
-import { AddCircle, Clear, Save, Settings } from '@material-ui/icons';
+import {
+  AddCircle,
+  Cancel,
+  Delete,
+  Save,
+  Settings,
+  Visibility,
+  VisibilityOff,
+} from '@material-ui/icons';
 import './styles/KabinetForm.scss';
 import { DateTimePicker } from '@material-ui/pickers';
 import Picker from 'emoji-picker-react';
@@ -29,7 +38,7 @@ import { KeywordTags } from './KeywordTags';
 import { CheckList } from './Checklist';
 import { addCard, fetchCard, updateCard } from '../../helpers/kabinetHelpers';
 
-export default function KabinetForm(props) {
+function KabinetForm(props) {
   const {
     match: {
       params: { id },
@@ -56,6 +65,7 @@ export default function KabinetForm(props) {
     imageURL: '',
     checklist: [],
     primaryKeyword: '',
+    private: false,
   };
 
   const [pickerDialog, pickerDialogToggle] = React.useState(false);
@@ -63,7 +73,6 @@ export default function KabinetForm(props) {
   const [todoField, changeTodoField] = React.useState('');
   const [isDirty, changeDirty] = React.useState(false);
   const [form, updateForm] = React.useState(emptyForm);
-  const [initialForm, updateInitialForm] = React.useState({});
   const [showDrawer, setDrawer] = React.useState(false);
 
   React.useEffect(() => {
@@ -146,7 +155,7 @@ export default function KabinetForm(props) {
 
   const clearForm = () => {
     setDrawer(false);
-    changeDirty(true);
+    changeDirty(false);
     return updateForm(emptyForm);
   };
 
@@ -170,7 +179,6 @@ export default function KabinetForm(props) {
 
   const handleSetPrimary = (e) => {
     e.target.id = 'primaryKeyword';
-    console.log(e.target.value);
     return handleUpdateForm(e);
   };
 
@@ -178,6 +186,12 @@ export default function KabinetForm(props) {
     console.log('save as draft', form);
     return setDrawer(false);
   };
+
+  const toggleVisibility = (e) => {
+    changeDirty(true);
+    return updateForm({ ...form, private: e.target.checked });
+  };
+
   return (
     <div>
       <Typography
@@ -214,6 +228,7 @@ export default function KabinetForm(props) {
                   </InputAdornment>
                 ),
               }}
+              required
             />
           </Grid>
           <EmojiPicker
@@ -229,11 +244,13 @@ export default function KabinetForm(props) {
               multiline
               rows={5}
               className="title-field"
+              label="Description"
               placeholder="Describe your idea"
               variant="outlined"
               size="small"
               value={form.description}
               onChange={handleUpdateForm}
+              required
             />
           </Grid>
           <Grid item>
@@ -368,6 +385,18 @@ export default function KabinetForm(props) {
               </TabPanel>
             </Paper>
           </Grid>
+          <Grid item>
+            <div className="set-visibility">
+              <Typography>Set visibility: </Typography>
+              {!!form.private ? <VisibilityOff /> : <Visibility />}
+            </div>
+            <div className="set-visibility">
+              <Typography>Public</Typography>
+              <Switch onChange={toggleVisibility} checked={form.private} />
+              <Typography>Private</Typography>
+            </div>
+          </Grid>
+
           {/* <Grid item>
             <DateTimePicker
               label="Set reminder ?"
@@ -390,7 +419,7 @@ export default function KabinetForm(props) {
                 onClose={() => setDrawer(false)}
               >
                 <List>
-                  <ListItem button onClick={() => saveAsDraft()}>
+                  <ListItem button onClick={() => saveAsDraft()} disabled>
                     <ListItemIcon>
                       <Save color="primary" />
                     </ListItemIcon>
@@ -398,9 +427,16 @@ export default function KabinetForm(props) {
                   </ListItem>
                   <ListItem button onClick={() => clearForm()}>
                     <ListItemIcon>
-                      <Clear color="secondary" />
+                      <Delete color="secondary" />
                     </ListItemIcon>
                     <ListItemText>Clear</ListItemText>
+                  </ListItem>
+                  <Divider />
+                  <ListItem button onClick={() => setDrawer(false)}>
+                    <ListItemIcon>
+                      <Cancel />
+                    </ListItemIcon>
+                    <ListItemText>Cancel</ListItemText>
                   </ListItem>
                 </List>
               </Drawer>
@@ -410,13 +446,13 @@ export default function KabinetForm(props) {
                   variant="outlined"
                   onClick={() => props.history.goBack()}
                 >
-                  Back
+                  Cancel
                 </Button>
                 <Button
                   color="primary"
                   variant="contained"
                   onClick={handleSubmit}
-                  disabled={!form.title || !isDirty}
+                  disabled={!form.title || !isDirty || !form.description}
                 >
                   Publish
                 </Button>
@@ -428,6 +464,8 @@ export default function KabinetForm(props) {
     </div>
   );
 }
+
+export default KabinetForm;
 
 function EmojiPicker(props) {
   const { open, handleClose } = props;

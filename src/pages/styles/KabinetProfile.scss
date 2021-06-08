@@ -1,0 +1,21 @@
+.change-pw-form {
+  padding: 1rem;
+}
+.changepw-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.profile-update-buttons {
+  button:not(:last-child) {
+    margin-right: 0.5rem;
+  }
+}
+
+.title-with-icon {
+  display: flex;
+  align-items: center;
+  svg {
+    margin-right: 0.4rem;
+  }
+}

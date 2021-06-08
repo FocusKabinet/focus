@@ -4,7 +4,7 @@ import {
   getCurrentCountry,
   getGoogleTrends,
   getHeadLines,
-} from '../helpers/kabinetHelpers';
+} from '../helpers/kabinetUtils';
 import News from '../components/kabinet/News';
 import ScrollToTop from '../components/kabinet/ScrollToTop';
 import { Typography } from '@material-ui/core';
@@ -17,7 +17,6 @@ export default function KabinetTrendings(props) {
   async function fetchData() {
     const countryObjData = await getCurrentCountry();
     updateCountryObj(countryObjData);
-    console.log(countryObjData);
     const trendsData = await getGoogleTrends(countryObjData.countryCode);
     updateTrends(trendsData);
     const headlinesRes = await getHeadLines(countryObjData.countryCode);
@@ -32,8 +31,6 @@ export default function KabinetTrendings(props) {
       ...headlinesRes.articles,
     ];
     updateHeadlines(headlinesRes);
-
-    console.log(headlinesRes);
   }
 
   React.useEffect(() => {
@@ -48,7 +45,7 @@ export default function KabinetTrendings(props) {
         variant="h5"
         gutterBottom
       >
-        Here is what trending on the internet
+        Here is what's trending on the internet
       </Typography>
       <ScrollToTop />
       <GoogleTrends {...trends} countryCode={countryObj.countryCode} />

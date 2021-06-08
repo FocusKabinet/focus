@@ -14,20 +14,15 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  Card,
-  CardActionArea,
-  CardContent,
   Grid,
-  CardHeader,
   CardMedia,
 } from '@material-ui/core';
 import {
   Close,
   ExpandMore,
-  OpenInNew,
   Public,
+  Schedule,
   TrendingUp,
-  Whatshot,
 } from '@material-ui/icons';
 import './styles/GoogleTrends.scss';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -36,7 +31,7 @@ import HE from 'he';
 import empty from '../../assets/empty-state-photo.png';
 
 export default function GoogleTrends(props) {
-  const { formattedDate, trendingSearches = [], countryCode } = props;
+  const { trendingSearches = [], countryCode } = props;
   return (
     <Paper className="trends-container">
       <Accordion className="accordion">
@@ -117,17 +112,9 @@ function ArticleDialog(props) {
   );
 }
 
-function sortArticles(articles) {
-  return articles.sort((a, b) => {
-    if (a.timeAgo > b.timeAgo) return -1;
-    if (a.timeAgo < b.timeAgo) return 1;
-    return 0;
-  });
-}
-
 function NewArticleCard(props) {
   const { article, id } = props;
-  const { title, image, snippet, timeAgo, url, source } = article;
+  const { title, image, timeAgo, url, source } = article;
   return (
     <Grid item key={id + '-article'}>
       <Paper
@@ -144,7 +131,8 @@ function NewArticleCard(props) {
               {HE.decode(title)}
             </Typography>
             <div className="dialog-content-bottom">
-              <Typography variant="body2" color="textSecondary">
+              <Typography variant="body2" color="textSecondary" className="ago">
+                <Schedule fontSize="small" />
                 {timeAgo}
               </Typography>
             </div>
