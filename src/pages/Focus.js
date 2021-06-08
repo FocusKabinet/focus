@@ -35,8 +35,8 @@ function Focus({ handleLogout }) {
 
 			<Grid item xs={2}>
 				{deepStudy && inSession === 1 && (
-					<Button onClick={() => setInSession(3)} className='timer-buttons'>
-						Pause Session
+					<Button onClick={() => setInSession(2)} className='timer-buttons'>
+						End Session
 					</Button>
 				)}
 			</Grid>

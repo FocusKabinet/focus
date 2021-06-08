@@ -37,7 +37,7 @@ function DataPopup({ session, open, handleClose }) {
 						<ul>
 							{study_times.map((time, id) => (
 								<li key={id}>
-									start: {time.start.hours}:{time.start.minutes}:{time.start.seconds}, end: {time.end.hours}:{time.end.minutes}:{time.end.seconds}
+									start: {('0' + time.start.hours).slice(-2)}:{('0' + time.start.minutes).slice(-2)}:{('0' + time.start.seconds).slice(-2)}, end: {('0' + time.end.hours).slice(-2)}:{('0' + time.end.minutes).slice(-2)}:{('0' + time.end.seconds).slice(-2)}
 								</li>
 							))}
 						</ul>
