@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './styles/Timer.scss';
 import timerAlarm from '../../assets/audio/timer_alarm.mp3';
 import { convertMilli } from './helpers/convertMilli';
+import { timeCalc } from './helpers/timeCalc';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import { Howl } from 'howler';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,7 +15,7 @@ import { useDispatch } from 'react-redux';
 import { StudyActionCreators } from '../../redux/actions/studyData';
 import DataPopup from './DataPopup';
 import LeavePrompt from './Prompt';
-import { Prompt, Link } from 'react-router-dom';
+import { Prompt } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 function Timer({ changeBackground, inSession, setInSession }) {
@@ -24,7 +25,20 @@ function Timer({ changeBackground, inSession, setInSession }) {
 	const shortBreak = useSelector((state) => state.timer.short);
 	const longBreak = useSelector((state) => state.timer.long);
 	const deepStudy = useSelector((state) => state.timer.deep_study);
-	const rdxSession = useSelector((state) => state.studyData.session_times);
+
+	//working here
+	const rdxStudies = useSelector((state) => state.studyData.studies);
+	const rdxStudyTimes = useSelector((state) => state.studyData.study_times);
+	const rdxShortBreaks = useSelector(
+		(state) => state.studyData.short_breaks_taken
+	);
+	const rdxLongBreaks = useSelector(
+		(state) => state.studyData.long_breaks_taken
+	);
+	const rdxShortBreakTimes = useSelector(
+		(state) => state.studyData.short_breaks
+	);
+	const rdxLongBreakTimes = useSelector((state) => state.studyData.long_breaks);
 
 	const sound = new Howl({
 		src: [timerAlarm],
@@ -103,7 +117,7 @@ function Timer({ changeBackground, inSession, setInSession }) {
 					});
 				}
 			}, 1000);
-		} 
+		}
 		return () => clearInterval(interval);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [timerOn, inSession]);
@@ -120,13 +134,32 @@ function Timer({ changeBackground, inSession, setInSession }) {
 			alert('not in session');
 		} else if (inSession === 1) {
 			alert('Session Started');
-		}else if(inSession === 2){
+		} else if (inSession === 2) {
 			alert('Session Ended');
 			let d = new Date();
 			dispatch(
 				StudyActionCreators.addSession({
 					start: session.start,
-					end: d,
+					end: {
+						date: {
+							day: d.getDate(),
+							month: d.getMonth() + 1,
+							year: d.getFullYear(),
+						},
+						time: {
+							hours: d.getHours(),
+							minutes: d.getMinutes(),
+							seconds: d.getSeconds(),
+						},
+					},
+					sessionInfo: {
+						studies: rdxStudies,
+						studyTimes: rdxStudyTimes,
+						shortBreaks: rdxShortBreaks,
+						longBreaks: rdxLongBreaks,
+						shortBreakTimes: rdxShortBreakTimes,
+						longBreakTimes: rdxLongBreakTimes,
+					},
 				})
 			);
 			setSession((prevTime) => {
@@ -136,10 +169,8 @@ function Timer({ changeBackground, inSession, setInSession }) {
 					started: false,
 				};
 			});
-			//working here
-			console.log(rdxSession)
 		} else {
-			alert('problem: '+ inSession + ".");
+			alert('problem: ' + inSession + '.');
 		}
 	}, [inSession]);
 
@@ -153,14 +184,25 @@ function Timer({ changeBackground, inSession, setInSession }) {
 
 	const startBreak = (bool) => {
 		if (breakTime.break === 1 && studyStart.hours !== -1 && deepStudy) {
+			let d = new Date();
+			let endTime = {
+				hours: d.getHours(),
+				minutes: d.getMinutes(),
+				seconds: d.getSeconds(),
+			};
 			dispatch(
 				StudyActionCreators.addStudy({
 					start: studyStart,
-					end: {
-						hours: convertMilli(time, 'hour'),
-						minutes: convertMilli(time, 'min'),
-						seconds: convertMilli(time, 'sec'),
-					},
+					end: endTime,
+					timeSpent: timeCalc(
+						studyStart.hours,
+						studyStart.minutes,
+						studyStart.seconds,
+						endTime.hours,
+						endTime.minutes,
+						endTime.seconds,
+						'add'
+					),
 				})
 			);
 		}
@@ -201,14 +243,25 @@ function Timer({ changeBackground, inSession, setInSession }) {
 				time !== convertMilli(studyTime) &&
 				deepStudy
 			) {
+				let d = new Date();
+				let endTime = {
+					hours: d.getHours(),
+					minutes: d.getMinutes(),
+					seconds: d.getSeconds(),
+				};
 				dispatch(
 					StudyActionCreators.addStudy({
 						start: studyStart,
-						end: {
-							hours: convertMilli(time, 'hour'),
-							minutes: convertMilli(time, 'min'),
-							seconds: convertMilli(time, 'sec'),
-						},
+						end: endTime,
+						timeSpent: timeCalc(
+							studyStart.hours,
+							studyStart.minutes,
+							studyStart.seconds,
+							endTime.hours,
+							endTime.minutes,
+							endTime.seconds,
+							'add'
+						),
 					})
 				);
 			}
@@ -244,32 +297,55 @@ function Timer({ changeBackground, inSession, setInSession }) {
 			setSession({
 				...session,
 				started: true,
-				start: d,
+				start: {
+					date: {
+						day: d.getDate(),
+						month: d.getMonth() + 1,
+						year: d.getFullYear(),
+					},
+					time: {
+						hours: d.getHours(),
+						minutes: d.getMinutes(),
+						seconds: d.getSeconds(),
+					},
+				},
 				currentTime: 0,
 			});
 		}
 		if (timerOn) {
 			if (breakTime.break === 1 && studyStart.hours !== -1 && deepStudy) {
+				let d = new Date();
+				let endTime = {
+					hours: d.getHours(),
+					minutes: d.getMinutes(),
+					seconds: d.getSeconds(),
+				};
 				dispatch(
 					StudyActionCreators.addStudy({
 						start: studyStart,
-						end: {
-							hours: convertMilli(time, 'hour'),
-							minutes: convertMilli(time, 'min'),
-							seconds: convertMilli(time, 'sec'),
-						},
+						end: endTime,
+						timeSpent: timeCalc(
+							studyStart.hours,
+							studyStart.minutes,
+							studyStart.seconds,
+							endTime.hours,
+							endTime.minutes,
+							endTime.seconds,
+							'add'
+						),
 					})
 				);
 			}
 			setTimerOn(false);
 		} else {
 			if (breakTime.break === 1) {
+				let d = new Date();
 				setStudyStart({
-					hours: convertMilli(time, 'hour'),
-					minutes: convertMilli(time, 'min'),
-					seconds: convertMilli(time, 'sec'),
+					hours: d.getHours(),
+					minutes: d.getMinutes(),
+					seconds: d.getSeconds(),
 				});
-			}else if(breakTime.break === 2 && time === convertMilli(shortBreak)){
+			} else if (breakTime.break === 2 && time === convertMilli(shortBreak)) {
 				dispatch(
 					StudyActionCreators.addSBreak({
 						time: {
@@ -279,7 +355,7 @@ function Timer({ changeBackground, inSession, setInSession }) {
 						},
 					})
 				);
-			}else if(breakTime.break === 3 && time === convertMilli(longBreak)){
+			} else if (breakTime.break === 3 && time === convertMilli(longBreak)) {
 				dispatch(
 					StudyActionCreators.addLBreak({
 						time: {
