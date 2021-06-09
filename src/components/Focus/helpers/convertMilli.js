@@ -6,6 +6,12 @@ export function convertMilli(milli, choice) {
 			return Math.floor((milli / 60000) % 60);
 		case 'sec':
 			return Math.floor((milli / 1000) % 60);
+		case 'hourM':
+			return milli * 3600000;
+		case 'minM':
+			return milli * 60000;
+		case 'secM':
+			return milli * 1000;
 		default:
 			return milli * 60000;
 	}

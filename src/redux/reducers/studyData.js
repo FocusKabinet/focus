@@ -1,7 +1,6 @@
 import { studyDataType as Types } from '../actions/studyData';
 
 const initialState = {
-	studies_attempted: 0,
 	studies: 0,
 	study_times: [],
 	short_breaks_taken: 0,
@@ -37,11 +36,6 @@ const studyReducer = (state = initialState, action) => {
 				...state,
 				sessions: state.sessions + 1,
 				session_times: [...state.session_times, action.payload.times],
-			};
-		case Types.ADD_STUDY_ATTEMPTED:
-			return {
-				...state,
-				studies_attempted: state.studies_attempted + 1,
 			};
 		case Types.CLEAR_STATE:
 			return initialState;

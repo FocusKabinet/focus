@@ -3,7 +3,6 @@ export const studyDataType = {
 	ADD_SHORT_BREAK: 'ADD_SHORT_BREAK', //when a long break is taken
 	ADD_STUDY: 'ADD_STUDY', //when a study is started
 	ADD_SESSION: 'ADD_SESSION', //when a study is ended
-	ADD_STUDY_ATTEMPTED: 'ADD_STUDY_ATTEMPTED', //number of studies attempted
 	CLEAR_STATE: 'CLEAR_STATE',
 };
 
@@ -26,11 +25,6 @@ export const StudyActionCreators = {
 	addSession: (times) => ({
 		type: 'ADD_SESSION',
 		payload: { times },
-	}),
-
-	addStudyAttempt: (num) => ({
-		type: 'ADD_STUDY_ATTEMPTED',
-		payload: num,
 	}),
 
 	clearState: () => ({

@@ -203,7 +203,7 @@ function App() {
 						<Navbar title={'Settings'} loggedIn={false} />
 						<Settings />
 					</Route>
-					<Route path='/datapage/:id'>
+					<Route path='/data'>
 						<Navbar title={'Data'} loggedIn={false} />
 						<Datapage />
 					</Route>
