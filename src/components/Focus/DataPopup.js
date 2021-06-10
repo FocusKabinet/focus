@@ -21,6 +21,7 @@ function DataPopup({ session, open, handleClose }) {
 			onClose={handleClose}
 			aria-labelledby='customized-dialog-title'
 			open={open}
+			className='data-popup'
 		>
 			<Box className='container'>
 				<Grid container justify='space-between' alignItems='baseline'>
