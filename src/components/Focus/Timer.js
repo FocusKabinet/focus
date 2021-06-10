@@ -14,6 +14,7 @@ import {
 import { useDispatch } from 'react-redux';
 import { StudyActionCreators } from '../../redux/actions/studyData';
 import DataPopup from './DataPopup';
+import TaskPopup from './TaskPopup';
 import LeavePrompt from './Prompt';
 import { Prompt } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -26,22 +27,17 @@ function Timer({ changeBackground, inSession, setInSession }) {
 	const longBreak = useSelector((state) => state.timer.long);
 	const deepStudy = useSelector((state) => state.timer.deep_study);
 
-	//working here
-	const rdxStudies = useSelector((state) => state.studyData.studies);
-	const rdxStudyTimes = useSelector((state) => state.studyData.study_times);
-	const rdxShortBreaks = useSelector(
-		(state) => state.studyData.short_breaks_taken
-	);
-	const rdxLongBreaks = useSelector(
-		(state) => state.studyData.long_breaks_taken
-	);
-	const rdxShortBreakTimes = useSelector(
-		(state) => state.studyData.short_breaks
-	);
-	const rdxLongBreakTimes = useSelector((state) => state.studyData.long_breaks);
-
 	const sound = new Howl({
 		src: [timerAlarm],
+	});
+
+	const [sessionInfo, setSessionInfo] = useState({
+		studies: 0,
+		studyTimes: [],
+		shortBreaks: 0,
+		longBreaks: 0,
+		shortBreakTimes: [],
+		longBreakTimes: [],
 	});
 
 	const [studyStart, setStudyStart] = useState({
@@ -152,14 +148,7 @@ function Timer({ changeBackground, inSession, setInSession }) {
 							seconds: d.getSeconds(),
 						},
 					},
-					sessionInfo: {
-						studies: rdxStudies,
-						studyTimes: rdxStudyTimes,
-						shortBreaks: rdxShortBreaks,
-						longBreaks: rdxLongBreaks,
-						shortBreakTimes: rdxShortBreakTimes,
-						longBreakTimes: rdxLongBreakTimes,
-					},
+					sessionInfo: sessionInfo,
 				})
 			);
 			setSession((prevTime) => {
@@ -172,13 +161,23 @@ function Timer({ changeBackground, inSession, setInSession }) {
 		} else {
 			alert('problem: ' + inSession + '.');
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [inSession]);
 
-	const handleOpen = () => {
-		setOpenData(true);
+	// working
+	const handleOpen = (target) => {
+		if (target === 'task') {
+			setOpenTask(true);
+		} else {
+			setOpenData(true);
+		}
 	};
 
-	const handleClose = () => {
+	const handleCloseTask = () => {
+		setOpenTask(false);
+	};
+
+	const handleCloseData = () => {
 		setOpenData(false);
 	};
 
@@ -190,21 +189,27 @@ function Timer({ changeBackground, inSession, setInSession }) {
 				minutes: d.getMinutes(),
 				seconds: d.getSeconds(),
 			};
-			dispatch(
-				StudyActionCreators.addStudy({
-					start: studyStart,
-					end: endTime,
-					timeSpent: timeCalc(
-						studyStart.hours,
-						studyStart.minutes,
-						studyStart.seconds,
-						endTime.hours,
-						endTime.minutes,
-						endTime.seconds,
-						'add'
-					),
-				})
-			);
+			let addedStudy = {
+				start: studyStart,
+				end: endTime,
+				timeSpent: timeCalc(
+					studyStart.hours,
+					studyStart.minutes,
+					studyStart.seconds,
+					endTime.hours,
+					endTime.minutes,
+					endTime.seconds,
+					'add'
+				),
+			};
+			dispatch(StudyActionCreators.addStudy(addedStudy));
+			setSessionInfo((prev) => {
+				return {
+					...sessionInfo,
+					studies: prev.studies + 1,
+					studyTimes: [...prev.studyTimes, addedStudy],
+				};
+			});
 		}
 		if (bool) {
 			setColor('#437ea8', '#3597d6');
@@ -249,21 +254,27 @@ function Timer({ changeBackground, inSession, setInSession }) {
 					minutes: d.getMinutes(),
 					seconds: d.getSeconds(),
 				};
-				dispatch(
-					StudyActionCreators.addStudy({
-						start: studyStart,
-						end: endTime,
-						timeSpent: timeCalc(
-							studyStart.hours,
-							studyStart.minutes,
-							studyStart.seconds,
-							endTime.hours,
-							endTime.minutes,
-							endTime.seconds,
-							'add'
-						),
-					})
-				);
+				let addedStudy = {
+					start: studyStart,
+					end: endTime,
+					timeSpent: timeCalc(
+						studyStart.hours,
+						studyStart.minutes,
+						studyStart.seconds,
+						endTime.hours,
+						endTime.minutes,
+						endTime.seconds,
+						'add'
+					),
+				};
+				dispatch(StudyActionCreators.addStudy(addedStudy));
+				setSessionInfo((prev) => {
+					return {
+						...sessionInfo,
+						studies: prev.studies + 1,
+						studyTimes: [...prev.studyTimes, addedStudy],
+					};
+				});
 			}
 			setTime(convertMilli(studyTime));
 		} else if (breakTime.break === 2) {
@@ -320,51 +331,65 @@ function Timer({ changeBackground, inSession, setInSession }) {
 					minutes: d.getMinutes(),
 					seconds: d.getSeconds(),
 				};
-				dispatch(
-					StudyActionCreators.addStudy({
-						start: studyStart,
-						end: endTime,
-						timeSpent: timeCalc(
-							studyStart.hours,
-							studyStart.minutes,
-							studyStart.seconds,
-							endTime.hours,
-							endTime.minutes,
-							endTime.seconds,
-							'add'
-						),
-					})
-				);
+				let addedStudy = {
+					start: studyStart,
+					end: endTime,
+					timeSpent: timeCalc(
+						studyStart.hours,
+						studyStart.minutes,
+						studyStart.seconds,
+						endTime.hours,
+						endTime.minutes,
+						endTime.seconds,
+						'add'
+					),
+				};
+				dispatch(StudyActionCreators.addStudy(addedStudy));
+				setSessionInfo((prev) => {
+					return {
+						...sessionInfo,
+						studies: prev.studies + 1,
+						studyTimes: [...prev.studyTimes, addedStudy],
+					};
+				});
 			}
+
 			setTimerOn(false);
 		} else {
+			let d = new Date();
+			let timeObj = {
+				hours: d.getHours(),
+				minutes: d.getMinutes(),
+				seconds: d.getSeconds(),
+			};
 			if (breakTime.break === 1) {
-				let d = new Date();
-				setStudyStart({
-					hours: d.getHours(),
-					minutes: d.getMinutes(),
-					seconds: d.getSeconds(),
-				});
+				setStudyStart(timeObj);
 			} else if (breakTime.break === 2 && time === convertMilli(shortBreak)) {
 				dispatch(
 					StudyActionCreators.addSBreak({
-						time: {
-							hours: d.getHours(),
-							minutes: d.getMinutes(),
-							seconds: d.getSeconds(),
-						},
+						time: timeObj,
 					})
 				);
+				setSessionInfo((prev) => {
+					return {
+						...sessionInfo,
+						shortBreaks: prev.shortBreaks + 1,
+						shortBreakTimes: [...prev.shortBreakTimes, timeObj],
+					};
+				});
 			} else if (breakTime.break === 3 && time === convertMilli(longBreak)) {
 				dispatch(
 					StudyActionCreators.addLBreak({
-						time: {
-							hours: d.getHours(),
-							minutes: d.getMinutes(),
-							seconds: d.getSeconds(),
-						},
+						time: timeObj,
 					})
 				);
+				setSessionInfo((prev) => {
+					return {
+						...sessionInfo,
+						longBreaks: prev.longBreaks + 1,
+						longBreakTimes: [...prev.longBreakTimes, timeObj],
+					};
+				});
 			}
 			setInSession(1);
 			setTimerOn(true);
@@ -424,6 +449,8 @@ function Timer({ changeBackground, inSession, setInSession }) {
 							{deepStudy && (
 								<Button
 									size='medium'
+									//working
+									onClick={() => handleOpen('task')}
 									style={
 										breakTime.break === 3
 											? { color: '#fff' }
@@ -444,7 +471,7 @@ function Timer({ changeBackground, inSession, setInSession }) {
 							{deepStudy && (
 								<Button
 									size='medium'
-									onClick={handleOpen}
+									onClick={() => handleOpen('data')}
 									style={
 										breakTime.break === 3
 											? { color: '#fff' }
@@ -464,10 +491,15 @@ function Timer({ changeBackground, inSession, setInSession }) {
 			</Grid>
 			{deepStudy && (
 				<>
+					<TaskPopup
+						session={session}
+						open={openTask}
+						handleClose={handleCloseTask}
+					/>
 					<DataPopup
 						session={session}
 						open={openData}
-						handleClose={handleClose}
+						handleClose={handleCloseData}
 					/>
 					{inSession > 0 && (
 						<Prompt

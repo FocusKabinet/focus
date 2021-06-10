@@ -12,14 +12,6 @@ import { TimerActionCreators } from '../../redux/actions/timer';
 function TimerCard({ name, studySes, des }) {
 	const dispatch = useDispatch();
 
-	const [expanded, setExpanded] = React.useState(false);
-
-	const handleExpandClick = () => {
-		setExpanded(!expanded);
-	};
-
-	const setTimer = () => {};
-
 	return (
 		<Card className='card-container'>
 			<Link
@@ -30,7 +22,11 @@ function TimerCard({ name, studySes, des }) {
 				}}
 			>
 				<CardActionArea>
-					<CardMedia className='card-bck' title='Timer' image='src/assets/empty-state-photo.png' />
+					<CardMedia
+						className='card-bck'
+						title='Timer'
+						image='src/assets/empty-state-photo.png'
+					/>
 					<CardContent>
 						<Typography gutterBottom variant='h5' component='h2'>
 							{name}

@@ -1,4 +1,4 @@
-.data-popup {
+.task-popup {
 	& .MuiDialog-paper {
 		max-width: 900px;
 		background-color: #efebe1;
@@ -11,5 +11,14 @@
 
 	.container {
 		padding: 50px;
+	}
+
+	.task-input {
+		width: 100%;
+	}
+
+	.submit-form {
+		font-size: 2rem;
+		padding: 5px;
 	}
 }
