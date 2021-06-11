@@ -99,7 +99,7 @@ function Timer({ changeBackground, inSession, setInSession }) {
 			setTimerOn(false);
 			resetTime();
 			timerBreak(convertMilli(studyTime), 1);
-			setColor('#8abd91', '#75a27c');
+			setColor('#5c8762', '#75a27c');
 		}
 		let interval = null;
 		if (session.started) {
@@ -227,7 +227,7 @@ function Timer({ changeBackground, inSession, setInSession }) {
 	};
 
 	const startTimer = () => {
-		setColor('#8abd91', '#75a27c');
+		setColor('#5c8762', '#75a27c');
 		setTimerOn(false);
 		if (breakTime.break === 1) {
 			alert('choose timer');
@@ -293,7 +293,12 @@ function Timer({ changeBackground, inSession, setInSession }) {
 	};
 
 	const setColor = (pageCol, timerCol) => {
-		changeBackground(pageCol);
+		changeBackground(pageCol, {
+			backgroundColor: timerCol,
+			transition: 'all .8s ease',
+			WebkitTransition: 'all .8s ease',
+			MozTransition: 'all .8s ease',
+		});
 		setBackground({
 			backgroundColor: timerCol,
 			transition: 'all .8s ease',
