@@ -22,13 +22,19 @@ function DataPopup({ session, open, handleClose }) {
 			aria-labelledby='customized-dialog-title'
 			open={open}
 			className='data-popup'
+			fullScreen
+			fullWidth
 		>
 			<Box className='container'>
 				<Grid container justify='space-between' alignItems='baseline'>
 					<Typography variant='h4' gutterBottom>
 						Your Data
 					</Typography>
-					<IconButton aria-label='close' onClick={handleClose}>
+					<IconButton
+						aria-label='close'
+						onClick={handleClose}
+						className='close-btn'
+					>
 						<CloseIcon />
 					</IconButton>
 				</Grid>
