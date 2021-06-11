@@ -48,7 +48,7 @@ function Timer({ changeBackground, inSession, setInSession }) {
 	const [time, setTime] = useState(convertMilli(studyTime));
 	const [heldTime, setHeldTime] = useState(0);
 	const [backgroundColor, setBackground] = useState({
-		backgroundColor: '#75a27c',
+		backgroundColor: '#498551',
 	});
 	const [breakTime, setBreakTime] = useState({
 		break: 1,
@@ -99,7 +99,7 @@ function Timer({ changeBackground, inSession, setInSession }) {
 			setTimerOn(false);
 			resetTime();
 			timerBreak(convertMilli(studyTime), 1);
-			setColor('#5c8762', '#75a27c');
+			setColor(['#407447','#a0c0ae'], '#498551');
 		}
 		let interval = null;
 		if (session.started) {
@@ -212,13 +212,13 @@ function Timer({ changeBackground, inSession, setInSession }) {
 			});
 		}
 		if (bool) {
-			setColor('#437ea8', '#3597d6');
+			setColor(['#437ea8','#b1cce0'], '#5599c5');
 			if (breakTime.break === 1) {
 				setHeldTime(time);
 			}
 			timerBreak(breakTime.short, 2);
 		} else {
-			setColor('#52307c', '#3c1361');
+			setColor(['#52307c','#eee1ff'], '#763ea8');
 			if (breakTime.break === 1) {
 				setHeldTime(time);
 			}
@@ -227,7 +227,7 @@ function Timer({ changeBackground, inSession, setInSession }) {
 	};
 
 	const startTimer = () => {
-		setColor('#5c8762', '#75a27c');
+		setColor(['#5c8762','#a0c0ae'], '#498551');
 		setTimerOn(false);
 		if (breakTime.break === 1) {
 			alert('choose timer');

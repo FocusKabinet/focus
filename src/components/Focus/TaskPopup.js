@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './styles/TaskPopup.scss';
 import Dialog from '@material-ui/core/Dialog';
-import MuiDialogContent from '@material-ui/core/DialogContent';
 import CloseIcon from '@material-ui/icons/Close';
 import {
 	Grid,
@@ -12,19 +11,30 @@ import {
 	Switch,
 } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { TaskActionCreators } from '../../redux/actions/task';
 import TextField from '@material-ui/core/TextField';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPen, faTrashAlt, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faPen } from '@fortawesome/free-solid-svg-icons';
+import MuiAlert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
+import TaskList from './TaskList';
+import DoneTasks from './DoneTasks';
 
 function TaskPopup({ session, open, handleClose }) {
 	const dispatch = useDispatch();
 
-	const [taskList, setTaskList] = useState([]);
-	const [doneTasks, setDoneTasks] = useState([]);
+	const rxTaskList = useSelector((state) => state.task.taskList);
+	const rxDoneTasks = useSelector((state) => state.task.doneTasks);
+	const rxFavTask = useSelector((state) => state.task.favoriteTask);
+
 	const [input, setInput] = useState('');
 	const [showDoneTask, setShowTask] = useState(false);
-	const [favTask, setFavTask] = useState({});
+	const [openWarning, setOpenWarning] = useState(false);
+
+	function Alert(props) {
+		return <MuiAlert elevation={6} variant='filled' {...props} />;
+	}
 
 	const handleCloseData = () => {
 		handleClose();
@@ -32,11 +42,9 @@ function TaskPopup({ session, open, handleClose }) {
 
 	function handleSubmit(e) {
 		let found = false;
-		for (var i = 0; i < taskList.length; i++) {
-			if (taskList[i].task.trim() === input.trim()) {
+		for (var i = 0; i < rxTaskList.length; i++) {
+			if (rxTaskList[i].task.trim() === input.trim()) {
 				found = true;
-			} else {
-				console.log(taskList[i]);
 			}
 		}
 		if (!found) {
@@ -46,19 +54,16 @@ function TaskPopup({ session, open, handleClose }) {
 				minutes: d.getMinutes(),
 				seconds: d.getSeconds(),
 			};
-			setTaskList((prev) => {
-				dispatch(
-					TaskActionCreators.addTask({
-						task: input,
-						time: time,
-						finished: false,
-					})
-				);
-				return [...prev, { task: input }];
-			});
+			dispatch(
+				TaskActionCreators.addTask({
+					task: input,
+					time: time,
+					finished: false,
+				})
+			);
 			setInput('');
 		} else {
-			alert('Youve already entered that task');
+			setOpenWarning(true);
 		}
 		e.preventDefault();
 	}
@@ -70,25 +75,18 @@ function TaskPopup({ session, open, handleClose }) {
 			minutes: d.getMinutes(),
 			seconds: d.getSeconds(),
 		};
-		setTaskList(
-			taskList.filter((task) => {
-				if (task.task === e.target.name) {
-					if (e.target.name === favTask) {
-						setFavTask('');
-						dispatch(TaskActionCreators.setFavorite(''));
-					}
-					dispatch(TaskActionCreators.deleteDoneTask(task));
-					setDoneTasks((prev) => {
-						task['timeFinished'] = time;
-						task['finished'] = true;
-						dispatch(TaskActionCreators.addDoneTask(task));
-						return [...prev, task];
-					});
-					dispatch(TaskActionCreators.deleteTask(task));
+		rxTaskList.forEach((task) => {
+			if (task.task === e.target.name) {
+				if (e.target.name === rxFavTask) {
+					dispatch(TaskActionCreators.setFavorite(''));
 				}
-				return task.task !== e.target.name;
-			})
-		);
+				dispatch(TaskActionCreators.deleteDoneTask(task));
+				task['timeFinished'] = time;
+				task['finished'] = true;
+				dispatch(TaskActionCreators.addDoneTask(task));
+				dispatch(TaskActionCreators.deleteTask(task));
+			}
+		});
 	}
 
 	function handleDoneChange(e) {
@@ -98,41 +96,24 @@ function TaskPopup({ session, open, handleClose }) {
 			minutes: d.getMinutes(),
 			seconds: d.getSeconds(),
 		};
-		setDoneTasks(
-			doneTasks.filter((task) => {
-				if (task.task === e.target.name) {
-					dispatch(TaskActionCreators.deleteTask(task));
-					setTaskList((prev) => {
-						task['timeReopened'] = time;
-						task['finished'] = false;
-						dispatch(TaskActionCreators.addTask(task));
-						return [...prev, task];
-					});
-					dispatch(TaskActionCreators.deleteDoneTask(task));
-				}
-				return task.task !== e.target.name;
-			})
-		);
+		rxDoneTasks.forEach((task) => {
+			if (task.task === e.target.name) {
+				dispatch(TaskActionCreators.deleteTask(task));
+				task['timeReopened'] = time;
+				task['finished'] = false;
+				dispatch(TaskActionCreators.addTask(task));
+				dispatch(TaskActionCreators.deleteDoneTask(task));
+			}
+		});
 	}
 
 	function deleteTask(list, taskDel) {
 		if (list === 0) {
-			setTaskList(
-				taskList.filter((task) => {
-					return task.task !== taskDel;
-				})
-			);
-			if (taskDel === favTask) {
-				setFavTask('');
+			if (taskDel.task === rxFavTask) {
 				dispatch(TaskActionCreators.setFavorite(''));
 			}
 			dispatch(TaskActionCreators.deleteTask(taskDel));
 		} else {
-			setDoneTasks(
-				doneTasks.filter((task) => {
-					return task.task !== taskDel;
-				})
-			);
 			dispatch(TaskActionCreators.deleteDoneTask(taskDel));
 		}
 	}
@@ -142,13 +123,18 @@ function TaskPopup({ session, open, handleClose }) {
 	};
 
 	const favoredTask = (task) => {
-		if (favTask && favTask === task) {
-			setFavTask('');
+		if (rxFavTask && rxFavTask === task) {
 			dispatch(TaskActionCreators.setFavorite(''));
 		} else {
-			setFavTask(task);
 			dispatch(TaskActionCreators.setFavorite(task));
 		}
+	};
+
+	const handleWarningClose = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+		setOpenWarning(false);
 	};
 
 	return (
@@ -176,7 +162,7 @@ function TaskPopup({ session, open, handleClose }) {
 									name='showTask'
 									inputProps={{ 'aria-label': 'checkbox with default color' }}
 									style={{ color: '#52d869' }}
-									disabled={!(doneTasks.length > 0)}
+									disabled={!(rxDoneTasks.length > 0)}
 								/>
 							</Typography>
 							<IconButton
@@ -188,41 +174,14 @@ function TaskPopup({ session, open, handleClose }) {
 							</IconButton>
 						</Grid>
 						<Grid item className='checkbox-container'>
-							{taskList.length > 0 ? (
-								taskList.map((task, id) => (
-									<Typography key={id}>
-										<Checkbox
-											onChange={handleCheckChange}
-											name={task.task}
-											color='primary'
-											checked={false}
-										/>
-										<label>
-											{task.task}
-											<IconButton
-												color='secondary'
-												component='span'
-												className='add-des'
-												style={{ color: '#FF0000' }}
-												onClick={() => deleteTask(0, task.task)}
-											>
-												<FontAwesomeIcon icon={faTrashAlt} />
-											</IconButton>
-											<IconButton
-												component='span'
-												className='add-des'
-												style={
-													favTask === task.task
-														? { color: '#FFD700' }
-														: { color: '#7E7E7E' }
-												}
-												onClick={() => favoredTask(task.task)}
-											>
-												<FontAwesomeIcon icon={faStar} />
-											</IconButton>
-										</label>
-									</Typography>
-								))
+							{rxTaskList.length > 0 ? (
+								<TaskList
+									{...{
+										handleCheckChange,
+										favoredTask,
+										deleteTask,
+									}}
+								/>
 							) : (
 								<Typography
 									variant='subtitle1'
@@ -242,6 +201,15 @@ function TaskPopup({ session, open, handleClose }) {
 							>
 								<Grid container justify='center' alignItems='center'>
 									<Grid item xs={11}>
+										<Snackbar
+											open={openWarning}
+											autoHideDuration={5000}
+											onClose={handleWarningClose}
+										>
+											<Alert onClose={handleWarningClose} severity='warning'>
+												You already have that task!
+											</Alert>
+										</Snackbar>
 										<TextField
 											required
 											fullWidth
@@ -282,29 +250,14 @@ function TaskPopup({ session, open, handleClose }) {
 							</IconButton>
 						</Grid>
 						<Grid item className='checkbox-container'>
-							{doneTasks.length > 0 &&
-								doneTasks.map((task, id) => (
-									<Typography key={id}>
-										<Checkbox
-											onChange={handleDoneChange}
-											name={task.task}
-											color='primary'
-											checked={false}
-										/>
-										<label>
-											{task.task}
-											<IconButton
-												color='secondary'
-												component='span'
-												className='add-des'
-												style={{ color: '#FF0000' }}
-												onClick={() => deleteTask(1, task.task)}
-											>
-												<FontAwesomeIcon icon={faTrashAlt} />
-											</IconButton>
-										</label>
-									</Typography>
-								))}
+							{rxDoneTasks.length > 0 && (
+								<DoneTasks
+									{...{
+										handleDoneChange,
+										deleteTask,
+									}}
+								/>
+							)}
 						</Grid>
 					</Grid>
 				)}

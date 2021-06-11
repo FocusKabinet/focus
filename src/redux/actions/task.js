@@ -25,12 +25,12 @@ export const TaskActionCreators = {
 
 	deleteTask: (task) => ({
 		type: 'DELETE_TASK',
-		payload: { task },
+		payload: task,
 	}),
 
 	deleteDoneTask: (task) => ({
 		type: 'DELETE_DONE_TASK',
-		payload: { task },
+		payload: task,
 	}),
 
 	clearState: () => ({

@@ -30,7 +30,7 @@ const taskReducer = (state = initialState, action) => {
 			return {
 				...state,
 				taskList: state.taskList.filter(
-					(task) => task.task !== action.payload.task.task
+					(task) => task.task !== action.payload.task
 				),
 			};
 
@@ -38,7 +38,7 @@ const taskReducer = (state = initialState, action) => {
 			return {
 				...state,
 				doneTasks: state.doneTasks.filter(
-					(task) => task.task !== action.payload.task.task
+					(task) => task.task !== action.payload.task
 				),
 			};
 

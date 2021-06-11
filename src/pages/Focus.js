@@ -15,12 +15,12 @@ function Focus({ handleLogout }) {
 	const deepStudy = useSelector((state) => state.timer.deep_study);
 	const pinTask = useSelector((state) => state.task.favoriteTask);
 
-	const [background, setBackground] = useState({ backgroundColor: '' });
-	const [paperCol, setPaperCol] = useState({ backgroundColor: '#75a27c' });
+	const [background, setBackground] = useState({ background: '' });
+	const [paperCol, setPaperCol] = useState({ backgroundColor: '#498551' });
 	const [inSession, setInSession] = useState(0);
 	const changeBackground = (color, paperColor) => {
 		setPaperCol(paperColor);
-		setBackground({ backgroundColor: color });
+		setBackground({ background: `linear-gradient( ${color[0]} 0% ,${color[1]} 74%)` });
 	};
 	const clearAll = () => {
 		dispatch(TimerActionCreators.clearState());
