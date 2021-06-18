@@ -107,6 +107,9 @@ export default function KabinetRoutes(props) {
           </Page>
         )}
       />
+      <Route exact path="/">
+        <Redirect to="/kabinet-world" />
+      </Route>
     </>
   );
 }

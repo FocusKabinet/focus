@@ -9,10 +9,8 @@ import {
   CardHeader,
   CardMedia,
 } from '@material-ui/core';
-import { CheckCircle, OpenInNew, Today } from '@material-ui/icons';
+import { CheckCircle, OpenInNew } from '@material-ui/icons';
 import './styles/GoogleTrends.scss';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles';
 import HE from 'he';
 import './styles/News.scss';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -25,7 +23,6 @@ export default function News(props) {
     fetchMoreData,
     hasMore,
   } = props;
-  const theme = useTheme();
 
   if (!articles.length) return null;
   return (
@@ -70,7 +67,7 @@ function ArticleItem(props) {
     publishedAt,
     url,
     source: { name },
-    content,
+    // content,
   } = article;
 
   return (

@@ -31,7 +31,7 @@ import {
   VisibilityOff,
 } from '@material-ui/icons';
 import './styles/KabinetForm.scss';
-import { DateTimePicker } from '@material-ui/pickers';
+// import { DateTimePicker } from '@material-ui/pickers';
 import Picker from 'emoji-picker-react';
 import ImageUploader from 'react-images-upload';
 import { KeywordTags } from './KeywordTags';
