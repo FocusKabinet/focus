@@ -2,27 +2,23 @@ import axios from 'axios';
 import { projectStore as store } from '../redux/store';
 import { setLoadingState } from '../redux/actions/loading';
 import { setNotificationState } from '../redux/actions/notification';
+import publicIP from 'public-ip';
 
 export async function getCurrentCountry() {
   store.dispatch(setLoadingState(true));
 
   let code = { countryCode: 'CA', country: 'Canada' };
+  const ip = await publicIP.v4();
   await axios
-    .get('http://ip-api.com/json/?fields=countryCode,country')
+    .get('/api/lookup', { params: { ip } })
     .then((res) => {
-      const { countryCode, country } = res.data;
-      code = { countryCode, country };
+      code = res.data;
     })
     .catch((e) => {
-      console.warn(
-        'Cannot get location. Most likely due to AdBlock. Defaulted to CA\n',
-        e
-      );
       store.dispatch(
         setNotificationState({
           open: true,
-          message:
-            'Failed to get location! Most likely due to AdBlock. Defaulted to Canada.',
+          message: 'Failed to get location! Defaulted to Canada.',
           severity: 'warning',
         })
       );
@@ -34,7 +30,7 @@ export async function getCurrentCountry() {
 export async function getGoogleTrends(countryCode) {
   store.dispatch(setLoadingState(true));
   let data = {};
-  await axios('http://localhost:5000/api/' + countryCode)
+  await axios('/api/trends/' + countryCode)
     .then((response) => (data = response.data[0]))
     .catch((e) => {
       console.error(e);
@@ -53,10 +49,20 @@ export async function getGoogleTrends(countryCode) {
 export async function getHeadLines(countryCode, page = 1, pageSize = 20) {
   store.dispatch(setLoadingState(true));
   let data = {};
-  await axios(
-    `https://newsapi.org/v2/top-headlines?country=${countryCode}&pageSize=${pageSize}&page=${page}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
-  )
-    .then((res) => (data = res.data))
+  await axios
+    .get('/api/headlines', {
+      params: {
+        countryCode,
+        page,
+        pageSize,
+      },
+    })
+    .then((res) => {
+      data = res.data;
+      data['hasMore'] = data.totalResults - page * pageSize > 0;
+      data['page'] = page;
+      data['pageSize'] = pageSize;
+    })
     .catch((e) => {
       console.error('News API error occured', e);
       store.dispatch(
@@ -67,10 +73,6 @@ export async function getHeadLines(countryCode, page = 1, pageSize = 20) {
         })
       );
     });
-  data['hasMore'] = data.totalResults - page * pageSize > 0;
-  data['page'] = page;
-  data['pageSize'] = pageSize;
-
   store.dispatch(setLoadingState(false));
   return data;
 }
