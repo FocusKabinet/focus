@@ -8,10 +8,12 @@ export async function getCurrentCountry() {
 
   let code = { countryCode: 'CA', country: 'Canada' };
   await axios
-    .get('http://ip-api.com/json/?fields=countryCode,country')
+    .get(
+      `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.REACT_APP_IP_LOOKUP_API_KEY}&fields=country_code2,country_name`
+    )
     .then((res) => {
-      const { countryCode, country } = res.data;
-      code = { countryCode, country };
+      const { country_code2, country_name } = res.data;
+      code = { countryCode: country_code2, country: country_name };
     })
     .catch((e) => {
       console.warn(
@@ -34,7 +36,7 @@ export async function getCurrentCountry() {
 export async function getGoogleTrends(countryCode) {
   store.dispatch(setLoadingState(true));
   let data = {};
-  await axios('/api/' + countryCode)
+  await axios('/api/trends/' + countryCode)
     .then((response) => (data = response.data[0]))
     .catch((e) => {
       console.error(e);
@@ -53,9 +55,15 @@ export async function getGoogleTrends(countryCode) {
 export async function getHeadLines(countryCode, page = 1, pageSize = 20) {
   store.dispatch(setLoadingState(true));
   let data = {};
-  await axios(
-    `https://newsapi.org/v2/top-headlines?country=${countryCode}&pageSize=${pageSize}&page=${page}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
-  )
+  await axios
+    .get('/api/headlines', {
+      params: {
+        countryCode,
+        page,
+        pageSize,
+        apiKey: process.env.REACT_APP_NEWS_API_KEY,
+      },
+    })
     .then((res) => (data = res.data))
     .catch((e) => {
       console.error('News API error occured', e);
@@ -70,7 +78,6 @@ export async function getHeadLines(countryCode, page = 1, pageSize = 20) {
   data['hasMore'] = data.totalResults - page * pageSize > 0;
   data['page'] = page;
   data['pageSize'] = pageSize;
-
   store.dispatch(setLoadingState(false));
   return data;
 }

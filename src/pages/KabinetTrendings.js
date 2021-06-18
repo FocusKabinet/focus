@@ -45,7 +45,7 @@ export default function KabinetTrendings(props) {
         variant="h5"
         gutterBottom
       >
-        Here is what's trending on the internet
+        {`Here is what's trending on ${trends.formattedDate}`}
       </Typography>
       <ScrollToTop />
       <GoogleTrends {...trends} countryCode={countryObj.countryCode} />

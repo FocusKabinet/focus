@@ -3,9 +3,29 @@ const googleTrends = require('google-trends-api');
 var cors = require('cors');
 const app = express();
 const path = require('path');
+const axios = require('axios');
+
 app.use(cors());
 
-app.get('/api/:countryCode', async (req, res) => {
+app.get('/api/headlines', (req, res) => {
+  let data = {};
+  const { page, pageSize, countryCode, apiKey } = req.query;
+  axios
+    .get(
+      `https://newsapi.org/v2/top-headlines?country=${countryCode}&pageSize=${pageSize}&page=${page}&apiKey=${apiKey}`
+    )
+    .then((response) => {
+      data = response.data;
+      res.send(data);
+    })
+    .catch((e) => {
+      res
+        .status(400)
+        .send({ status: 'error', message: 'Headlines API failure!' });
+    });
+});
+
+app.get('/api/trends/:countryCode', async (req, res) => {
   await googleTrends
     .dailyTrends({
       geo: req.params.countryCode,
@@ -13,7 +33,11 @@ app.get('/api/:countryCode', async (req, res) => {
     .then((result) => {
       res.send(JSON.parse(result).default.trendingSearchesDays);
     })
-    .catch((e) => res.send({ status: 'error', message: 'API failure' }));
+    .catch((e) =>
+      res
+        .status(400)
+        .send({ status: 'error', message: 'Google trends API failure!' })
+    );
 });
 
 app.use(express.static(path.join(__dirname, '../build')));
