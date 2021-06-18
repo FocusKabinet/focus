@@ -45,27 +45,29 @@ function KabinetDashboard(props) {
   const [viewProfile, setViewProfile] = React.useState({});
 
   const fetchData = React.useCallback(async () => {
-    if (props.collection) {
-      const data = await fetchUserCards();
-      updateInitialCards(data);
-      updateCards(data);
-      return;
-    }
+    if (props.user) {
+      if (props.collection) {
+        const data = await fetchUserCards();
+        updateInitialCards(data);
+        updateCards(data);
+        return;
+      }
 
-    if (props.bookmarked) {
-      const data = await fetchBookmarkedCards();
-      updateInitialCards(data);
-      updateCards(data);
-      return;
-    }
-    if (props.viewUser) {
-      const publicId = props.match.params.uid;
-      const data = await fetchUserCards(publicId);
-      const user = await getPublicUser(publicId);
-      setViewProfile(user);
-      updateInitialCards(data);
-      updateCards(data);
-      return;
+      if (props.bookmarked) {
+        const data = await fetchBookmarkedCards();
+        updateInitialCards(data);
+        updateCards(data);
+        return;
+      }
+      if (props.viewUser) {
+        const publicId = props.match.params.uid;
+        const data = await fetchUserCards(publicId);
+        const user = await getPublicUser(publicId);
+        setViewProfile(user);
+        updateInitialCards(data);
+        updateCards(data);
+        return;
+      }
     }
     const data = await fetchCards();
     updateInitialCards(data);
@@ -73,9 +75,7 @@ function KabinetDashboard(props) {
   }, [props]);
 
   React.useEffect(() => {
-    if (props.user) {
-      fetchData();
-    }
+    fetchData();
   }, [props.user, fetchData]);
 
   React.useEffect(() => {

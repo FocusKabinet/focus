@@ -169,7 +169,11 @@ function IdeaCard(props) {
             disabled={!user}
             className="like-button"
           >
-            {likes.includes(user.uid) ? <Favorite /> : <FavoriteBorder />}
+            {user && likes.includes(user.uid) ? (
+              <Favorite />
+            ) : (
+              <FavoriteBorder />
+            )}
           </IconButton>
           {!!likes.length && (
             <Typography variant="body1">{likes.length}</Typography>
