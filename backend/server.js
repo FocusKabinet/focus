@@ -4,16 +4,42 @@ var cors = require('cors');
 const app = express();
 const path = require('path');
 const axios = require('axios');
+require('dotenv').config();
 
 app.use(cors());
 
-app.get('/api/headlines', (req, res) => {
-  let data = {};
-  const { page, pageSize, countryCode, apiKey } = req.query;
-  axios
+app.get('/api/lookup', async (req, res) => {
+  const { ip } = req.params;
+  await axios
     .get(
-      `https://newsapi.org/v2/top-headlines?country=${countryCode}&pageSize=${pageSize}&page=${page}&apiKey=${apiKey}`
+      `https://api.ipgeolocation.io/ipgeo?fields=country_code2,country_name`,
+      {
+        params: {
+          apiKey: process.env.REACT_APP_IP_LOOKUP_API_KEY,
+          ip,
+        },
+      }
     )
+    .then((response) => {
+      const { country_code2, country_name } = response.data;
+      res.send({ countryCode: country_code2, country: country_name });
+    })
+    .catch((e) => res.status(400).send(e));
+});
+
+app.get('/api/headlines', async (req, res) => {
+  let data = {};
+  const { page, pageSize, countryCode: country } = req.query;
+  const apiKey = process.env.REACT_APP_NEWS_API_KEY;
+  await axios
+    .get(`https://newsapi.org/v2/top-headlines`, {
+      params: {
+        country,
+        pageSize,
+        page,
+        apiKey,
+      },
+    })
     .then((response) => {
       data = response.data;
       res.send(data);
@@ -21,7 +47,7 @@ app.get('/api/headlines', (req, res) => {
     .catch((e) => {
       res
         .status(400)
-        .send({ status: 'error', message: 'Headlines API failure!' });
+        .send({ status: 'error', message: 'Headlines API failure!', data: {} });
     });
 });
 

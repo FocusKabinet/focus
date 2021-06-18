@@ -2,29 +2,23 @@ import axios from 'axios';
 import { projectStore as store } from '../redux/store';
 import { setLoadingState } from '../redux/actions/loading';
 import { setNotificationState } from '../redux/actions/notification';
+import publicIP from 'public-ip';
 
 export async function getCurrentCountry() {
   store.dispatch(setLoadingState(true));
 
   let code = { countryCode: 'CA', country: 'Canada' };
+  const ip = await publicIP.v4();
   await axios
-    .get(
-      `https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.REACT_APP_IP_LOOKUP_API_KEY}&fields=country_code2,country_name`
-    )
+    .get('/api/lookup', { params: { ip } })
     .then((res) => {
-      const { country_code2, country_name } = res.data;
-      code = { countryCode: country_code2, country: country_name };
+      code = res.data;
     })
     .catch((e) => {
-      console.warn(
-        'Cannot get location. Most likely due to AdBlock. Defaulted to CA\n',
-        e
-      );
       store.dispatch(
         setNotificationState({
           open: true,
-          message:
-            'Failed to get location! Most likely due to AdBlock. Defaulted to Canada.',
+          message: 'Failed to get location! Defaulted to Canada.',
           severity: 'warning',
         })
       );
@@ -61,10 +55,14 @@ export async function getHeadLines(countryCode, page = 1, pageSize = 20) {
         countryCode,
         page,
         pageSize,
-        apiKey: process.env.REACT_APP_NEWS_API_KEY,
       },
     })
-    .then((res) => (data = res.data))
+    .then((res) => {
+      data = res.data;
+      data['hasMore'] = data.totalResults - page * pageSize > 0;
+      data['page'] = page;
+      data['pageSize'] = pageSize;
+    })
     .catch((e) => {
       console.error('News API error occured', e);
       store.dispatch(
@@ -75,9 +73,6 @@ export async function getHeadLines(countryCode, page = 1, pageSize = 20) {
         })
       );
     });
-  data['hasMore'] = data.totalResults - page * pageSize > 0;
-  data['page'] = page;
-  data['pageSize'] = pageSize;
   store.dispatch(setLoadingState(false));
   return data;
 }
