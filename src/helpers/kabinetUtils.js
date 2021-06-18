@@ -34,7 +34,7 @@ export async function getCurrentCountry() {
 export async function getGoogleTrends(countryCode) {
   store.dispatch(setLoadingState(true));
   let data = {};
-  await axios('http://localhost:5000/api/' + countryCode)
+  await axios('/api/' + countryCode)
     .then((response) => (data = response.data[0]))
     .catch((e) => {
       console.error(e);
