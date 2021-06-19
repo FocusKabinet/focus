@@ -362,10 +362,13 @@ function KabinetForm(props) {
                   buttonText="Browse"
                   id="imageUpload"
                   onChange={handleUpload}
-                  imgExtension={['.jpg', '.gif', '.png']}
-                  maxFileSize={5242880}
+                  imgExtension={['.jpeg', '.jpg', '.gif', '.png']}
+                  maxFileSize={10485760}
                   singleImage
                   withPreview={false}
+                  label="Max file size: 10MB. Supports: .JPEG .GIF .PNG"
+                  fileSizeError="File size is too large!"
+                  fileTypeError="File is not supported!"
                 />
                 {form.imageUpload && (
                   <div>
