@@ -34,7 +34,6 @@ app.get('/api/lookup', async (req, res) => {
       res.status(400).send({
         status: 'error',
         message: 'Location API failure!',
-        data: {},
         error: e,
       })
     );
@@ -60,7 +59,7 @@ app.get('/api/headlines', async (req, res) => {
     .catch((e) => {
       res
         .status(400)
-        .send({ status: 'error', message: 'Headlines API failure!', data: {} });
+        .send({ status: 'error', message: 'Headlines API failure!' });
     });
 });
 
@@ -80,9 +79,9 @@ app.get('/api/trends/:countryCode', async (req, res) => {
 });
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/build')));
+  app.use(express.static(path.resolve(__dirname, '../frontend/build')));
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+    res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
   });
 }
 
