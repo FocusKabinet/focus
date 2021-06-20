@@ -59,15 +59,15 @@ function KabinetDashboard(props) {
         updateCards(data);
         return;
       }
-      if (props.viewUser) {
-        const publicId = props.match.params.uid;
-        const data = await fetchUserCards(publicId);
-        const user = await getPublicUser(publicId);
-        setViewProfile(user);
-        updateInitialCards(data);
-        updateCards(data);
-        return;
-      }
+    }
+    if (props.viewUser) {
+      const publicId = props.match.params.uid;
+      const data = await fetchUserCards(publicId);
+      const user = await getPublicUser(publicId);
+      setViewProfile(user);
+      updateInitialCards(data);
+      updateCards(data);
+      return;
     }
     const data = await fetchCards();
     updateInitialCards(data);
