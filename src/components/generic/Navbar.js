@@ -1,6 +1,6 @@
 import './styles/navbar.scss';
 import Nav from './Nav';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 
 function NavBar(props) {
 	// const email = useSelector((state) => state.user.profile.email);

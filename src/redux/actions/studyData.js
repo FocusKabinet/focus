@@ -7,14 +7,14 @@ export const studyDataType = {
 };
 
 export const StudyActionCreators = {
-	addLBreak: (time) => ({
+	addLBreak: (times) => ({
 		type: 'ADD_LONG_BREAK',
-		payload: time,
+		payload: { times },
 	}),
-	
-	addSBreak: (time) => ({
+
+	addSBreak: (times) => ({
 		type: 'ADD_SHORT_BREAK',
-		payload: time,
+		payload: { times },
 	}),
 
 	addStudy: (times) => ({

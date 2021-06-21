@@ -17,14 +17,14 @@ const studyReducer = (state = initialState, action) => {
 			return {
 				...state,
 				short_breaks_taken: state.short_breaks_taken + 1,
-				short_breaks: [...state.short_breaks, action.payload.time],
+				short_breaks: [...state.short_breaks, action.payload.times],
 			};
-		case Types.ADD_LONG_BREAK:	
-				return {
-					...state,
-					long_breaks_taken: state.long_breaks_taken + 1,
-					long_breaks: [...state.long_breaks, action.payload.time],
-				};
+		case Types.ADD_LONG_BREAK:
+			return {
+				...state,
+				long_breaks_taken: state.long_breaks_taken + 1,
+				long_breaks: [...state.long_breaks, action.payload.times],
+			};
 		case Types.ADD_STUDY:
 			return {
 				...state,

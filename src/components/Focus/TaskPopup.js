@@ -2,14 +2,7 @@ import React, { useState } from 'react';
 import './styles/TaskPopup.scss';
 import Dialog from '@material-ui/core/Dialog';
 import CloseIcon from '@material-ui/icons/Close';
-import {
-	Grid,
-	Button,
-	Typography,
-	IconButton,
-	Checkbox,
-	Switch,
-} from '@material-ui/core';
+import { Grid, Button, Typography, IconButton, Switch } from '@material-ui/core';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { TaskActionCreators } from '../../redux/actions/task';
@@ -54,10 +47,16 @@ function TaskPopup({ session, open, handleClose }) {
 				minutes: d.getMinutes(),
 				seconds: d.getSeconds(),
 			};
+			let date = {
+				day: d.getDate(),
+				month: d.getMonth() + 1,
+				year: d.getFullYear(),
+			};
 			dispatch(
 				TaskActionCreators.addTask({
 					task: input,
 					time: time,
+					date: date,
 					finished: false,
 				})
 			);
@@ -75,6 +74,11 @@ function TaskPopup({ session, open, handleClose }) {
 			minutes: d.getMinutes(),
 			seconds: d.getSeconds(),
 		};
+		let date = {
+			day: d.getDate(),
+			month: d.getMonth() + 1,
+			year: d.getFullYear(),
+		};
 		rxTaskList.forEach((task) => {
 			if (task.task === e.target.name) {
 				if (e.target.name === rxFavTask) {
@@ -83,6 +87,7 @@ function TaskPopup({ session, open, handleClose }) {
 				dispatch(TaskActionCreators.deleteDoneTask(task));
 				task['timeFinished'] = time;
 				task['finished'] = true;
+				task['dateFinished'] = date;
 				dispatch(TaskActionCreators.addDoneTask(task));
 				dispatch(TaskActionCreators.deleteTask(task));
 			}
@@ -96,10 +101,16 @@ function TaskPopup({ session, open, handleClose }) {
 			minutes: d.getMinutes(),
 			seconds: d.getSeconds(),
 		};
+		let date = {
+			day: d.getDate(),
+			month: d.getMonth() + 1,
+			year: d.getFullYear(),
+		};
 		rxDoneTasks.forEach((task) => {
 			if (task.task === e.target.name) {
 				dispatch(TaskActionCreators.deleteTask(task));
 				task['timeReopened'] = time;
+				task['dateReopened'] = date;
 				task['finished'] = false;
 				dispatch(TaskActionCreators.addTask(task));
 				dispatch(TaskActionCreators.deleteDoneTask(task));
@@ -138,23 +149,12 @@ function TaskPopup({ session, open, handleClose }) {
 	};
 
 	return (
-		<Dialog
-			onClose={handleCloseData}
-			aria-labelledby='customized-dialog-title'
-			open={open}
-			className='task-popup'
-			fullScreen
-			fullWidth
-		>
+		<Dialog onClose={handleCloseData} aria-labelledby='customized-dialog-title' open={open} className='task-popup' fullScreen fullWidth>
 			<Grid container className='container'>
 				{!showDoneTask ? (
 					<Grid item container direction='column'>
 						<Grid item>
-							<Typography
-								variant='h4'
-								gutterBottom
-								style={{ height: 'fit-content' }}
-							>
+							<Typography variant='h4' gutterBottom style={{ height: 'fit-content' }}>
 								Your Tasks
 								<Switch
 									checked={showDoneTask}
@@ -165,11 +165,7 @@ function TaskPopup({ session, open, handleClose }) {
 									disabled={!(rxDoneTasks.length > 0)}
 								/>
 							</Typography>
-							<IconButton
-								className='close-btn'
-								aria-label='close'
-								onClick={handleCloseData}
-							>
+							<IconButton className='close-btn' aria-label='close' onClick={handleCloseData}>
 								<CloseIcon />
 							</IconButton>
 						</Grid>
@@ -183,46 +179,23 @@ function TaskPopup({ session, open, handleClose }) {
 									}}
 								/>
 							) : (
-								<Typography
-									variant='subtitle1'
-									gutterBottom
-									className='marginMd'
-								>
+								<Typography variant='subtitle1' gutterBottom className='marginMd'>
 									Create some tasks and they'll show up here
 								</Typography>
 							)}
 						</Grid>
 						<Grid item className='form-grid'>
-							<form
-								noValidate
-								autoComplete='off'
-								className='task-input'
-								onSubmit={handleSubmit}
-							>
+							<form noValidate autoComplete='off' className='task-input' onSubmit={handleSubmit}>
 								<Grid container justify='center' alignItems='center'>
 									<Grid item xs={11}>
-										<Snackbar
-											open={openWarning}
-											autoHideDuration={5000}
-											onClose={handleWarningClose}
-										>
+										<Snackbar open={openWarning} autoHideDuration={5000} onClose={handleWarningClose}>
 											<Alert onClose={handleWarningClose} severity='warning'>
 												You already have that task!
 											</Alert>
 										</Snackbar>
-										<TextField
-											required
-											fullWidth
-											value={input}
-											label='Add a task'
-											onChange={(e) => setInput(e.target.value)}
-										/>
+										<TextField required fullWidth value={input} label='Add a task' onChange={(e) => setInput(e.target.value)} />
 									</Grid>
-									<Button
-										type='submit'
-										disabled={!input}
-										className='submit-form'
-									>
+									<Button type='submit' disabled={!input} className='submit-form'>
 										<FontAwesomeIcon icon={faPen} />
 									</Button>
 								</Grid>
@@ -234,18 +207,9 @@ function TaskPopup({ session, open, handleClose }) {
 						<Grid item>
 							<Typography variant='h4' gutterBottom>
 								Your Finished Tasks
-								<Switch
-									checked={showDoneTask}
-									onChange={handleSwitchChange}
-									name='showTask'
-									inputProps={{ 'aria-label': 'checkbox with default color' }}
-								/>
+								<Switch checked={showDoneTask} onChange={handleSwitchChange} name='showTask' inputProps={{ 'aria-label': 'checkbox with default color' }} />
 							</Typography>
-							<IconButton
-								className='close-btn'
-								aria-label='close'
-								onClick={handleCloseData}
-							>
+							<IconButton className='close-btn' aria-label='close' onClick={handleCloseData}>
 								<CloseIcon />
 							</IconButton>
 						</Grid>
