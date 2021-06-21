@@ -17,10 +17,14 @@ function Focus({ handleLogout }) {
 
 	const [background, setBackground] = useState({ background: '' });
 	const [paperCol, setPaperCol] = useState({ backgroundColor: '#498551' });
-	const [inSession, setInSession] = useState(0);
+	const [ready, setReady] = useState(false); //ready to end session
+
+	const [inSession, setInSession] = useState(0); //0: not in session, 1: in session, 2: session just ended,  3: user wants session to end
 	const changeBackground = (color, paperColor) => {
 		setPaperCol(paperColor);
-		setBackground({ background: `linear-gradient( ${color[0]} 0% ,${color[1]} 74%)` });
+		setBackground({
+			background: `linear-gradient( ${color[0]} 0% ,${color[1]} 74%)`,
+		});
 	};
 	const clearAll = () => {
 		dispatch(TimerActionCreators.clearState());
@@ -29,39 +33,30 @@ function Focus({ handleLogout }) {
 	};
 
 	return (
-		<Grid
-			container
-			justify='center'
-			alignItems='flex-start'
-			className='page-container'
-			style={background}
-		>
+		<Grid container justify='center' alignItems='flex-start' className='page-container' style={background}>
 			<Grid item xs={10}>
 				<Typography variant='h2'>Timer</Typography>
 			</Grid>
 			<Grid item xs={2}>
-				{deepStudy && inSession === 1 && (
-					<Button onClick={() => setInSession(2)} className='timer-buttons'>
+				{deepStudy && (inSession === 1 || inSession === 3) && (
+					<Button
+						onClick={() => {
+							if (ready) {
+								setInSession(2);
+							} else {
+								setInSession(3);
+							}
+						}}
+						className='end-session'
+					>
 						End Session
 					</Button>
 				)}
 			</Grid>
 
-			<Grid
-				item
-				xs={12}
-				container
-				justify='center'
-				alignItems='center'
-				direction='column'
-				sapcing={3}
-			>
+			<Grid item xs={12} container justify='center' alignItems='center' direction='column' sapcing={3}>
 				<Grid item xs={6}>
-					<Timer
-						changeBackground={changeBackground}
-						inSession={inSession}
-						setInSession={setInSession}
-					/>
+					<Timer changeBackground={changeBackground} inSession={inSession} setInSession={setInSession} setReady={setReady} ready={ready} />
 				</Grid>
 				{deepStudy && pinTask !== '' && (
 					<Grid item xs={6} className='pinned-grid'>

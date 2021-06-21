@@ -5,7 +5,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import { IconButton, Checkbox } from '@material-ui/core';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faThumbtack } from '@fortawesome/free-solid-svg-icons';
 import { useSelector } from 'react-redux';
 
 function TaskList({ handleCheckChange, favoredTask, deleteTask }) {
@@ -17,39 +17,21 @@ function TaskList({ handleCheckChange, favoredTask, deleteTask }) {
 			{rxTaskList.map((task, id) => (
 				<ListItem key={id} role={undefined} dense button>
 					<ListItemIcon>
-						<Checkbox
-							edge='start'
-							onChange={handleCheckChange}
-							name={task.task}
-							color='primary'
-							checked={false}
-						/>
+						<Checkbox edge='start' onChange={handleCheckChange} name={task.task} color='primary' checked={false} />
 					</ListItemIcon>
 					<ListItemText id={id} primary={task.task} />
-					<IconButton
-						color='secondary'
-						component='span'
-						className='add-des'
-						style={{ color: '#FF0000' }}
-						onClick={() => deleteTask(0, task)}
-						edge='end'
-						aria-label='delete'
-					>
+					<IconButton color='secondary' component='span' className='add-des' style={{ color: '#FF0000' }} onClick={() => deleteTask(0, task)} edge='end' aria-label='delete'>
 						<FontAwesomeIcon icon={faTrashAlt} />
 					</IconButton>
 					<IconButton
 						component='span'
 						className='add-des'
-						style={
-							rxFavTask === task.task
-								? { color: '#FFD700' }
-								: { color: '#7E7E7E' }
-						}
+						style={rxFavTask === task.task ? { color: '#FFD700' } : { color: '#7E7E7E' }}
 						onClick={() => favoredTask(task.task)}
 						edge='end'
 						aria-label='pin'
 					>
-						<FontAwesomeIcon icon={faStar} />
+						<FontAwesomeIcon icon={faThumbtack} />
 					</IconButton>
 				</ListItem>
 			))}

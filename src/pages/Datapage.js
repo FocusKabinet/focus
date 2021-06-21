@@ -1,34 +1,33 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './styles/DataPage.scss';
-import { Grid, Typography, Button } from '@material-ui/core';
+import { Grid, Typography } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import { useDispatch } from 'react-redux';
-import { TimerActionCreators } from '../redux/actions/timer';
-import { StudyActionCreators } from '../redux/actions/studyData';
-import { TaskActionCreators } from '../redux/actions/task';
+import DataDropdown from '../components/Focus/DataDropdown';
 
 function Datapage() {
-	const dispatch = useDispatch();
+	// Study Data
+	const session_times = useSelector((state) => state.studyData.session_times);
 
-	const deepStudy = useSelector((state) => state.timer.deep_study);
+	// Timer Data
+	const timerData = {
+		taskList: useSelector((state) => state.task.taskList),
+		doneTasks: useSelector((state) => state.task.doneTasks),
+	};
 
-	const clearAll = () => {
-		dispatch(TimerActionCreators.clearState());
-		dispatch(StudyActionCreators.clearState());
-		dispatch(TaskActionCreators.clearState());
+	const presentAll = () => {
+		console.log(session_times);
+		console.log(timerData);
 	};
 
 	return (
-		<Grid
-			container
-			justify='center'
-			alignItems='flex-start'
-			className='data-container'
-		>
+		<Grid container justify='center' alignItems='flex-start' className='data-container'>
 			<Grid item xs={12}>
 				<Typography variant='h1'>Data</Typography>
 			</Grid>
-			<button onClick={clearAll}>Clear</button>
+			<Grid item xs={12}>
+				<DataDropdown session_times={session_times} />
+			</Grid>
+			<button onClick={presentAll}>Present</button>
 		</Grid>
 	);
 }

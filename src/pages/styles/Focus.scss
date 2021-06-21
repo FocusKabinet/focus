@@ -5,8 +5,13 @@
 	min-height: 92vh;
 	padding: 20px;
 	color: #ffffff;
-	background: linear-gradient( #407447 0%, #a0c0ae 74%);
-	
+	background: linear-gradient(#407447 0%, #d3f3e1 74%);
+
+	.end-session {
+		color: #fff;
+		padding: 10px;
+		border: 2px solid #fff;
+	}
 
 	.pinned-grid {
 		margin: 20px;
