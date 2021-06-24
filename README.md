@@ -1,3 +1,4 @@
+
 # Welcome to Kabinet 🌐
 
 This is a early version of a light-weight social media web application. 
@@ -11,20 +12,20 @@ Besides users' contents, you can view what's trending across the media: Google t
 
 ## Question?
 
-Q: How do I use this?
+Q: How do I use this?\
 A: Just like any other social media app, you can sign up or log in using an email to publish your own content. Start clicking away ☝️
 
-Q: Do I need to download anything?
+Q: Do I need to download anything?\
 A: Nope. 
 
-Q: What technology did you use to make this?
+Q: What technology did you use to make this?\
 A: This is a progressive web application made using NodeJs and React/Redux for front-end. Google Firebase for cloud integration ☁️and server-less database 💾. Heroku for deployment.
 
-Q: Why did you make this?
+Q: Why did you make this?\
 A: For fun, and to learn. Also I'm unemployed 🤡
 
-Q: Any plan for expansion?
-A: Yes. Although I need more ideas and I'm looking into CI/CD for future workflows.
+Q: Any plan for expansion?\
+A: Yes. You can check out my 🔗[todos here](https://sharing.clickup.com/l/h/6-77793530-1/c17602a3afd7dc4). Although I need more ideas and I'm looking into CI/CD for future workflows.
 
 ## Suggestion/Comment?
 Feel free to open a GitHub issue or send me an email:  
