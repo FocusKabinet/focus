@@ -13,6 +13,8 @@ import {
   Grid,
   Divider,
   Link,
+  CardActionArea,
+  Dialog,
 } from '@material-ui/core';
 import {
   MoreVert,
@@ -61,6 +63,7 @@ function IdeaCard(props) {
   const [menu, menuToggle] = React.useState(null);
   const [expanded, expandToggle] = React.useState(false);
   const [likes, setLikes] = React.useState(props.likes || []);
+  const [imageOpen, setImageOpen] = React.useState(false);
 
   const handleToggle = (e) => {
     menuToggle(Boolean(menu) ? false : e.currentTarget);
@@ -153,12 +156,22 @@ function IdeaCard(props) {
         }
       />
       {imageURL && (
-        <CardMedia
-          className="card-img"
-          src={imageURL || imageUpload}
-          component="img"
-          onError={(e) => (e.target.src = empty)}
-        />
+        <>
+          <CardActionArea onClick={() => setImageOpen(true)}>
+            <CardMedia
+              className="card-img"
+              src={imageURL || imageUpload}
+              component="img"
+              onError={(e) => (e.target.src = empty)}
+            />
+          </CardActionArea>
+          <ImageDialog
+            open={imageOpen}
+            title={title}
+            imageURL={imageURL}
+            onClose={() => setImageOpen(false)}
+          />
+        </>
       )}
       <CardActions disableSpacing>
         <div className="likes">
@@ -222,6 +235,15 @@ function IdeaCard(props) {
   );
 }
 
+function ImageDialog(props) {
+  const { open, onClose, imageURL, title } = props;
+
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <img src={imageURL} alt={title} />
+    </Dialog>
+  );
+}
 const mapStateToProps = (state) => {
   return {
     user: state.kabinet_user,
