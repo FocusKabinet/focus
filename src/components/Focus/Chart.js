@@ -3,7 +3,9 @@ import './styles/Chart.scss';
 import { Line } from 'react-chartjs-2';
 import { convertMilli } from './helpers/convertMilli';
 
-function Chart({ label, data }) {
+function Chart({ data }) {
+	let yCount = 0;
+
 	const sStart = data.start;
 	const sEnd = data.end;
 
@@ -37,33 +39,53 @@ function Chart({ label, data }) {
 		}
 	}
 
-	const createDataPoints = (dataArr, y) => {
+	const createDataPoints = (dataArr) => {
 		let dataTimes = [];
-
 		for (let i = 0; i <= dataArr.length - 1; i++) {
 			let timeStart = dataArr[i].start;
 			let timeEnd = dataArr[i].end;
+			let studyDate = dataArr[i].date;
 			let secondsStart = timeDif < 60000 ? ':' + ('0' + timeStart.seconds).slice(-2) : '';
 			let secondsEnd = timeDif < 60000 ? ':' + ('0' + timeEnd.seconds).slice(-2) : '';
+			let xStart = `${('0' + timeStart.hours).slice(-2)}:${('0' + timeStart.minutes).slice(-2)}` + secondsStart;
+			let xEnd = `${('0' + timeEnd.hours).slice(-2)}:${('0' + timeEnd.minutes).slice(-2)}` + secondsEnd;
+			let complStartDate = studyDate ? new Date(studyDate.year, studyDate.month, studyDate.day, timeStart.hours, timeStart.minutes, timeStart.seconds) : -1;
+			let complEndDate = studyDate ? new Date(studyDate.year, studyDate.month, studyDate.day, timeEnd.hours, timeEnd.minutes, timeEnd.seconds) : -1;
 
-			dataTimes.push(
-				{
-					x: `${('0' + timeStart.hours).slice(-2)}:${('0' + timeStart.minutes).slice(-2)}` + secondsStart,
-					y: y,
-					num: convertMilli(timeStart.hours, 'hourM') + convertMilli(timeStart.minutes, 'minM') + convertMilli(timeStart.seconds, 'secM'),
-				},
-				{
-					x: `${('0' + timeEnd.hours).slice(-2)}:${('0' + timeEnd.minutes).slice(-2)}` + secondsEnd,
-					y: y,
-					num: convertMilli(timeEnd.hours, 'hourM') + convertMilli(timeEnd.minutes, 'minM') + convertMilli(timeEnd.seconds, 'secM'),
-				},
-				{
-					x: NaN,
-					y: y,
-					num: 0,
-				}
-			);
+			if (xStart == '00:00:00' && !xlabels.includes('00:00:00')) {
+				xStart = xlabels[0];
+			}
+
+			if (xEnd == '00:00:00' && !xlabels.includes('00:00:00')) {
+				xEnd = xlabels[0];
+			}
+			if (!(complStartDate >= sStartDate) || !(complStartDate <= sEndDate)) {
+				xStart = sStartTime;
+			}
+			if (!(complEndDate >= sStartDate) || !(complStartDate <= sEndDate)) {
+				xEnd = sEndTime;
+			}
+			if (complStartDate !== -1 && complEndDate !== -1) {
+				dataTimes.push(
+					{
+						x: xStart,
+						y: yCount,
+						num: xStart == '00:00:00' && -1,
+					},
+					{
+						x: xEnd,
+						y: yCount,
+						num: xEnd == '00:00:00' && -1,
+					},
+					{
+						x: NaN,
+						y: yCount,
+						num: 0,
+					}
+				);
+			}
 		}
+		if (dataTimes.length > 0) yCount++;
 		return dataTimes;
 	};
 
@@ -73,75 +95,85 @@ function Chart({ label, data }) {
 
 	let lBreakTimes = createDataPoints(data.sessionInfo.longBreakTimes, 3);
 
-	const createTaskPoints = (taskType, val, y) => {
+	const createTaskPoints = (taskType, val) => {
 		let tasks = [];
-
 		for (let i = 0; i <= taskType.length - 1; i++) {
 			let timeDis = taskType[i]['time' + val];
 			let taskDate = taskType[i]['date' + val];
 			let complDate = taskDate ? new Date(taskDate.year, taskDate.month, taskDate.day, timeDis.hours, timeDis.minutes, timeDis.seconds) : -1;
-
 			let seconds = timeDif < 60000 && timeDis ? ':' + ('0' + timeDis.seconds).slice(-2) : '';
 
-			if (complDate !== -1 && complDate > sStartDate && complDate < sEndDate) {
+			if (complDate !== -1 && complDate >= sStartDate && complDate <= sEndDate && timeDis) {
 				tasks.push({
-					x: timeDis && `${('0' + timeDis.hours).slice(-2)}:${('0' + timeDis.minutes).slice(-2)}` + seconds,
-					y: timeDis && y,
-					num: timeDis && convertMilli(timeDis.hours, 'hourM') + convertMilli(timeDis.minutes, 'minM') + convertMilli(timeDis.seconds, 'secM'),
+					x: `${('0' + timeDis.hours).slice(-2)}:${('0' + timeDis.minutes).slice(-2)}` + seconds,
+					y: yCount,
 				});
 			}
 		}
+		if (tasks.length > 0) yCount++;
 		return tasks;
 	};
 
 	let tasksStarted = createTaskPoints(totalTasks, '', 4);
 	let tasksFinished = createTaskPoints(totalTasks, 'Finished', 4);
 	let tasksReopened = createTaskPoints(totalTasks, 'Reopened', 4);
+	let dataSet = [];
+
+	if (studyDataTimes.length > 0)
+		dataSet.push({
+			label: ' Study Data ',
+			backgroundColor: '#8eb798',
+			borderColor: '#498551',
+			data: studyDataTimes,
+		});
+
+	if (lBreakTimes.length > 0)
+		dataSet.push({
+			type: 'line',
+			label: ' Long Break ',
+			backgroundColor: '#84acc9',
+			borderColor: '#763ea8',
+			data: lBreakTimes,
+		});
+
+	if (sBreakTimes.length > 0)
+		dataSet.push({
+			label: ' Short Breaks ',
+			backgroundColor: 'rgba(75,192,192,1)',
+			borderColor: '#5599c5',
+			data: sBreakTimes,
+		});
+
+	if (tasksReopened.length > 0)
+		dataSet.push({
+			type: 'scatter',
+			label: ' Task Reopened ',
+			backgroundColor: '#FFFF00',
+			borderColor: '#5599c5',
+			data: tasksReopened,
+		});
+
+	if (tasksFinished.length > 0)
+		dataSet.push({
+			type: 'scatter',
+			label: ' Task Finished ',
+			backgroundColor: '#0000FF',
+			borderColor: '#5599c5',
+			data: tasksFinished,
+		});
+
+	if (tasksStarted.length > 0)
+		dataSet.push({
+			type: 'scatter',
+			label: ' Tasks Started ',
+			backgroundColor: '#00FFFF',
+			borderColor: '#5599c5',
+			data: tasksStarted,
+		});
 
 	const state = {
 		labels: xlabels,
-		datasets: [
-			{
-				label: ' Study Data ',
-				backgroundColor: '#8eb798',
-				borderColor: '#498551',
-				data: studyDataTimes,
-			},
-			{
-				type: 'line',
-				label: ' Long Break ',
-				backgroundColor: '#84acc9',
-				borderColor: '#763ea8',
-				data: lBreakTimes,
-			},
-			{
-				label: ' Short Breaks ',
-				backgroundColor: 'rgba(75,192,192,1)',
-				borderColor: '#5599c5',
-				data: sBreakTimes,
-			},
-			{
-				type: 'scatter',
-				label: ' Task Reopened ',
-				backgroundColor: '#FFFF00',
-				borderColor: '#5599c5',
-				data: tasksReopened,
-			},
-			{
-				type: 'scatter',
-				label: ' Task Finished ',
-				backgroundColor: '#0000FF',
-				borderColor: '#5599c5',
-				data: tasksFinished,
-			},
-			{
-				type: 'scatter',
-				label: ' Tasks Started ',
-				backgroundColor: '#00FFFF',
-				borderColor: '#5599c5',
-				data: tasksStarted,
-			},
-		],
+		datasets: dataSet,
 	};
 
 	return (
@@ -150,9 +182,8 @@ function Chart({ label, data }) {
 				data={state}
 				options={{
 					plugins: {
-						title: {
-							display: true,
-							text: 'Study Data',
+						legend: {
+							position: 'top',
 						},
 					},
 					scales: {
@@ -168,6 +199,7 @@ function Chart({ label, data }) {
 								text: 'Type',
 							},
 							ticks: {
+								beginAtZero: true,
 								stepSize: 1,
 							},
 						},

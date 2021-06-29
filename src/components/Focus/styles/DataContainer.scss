@@ -1,0 +1,10 @@
+.dataContainer {
+	.task-list {
+		display: flex !important;
+		flex-wrap: wrap;
+	}
+
+	.task-list li {
+		margin: 20px;
+	}
+}

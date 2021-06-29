@@ -24,7 +24,7 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 	const deepStudy = useSelector((state) => state.timer.deep_study);
 
 	// Task Data
-	const taskData = useSelector((state) => state.task)
+	const taskData = useSelector((state) => state.task);
 
 	const sound = new Howl({
 		src: [timerAlarm],
@@ -38,6 +38,8 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 		shortBreakTimes: [],
 		longBreakTimes: [],
 	});
+
+	const [sessionId, setSessionId] = useState(0);
 
 	const [studyStart, setStudyStart] = useState({
 		hours: -1,
@@ -129,32 +131,38 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 
 	useEffect(() => {
 		if (inSession === 0) {
-			alert('not in session');
+			// alert('not in session');
 		} else if (inSession === 1) {
-			alert('Session Started');
+			setSessionId(Date.now());
+			// alert('Session Started');
+			setShowExitPrompt(true);
 		} else if (inSession === 2 && ready) {
-			alert('Session Ended');
+			setShowExitPrompt(false);
+			resetTime('end');
 			let sesInfo = sessionInfo;
 			sesInfo['tasks'] = taskData;
 			let d = new Date();
-			dispatch(
-				StudyActionCreators.addSession({
-					start: session.start,
-					end: {
-						date: {
-							day: d.getDate(),
-							month: d.getMonth() + 1,
-							year: d.getFullYear(),
+			if (deepStudy) {
+				dispatch(
+					StudyActionCreators.addSession({
+						start: session.start,
+						end: {
+							date: {
+								day: d.getDate(),
+								month: d.getMonth() + 1,
+								year: d.getFullYear(),
+							},
+							time: {
+								hours: d.getHours(),
+								minutes: d.getMinutes(),
+								seconds: d.getSeconds(),
+							},
 						},
-						time: {
-							hours: d.getHours(),
-							minutes: d.getMinutes(),
-							seconds: d.getSeconds(),
-						},
-					},
-					sessionInfo: sesInfo,
-				})
-			);
+						sessionInfo: sesInfo,
+						id: sessionId,
+					})
+				);
+			}
 			setSession((prevTime) => {
 				return {
 					...session,
@@ -171,7 +179,7 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 				longBreakTimes: [],
 			});
 		} else if (inSession === 3) {
-			alert('I want session to end');
+			// alert('I want session to end');
 			toggleTimer();
 			setInSession(2);
 			setReady(true);
@@ -181,7 +189,6 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [inSession]);
 
-	// working
 	const handleOpen = (target) => {
 		if (target === 'task') {
 			setOpenTask(true);
@@ -198,7 +205,6 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 		setOpenData(false);
 	};
 
-	//mark
 	const startBreak = (bool) => {
 		let d = new Date();
 		let endTime = {
@@ -206,11 +212,19 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 			minutes: d.getMinutes(),
 			seconds: d.getSeconds(),
 		};
+		let date = {
+			day: d.getDate(),
+			month: d.getMonth() + 1,
+			year: d.getFullYear(),
+		};
 		if (breakTime.break === 1 && studyStart.hours !== -1 && deepStudy) {
 			let addedStudy = {
 				start: studyStart,
 				end: endTime,
+				date: date,
 				timeSpent: timeCalc(studyStart.hours, studyStart.minutes, studyStart.seconds, endTime.hours, endTime.minutes, endTime.seconds, 'add'),
+				id: Date.now(),
+				sessionId: sessionId,
 			};
 			dispatch(StudyActionCreators.addStudy(addedStudy));
 			setSessionInfo((prev) => {
@@ -228,21 +242,31 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 				setHeldTime(time);
 			}
 			if (breakTime.break === 3 && breakStart.breakType === 3) {
+				let d = new Date();
 				// Check if long break started and record end
 				let addedBreak = {
 					start: breakStart,
 					end: endTime,
+					date: {
+						day: d.getDate(),
+						month: d.getMonth() + 1,
+						year: d.getFullYear(),
+					},
 					timeSpent: timeCalc(breakStart.hours, breakStart.minutes, breakStart.seconds, endTime.hours, endTime.minutes, endTime.seconds, 'add'),
+					id: Date.now(),
+					sessionId: sessionId,
 				};
-				dispatch(StudyActionCreators.addLBreak(addedBreak));
-				setSessionInfo((prev) => {
-					setReady(true);
-					return {
-						...sessionInfo,
-						longBreaks: prev.longBreaks + 1,
-						longBreakTimes: [...prev.longBreakTimes, addedBreak],
-					};
-				});
+				if (deepStudy) {
+					dispatch(StudyActionCreators.addLBreak(addedBreak));
+					setSessionInfo((prev) => {
+						setReady(true);
+						return {
+							...sessionInfo,
+							longBreaks: prev.longBreaks + 1,
+							longBreakTimes: [...prev.longBreakTimes, addedBreak],
+						};
+					});
+				}
 				setBreakStart({
 					hours: 0,
 					minutes: 0,
@@ -258,21 +282,31 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 			}
 			//heredone
 			if (breakTime.break === 2 && breakStart.breakType === 2) {
-				// Check if short break started and record end
+				// Check if short break started and record endlet
+				let d = new Date();
 				let addedBreak = {
 					start: breakStart,
 					end: endTime,
+					date: {
+						day: d.getDate(),
+						month: d.getMonth() + 1,
+						year: d.getFullYear(),
+					},
 					timeSpent: timeCalc(breakStart.hours, breakStart.minutes, breakStart.seconds, endTime.hours, endTime.minutes, endTime.seconds, 'add'),
+					id: Date.now(),
+					sessionId: sessionId,
 				};
-				dispatch(StudyActionCreators.addSBreak(addedBreak));
-				setSessionInfo((prev) => {
-					setReady(true);
-					return {
-						...sessionInfo,
-						shortBreaks: prev.shortBreaks + 1,
-						shortBreakTimes: [...prev.shortBreakTimes, addedBreak],
-					};
-				});
+				if (deepStudy) {
+					dispatch(StudyActionCreators.addSBreak(addedBreak));
+					setSessionInfo((prev) => {
+						setReady(true);
+						return {
+							...sessionInfo,
+							shortBreaks: prev.shortBreaks + 1,
+							shortBreakTimes: [...prev.shortBreakTimes, addedBreak],
+						};
+					});
+				}
 				setBreakStart({
 					hours: 0,
 					minutes: 0,
@@ -295,22 +329,31 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 		};
 		if (breakTime.break === 1) {
 		} else if (breakTime.break === 2) {
-			//heredone
 			if (breakStart.breakType === 2) {
+				let d = new Date();
 				let addedBreak = {
 					start: breakStart,
 					end: endTime,
+					date: {
+						day: d.getDate(),
+						month: d.getMonth() + 1,
+						year: d.getFullYear(),
+					},
 					timeSpent: timeCalc(breakStart.hours, breakStart.minutes, breakStart.seconds, endTime.hours, endTime.minutes, endTime.seconds, 'add'),
+					id: Date.now(),
+					sessionId: sessionId,
 				};
-				dispatch(StudyActionCreators.addSBreak(addedBreak));
-				setSessionInfo((prev) => {
-					setReady(true);
-					return {
-						...sessionInfo,
-						shortBreaks: prev.shortBreaks + 1,
-						shortBreakTimes: [...prev.shortBreakTimes, addedBreak],
-					};
-				});
+				if (deepStudy) {
+					dispatch(StudyActionCreators.addSBreak(addedBreak));
+					setSessionInfo((prev) => {
+						setReady(true);
+						return {
+							...sessionInfo,
+							shortBreaks: prev.shortBreaks + 1,
+							shortBreakTimes: [...prev.shortBreakTimes, addedBreak],
+						};
+					});
+				}
 				setBreakStart({
 					hours: 0,
 					minutes: 0,
@@ -321,21 +364,32 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 			timerBreak(heldTime, 1);
 		} else if (breakTime.break === 3) {
 			if (breakStart.breakType === 3) {
+				let d = new Date();
 				//record long break end
 				let addedBreak = {
 					start: breakStart,
 					end: endTime,
+					date: {
+						day: d.getDate(),
+						month: d.getMonth() + 1,
+						year: d.getFullYear(),
+					},
 					timeSpent: timeCalc(breakStart.hours, breakStart.minutes, breakStart.seconds, endTime.hours, endTime.minutes, endTime.seconds, 'add'),
+					id: Date.now(),
+					sessionId: sessionId,
 				};
-				dispatch(StudyActionCreators.addLBreak(addedBreak));
-				setSessionInfo((prev) => {
-					setReady(true);
-					return {
-						...sessionInfo,
-						longBreaks: prev.longBreaks + 1,
-						longBreakTimes: [...prev.longBreakTimes, addedBreak],
-					};
-				});
+				if (deepStudy) {
+					dispatch(StudyActionCreators.addLBreak(addedBreak));
+
+					setSessionInfo((prev) => {
+						setReady(true);
+						return {
+							...sessionInfo,
+							longBreaks: prev.longBreaks + 1,
+							longBreakTimes: [...prev.longBreakTimes, addedBreak],
+						};
+					});
+				}
 				setBreakStart({
 					hours: 0,
 					minutes: 0,
@@ -349,20 +403,28 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 		}
 	};
 
-	const resetTime = () => {
+	const resetTime = (end) => {
 		let d = new Date();
 		let endTime = {
 			hours: d.getHours(),
 			minutes: d.getMinutes(),
 			seconds: d.getSeconds(),
 		};
+		let date = {
+			day: d.getDate(),
+			month: d.getMonth() + 1,
+			year: d.getFullYear(),
+		};
 		setTimerOn(false);
 		if (breakTime.break === 1) {
-			if (studyStart.hours !== -1 && time !== convertMilli(studyTime) && deepStudy) {
+			if (studyStart.hours !== -1 && time !== convertMilli(studyTime) && deepStudy && end !== 'end') {
 				let addedStudy = {
 					start: studyStart,
 					end: endTime,
+					date: date,
 					timeSpent: timeCalc(studyStart.hours, studyStart.minutes, studyStart.seconds, endTime.hours, endTime.minutes, endTime.seconds, 'add'),
+					id: Date.now(),
+					sessionId: sessionId,
 				};
 				dispatch(StudyActionCreators.addStudy(addedStudy));
 				setSessionInfo((prev) => {
@@ -377,12 +439,22 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 			setTime(convertMilli(studyTime));
 		} else if (breakTime.break === 2) {
 			if (breakStart.breakType === 2) {
+				let d = new Date();
 				let addedBreak = {
 					start: breakStart,
 					end: endTime,
+					date: {
+						day: d.getDate(),
+						month: d.getMonth() + 1,
+						year: d.getFullYear(),
+					},
 					timeSpent: timeCalc(breakStart.hours, breakStart.minutes, breakStart.seconds, endTime.hours, endTime.minutes, endTime.seconds, 'add'),
+					id: Date.now(),
+					sessionId: sessionId,
 				};
-				dispatch(StudyActionCreators.addSBreak(addedBreak));
+				if (deepStudy) {
+					dispatch(StudyActionCreators.addSBreak(addedBreak));
+				}
 				setSessionInfo((prev) => {
 					setReady(true);
 					return {
@@ -401,12 +473,22 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 			setTime(breakTime.short);
 		} else if (breakTime.break === 3) {
 			if (breakStart.breakType === 3) {
+				let d = new Date();
 				let addedBreak = {
 					start: breakStart,
 					end: endTime,
+					date: {
+						day: d.getDate(),
+						month: d.getMonth() + 1,
+						year: d.getFullYear(),
+					},
 					timeSpent: timeCalc(breakStart.hours, breakStart.minutes, breakStart.seconds, endTime.hours, endTime.minutes, endTime.seconds, 'add'),
+					id: Date.now(),
+					sessionId: sessionId,
 				};
-				dispatch(StudyActionCreators.addLBreak(addedBreak));
+				if (deepStudy) {
+					dispatch(StudyActionCreators.addLBreak(addedBreak));
+				}
 				setSessionInfo((prev) => {
 					setReady(true);
 					return {
@@ -477,11 +559,19 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 				minutes: d.getMinutes(),
 				seconds: d.getSeconds(),
 			};
+			let date = {
+				day: d.getDate(),
+				month: d.getMonth() + 1,
+				year: d.getFullYear(),
+			};
 			if (breakTime.break === 1 && studyStart.hours !== -1 && deepStudy) {
 				let addedStudy = {
 					start: studyStart,
 					end: endTime,
+					date: date,
 					timeSpent: timeCalc(studyStart.hours, studyStart.minutes, studyStart.seconds, endTime.hours, endTime.minutes, endTime.seconds, 'add'),
+					id: Date.now(),
+					sessionId: sessionId,
 				};
 				dispatch(StudyActionCreators.addStudy(addedStudy));
 				setSessionInfo((prev) => {
@@ -494,12 +584,22 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 				});
 			}
 			if (breakTime.break === 2) {
+				let d = new Date();
 				let addedBreak = {
 					start: breakStart,
 					end: endTime,
+					date: {
+						day: d.getDate(),
+						month: d.getMonth() + 1,
+						year: d.getFullYear(),
+					},
 					timeSpent: timeCalc(breakStart.hours, breakStart.minutes, breakStart.seconds, endTime.hours, endTime.minutes, endTime.seconds, 'add'),
+					id: Date.now(),
+					sessionId: sessionId,
 				};
-				dispatch(StudyActionCreators.addSBreak(addedBreak));
+				if (deepStudy) {
+					dispatch(StudyActionCreators.addSBreak(addedBreak));
+				}
 				setSessionInfo((prev) => {
 					setReady(true);
 					return {
@@ -515,12 +615,22 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 					breakType: 0, //2 -short break, 3 - long break
 				});
 			} else if (breakTime.break === 3) {
+				let d = new Date();
 				let addedBreak = {
 					start: breakStart,
 					end: endTime,
+					date: {
+						day: d.getDate(),
+						month: d.getMonth() + 1,
+						year: d.getFullYear(),
+					},
 					timeSpent: timeCalc(breakStart.hours, breakStart.minutes, breakStart.seconds, endTime.hours, endTime.minutes, endTime.seconds, 'add'),
+					id: Date.now(),
+					sessionId: sessionId,
 				};
-				dispatch(StudyActionCreators.addLBreak(addedBreak));
+				if (deepStudy) {
+					dispatch(StudyActionCreators.addLBreak(addedBreak));
+				}
 				setSessionInfo((prev) => {
 					setReady(true);
 					return {
@@ -587,12 +697,7 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 					<Grid item container justify='space-between'>
 						<Grid item container justify='center' xs={4}>
 							{deepStudy && (
-								<Button
-									size='medium'
-									//working
-									onClick={() => handleOpen('task')}
-									style={breakTime.break === 3 ? { color: '#fff' } : { color: '#000' }}
-								>
+								<Button size='medium' onClick={() => handleOpen('task')} style={breakTime.break === 3 ? { color: '#fff' } : { color: '#000' }}>
 									<FontAwesomeIcon icon={faTasks} className='act-icons' /> Tasks
 								</Button>
 							)}
