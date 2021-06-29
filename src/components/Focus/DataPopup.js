@@ -35,6 +35,7 @@ function DataPopup({ session, open, handleClose, setInSession, inSession, ready 
 		if (toData) {
 			history.push('/data');
 		}
+		console.log(session);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [toData]);
 
@@ -49,27 +50,31 @@ function DataPopup({ session, open, handleClose, setInSession, inSession, ready 
 						<CloseIcon />
 					</IconButton>
 				</Grid>
-				<div>
-					<Typography gutterBottom>Number of Pomodoro Sessions: {studies}</Typography>
-					<Typography gutterBottom>Number of Short Breaks: {short_breaks}</Typography>
-					<Typography gutterBottom>Number of Long Breaks: {long_breaks} </Typography>
-					<Typography gutterBottom>
-						Current Study Session Time: <span>{('0' + Math.floor((session.currentTime / (1000 * 60 * 60)) % 24)).slice(-2)}</span>:
-						<span>{('0' + Math.floor((session.currentTime / 60000) % 60)).slice(-2)}</span>:<span>{('0' + Math.floor((session.currentTime / 1000) % 60)).slice(-2)}</span>
-					</Typography>
-					<Typography variant='h6' gutterBottom>
-						Your Pomodoro Sessions:
-						<ul>
-							{study_times.map((time, id) => (
-								<li key={id}>
-									start: {('0' + time.start.hours).slice(-2)}:{('0' + time.start.minutes).slice(-2)}:{('0' + time.start.seconds).slice(-2)}, end: {('0' + time.end.hours).slice(-2)}:
-									{('0' + time.end.minutes).slice(-2)}:{('0' + time.end.seconds).slice(-2)} study time: {('0' + time.timeSpent.hour).slice(-2)}:{('0' + time.timeSpent.min).slice(-2)}:
-									{('0' + time.timeSpent.sec).slice(-2)}
-								</li>
-							))}
-						</ul>
-					</Typography>
-				</div>
+				{studies || short_breaks || long_breaks || session.currentTime !== 0 || study_times.length > 0 ? (
+					<div>
+						<Typography gutterBottom>Number of Study Sessions: {studies}</Typography>
+						<Typography gutterBottom>Number of Short Breaks: {short_breaks}</Typography>
+						<Typography gutterBottom>Number of Long Breaks: {long_breaks} </Typography>
+						<Typography gutterBottom>
+							Current Session Time: <span>{('0' + Math.floor((session.currentTime / (1000 * 60 * 60)) % 24)).slice(-2)}</span>:
+							<span>{('0' + Math.floor((session.currentTime / 60000) % 60)).slice(-2)}</span>:<span>{('0' + Math.floor((session.currentTime / 1000) % 60)).slice(-2)}</span>
+						</Typography>
+						<Typography variant='h6' gutterBottom>
+							Your Study Sessions:
+							<ul>
+								{study_times.map((time, id) => (
+									<li key={id}>
+										start: {('0' + time.start.hours).slice(-2)}:{('0' + time.start.minutes).slice(-2)}:{('0' + time.start.seconds).slice(-2)}, end: {('0' + time.end.hours).slice(-2)}:
+										{('0' + time.end.minutes).slice(-2)}:{('0' + time.end.seconds).slice(-2)} study time: {('0' + time.timeSpent.hour).slice(-2)}:{('0' + time.timeSpent.min).slice(-2)}:
+										{('0' + time.timeSpent.sec).slice(-2)}
+									</li>
+								))}
+							</ul>
+						</Typography>
+					</div>
+				) : (
+					<Typography gutterBottom>Complete Some Sessions and they'll show up here!</Typography>
+				)}
 				<Button onClick={toDataPage} color='primary'>
 					{ready || inSession === 0 ? <>Data Page</> : <>End Session to go to Data Page</>}
 				</Button>

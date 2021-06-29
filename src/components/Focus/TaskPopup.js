@@ -58,6 +58,7 @@ function TaskPopup({ session, open, handleClose }) {
 					time: time,
 					date: date,
 					finished: false,
+					id: Date.now(),
 				})
 			);
 			setInput('');
