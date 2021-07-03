@@ -12,4 +12,33 @@
 	.add-des {
 		margin: 0 10px;
 	}
+
+	.MuiPaper-root {
+		background-color: #e0d9ca;
+		border: 1px solid #bab4a9;
+	}
+
+	.inner-acc .MuiPaper-root {
+		background-color: #fff;
+		border: none;
+	}
+
+	.prompt .MuiPaper-root {
+		background-color: rgb(141, 18, 18);
+		border: none;
+	}
+}
+
+@media (max-width: 400px) {
+	.MuiAccordionDetails-root {
+		padding: 8px 5px 16px !important;
+	}
+}
+
+@media (max-width: 1000px) {
+	.data-dropdown-container {
+		.mobile-hidden {
+			display: none;
+		}
+	}
 }

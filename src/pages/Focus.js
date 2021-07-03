@@ -33,12 +33,20 @@ function Focus({ handleLogout }) {
 	};
 
 	return (
-		<Grid container justify='center' alignItems='flex-start' className='page-container' style={background}>
-			<Grid item xs={10}>
-				<Typography variant='h2'>Timer</Typography>
+		<Grid container justify='center' alignItems='center' alignContent='center' className='page-container' style={background}>
+			<Grid
+				item
+				xs={deepStudy && (inSession === 1 || inSession === 3) ? 8 : 12}
+				sm={deepStudy && (inSession === 1 || inSession === 3) ? 9 : 12}
+				md={deepStudy && (inSession === 1 || inSession === 3) ? 4 : 12}
+			>
+				<Typography variant='h2' style={{ textAlign: !(deepStudy && (inSession === 1 || inSession === 3)) && 'center' }}>
+					Timer
+				</Typography>
 			</Grid>
-			<Grid item xs={2}>
-				{deepStudy && (inSession === 1 || inSession === 3) && (
+
+			{deepStudy && (inSession === 1 || inSession === 3) && (
+				<Grid item xs={4} sm={3} md={4} className='btn-container'>
 					<Button
 						onClick={() => {
 							if (ready) {
@@ -51,20 +59,19 @@ function Focus({ handleLogout }) {
 					>
 						End Session
 					</Button>
-				)}
-			</Grid>
-
+				</Grid>
+			)}
 			<Grid item xs={12} container justify='center' alignItems='center' direction='column' sapcing={3}>
-				<Grid item xs={6}>
+				<Grid item xs={12} md={8} xl={8}>
 					<Timer changeBackground={changeBackground} inSession={inSession} setInSession={setInSession} setReady={setReady} ready={ready} />
 				</Grid>
 				{deepStudy && pinTask !== '' && (
-					<Grid item xs={6} className='pinned-grid'>
+					<Grid item xs={12} md={8} xl={8} className='pinned-grid'>
 						<PinnedTask paperCol={paperCol} inSession={inSession} />
 					</Grid>
 				)}
 			</Grid>
-			<button onClick={clearAll}>Clear</button>
+			{/* <button onClick={clearAll}>Clear</button> */}
 		</Grid>
 	);
 }

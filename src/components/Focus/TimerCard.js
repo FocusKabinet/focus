@@ -22,16 +22,11 @@ function TimerCard({ name, studySes, des }) {
 				}}
 			>
 				<CardActionArea>
-					<CardMedia
-						className='card-bck'
-						title='Timer'
-						image='src/assets/empty-state-photo.png'
-					/>
-					<CardContent>
+					<CardContent className='title'>
 						<Typography gutterBottom variant='h5' component='h2'>
 							{name}
 						</Typography>
-						<Typography variant='body2' color='textSecondary' component='p'>
+						<Typography variant='body2' color='textSecondary' component='p' style={{ textAlign: 'center' }}>
 							{des}
 						</Typography>
 					</CardContent>

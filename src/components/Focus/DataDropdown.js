@@ -25,9 +25,11 @@ import Snackbar from '@material-ui/core/Snackbar';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faThumbtack } from '@fortawesome/free-solid-svg-icons';
+import { useMediaQuery } from 'react-responsive';
 
 function DataDropdown({ session_times }) {
 	const dispatch = useDispatch();
+	const isMobile = useMediaQuery({ query: `(max-width: 1000px)` });
 
 	const [checked, setChecked] = useState(new Array(session_times.length).fill(false));
 	const [expanded, setExpanded] = useState(new Array(session_times.length).fill(false));
@@ -149,17 +151,11 @@ function DataDropdown({ session_times }) {
 		}
 	};
 
-	const present = () => {
-		console.log(checked);
-		console.log(numChecked);
-	};
-
 	return (
 		<div className='data-dropdown-container'>
 			{session_times.length > 0 ? (
 				<>
-					<button onClick={present}>present</button>
-					<Snackbar open={alert} autoHideDuration={2000} onClose={handleWarningClose}>
+					<Snackbar open={alert} autoHideDuration={2000} onClose={handleWarningClose} className='prompt'>
 						<Alert
 							onClose={handleWarningClose}
 							action={
@@ -186,7 +182,7 @@ function DataDropdown({ session_times }) {
 								inputProps={{ 'aria-label': 'all items selected' }}
 							/>
 						</ListItemIcon>
-						<ListItemText primary='Saved Sessions Selected' secondary={`${numChecked}/${session_times.length} selected`} />
+						<ListItemText primaryTypographyProps={{ variant: 'subtitle1' }} primary='Saved Sessions' secondary={`${numChecked}/${session_times.length} selected`} />
 						{numChecked ? (
 							<>
 								<IconButton color='secondary' component='span' className='add-des' style={{ color: '#FF0000' }} onClick={() => deleteMulSession()} edge='end' aria-label='delete'>
@@ -201,7 +197,7 @@ function DataDropdown({ session_times }) {
 					<Divider />
 					{session_times.map((session, id) => {
 						return (
-							<Accordion key={id}>
+							<Accordion key={id} className='inner-acc'>
 								<AccordionSummary expandIcon={<ExpandMoreIcon />} aria-label='Expand' aria-controls='additional-actions1-content' id='additional-actions1-header'>
 									<FormControlLabel
 										aria-label='Acknowledge'
@@ -221,17 +217,17 @@ function DataDropdown({ session_times }) {
 								</AccordionSummary>
 								<AccordionDetails>
 									<Grid container direction='row' justify='center' alignItems='flex-start'>
-										<Grid item xs={expanded[id] ? 12 : 6}>
+										<Grid item xs={expanded[id] || isMobile ? 12 : 6}>
 											<Chart data={session} />
 										</Grid>
-										<Grid item xs={expanded[id] ? 12 : 6}>
+										<Grid item xs={expanded[id] || isMobile ? 12 : 6}>
 											<DataContainer sessionInfo={session.sessionInfo} />
 										</Grid>
 									</Grid>
 								</AccordionDetails>
 								<Divider />
 								<AccordionActions>
-									<Button size='large' color='primary' onClick={() => expand(id)}>
+									<Button size='large' color='primary' onClick={() => expand(id)} className='mobile-hidden'>
 										<Typography variant='h6'>{expanded[id] ? 'Shrink' : 'Expand'}</Typography>
 									</Button>
 									<Button size='large' color='secondary' onClick={() => deleteSession(session.id, id)}>

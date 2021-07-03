@@ -1,4 +1,9 @@
 .task-popup {
+	.container {
+		padding: 70px 50px 50px !important;
+		text-align: center;
+	}
+
 	& .MuiDialog-paper {
 		background-color: #efebe1;
 		overflow: hidden;
@@ -26,14 +31,14 @@
 	}
 
 	.checkbox-container {
-		max-height: 70vh;
+		max-height: 60vh;
 		overflow: auto;
 		word-break: break-word;
 		padding: 20px;
 	}
 
 	.task-input {
-		width: 100%;
+		width: 90%;
 		margin: 20px 0;
 	}
 
@@ -53,3 +58,24 @@
 		margin: 20px 0;
 	}
 }
+
+@media (max-width: 500px) {
+	.task-popup .container {
+		padding: 70px 0 50px !important;
+	}
+}
+
+@media (max-width: 350px) {
+	.switch {
+		margin: 0 80px;
+	}
+	.checkbox-container {
+		max-height: 57vh !important;
+	}
+}
+
+// @media (max-width: 768px) {
+// 	.checkbox-container {
+// 		max-height: 60vh !important;
+// 	}
+// }

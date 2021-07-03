@@ -121,7 +121,7 @@ function Chart({ data }) {
 
 	if (studyDataTimes.length > 0)
 		dataSet.push({
-			label: ' Study Data ',
+			label: ' Study Time ',
 			backgroundColor: '#8eb798',
 			borderColor: '#498551',
 			data: studyDataTimes,
@@ -131,14 +131,14 @@ function Chart({ data }) {
 		dataSet.push({
 			type: 'line',
 			label: ' Long Break ',
-			backgroundColor: '#84acc9',
+			backgroundColor: '#c7b5df',
 			borderColor: '#763ea8',
 			data: lBreakTimes,
 		});
 
 	if (sBreakTimes.length > 0)
 		dataSet.push({
-			label: ' Short Breaks ',
+			label: ' Short Break ',
 			backgroundColor: 'rgba(75,192,192,1)',
 			borderColor: '#5599c5',
 			data: sBreakTimes,
@@ -148,8 +148,8 @@ function Chart({ data }) {
 		dataSet.push({
 			type: 'scatter',
 			label: ' Task Reopened ',
-			backgroundColor: '#FFFF00',
-			borderColor: '#5599c5',
+			backgroundColor: '#0166a8',
+			borderColor: '#151848',
 			data: tasksReopened,
 		});
 
@@ -157,8 +157,8 @@ function Chart({ data }) {
 		dataSet.push({
 			type: 'scatter',
 			label: ' Task Finished ',
-			backgroundColor: '#0000FF',
-			borderColor: '#5599c5',
+			backgroundColor: '#e83e30',
+			borderColor: '#9c1120',
 			data: tasksFinished,
 		});
 
@@ -166,8 +166,8 @@ function Chart({ data }) {
 		dataSet.push({
 			type: 'scatter',
 			label: ' Tasks Started ',
-			backgroundColor: '#00FFFF',
-			borderColor: '#5599c5',
+			backgroundColor: '#68b349',
+			borderColor: '#025409',
 			data: tasksStarted,
 		});
 

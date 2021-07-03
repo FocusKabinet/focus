@@ -7,4 +7,41 @@
 	.task-list li {
 		margin: 20px;
 	}
+
+	ol {
+		margin-top: 0;
+		list-style: none;
+		counter-reset: steps;
+		color: #000;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-start;
+		padding: 0;
+	}
+	ol li:before {
+		content: counter(steps);
+		margin-right: 0.5rem;
+		background: #b4afa2;
+		color: white;
+		width: 1.2em;
+		height: 1.2em;
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		line-height: 1.2em;
+	}
+	ol li {
+		counter-increment: steps;
+		margin: 0 10px 20px;
+		border-left: 5px solid #e0d9ca;
+		border-right: 5px solid #e0d9ca;
+		padding: 5px;
+		border-radius: 20px;
+	}
+}
+
+@media (max-width: 350px) {
+	.pot-long {
+		word-break: break-all;
+	}
 }

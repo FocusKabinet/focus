@@ -6,7 +6,7 @@ import { timeCalc } from './helpers/timeCalc';
 import { Button, Grid, Paper, Typography } from '@material-ui/core';
 import { Howl } from 'howler';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUndoAlt, faTasks, faHourglassHalf } from '@fortawesome/free-solid-svg-icons';
+import { faUndoAlt, faTasks, faChartLine } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch } from 'react-redux';
 import { StudyActionCreators } from '../../redux/actions/studyData';
 import DataPopup from './DataPopup';
@@ -672,47 +672,44 @@ function Timer({ changeBackground, inSession, setInSession, setReady, ready }) {
 
 	return (
 		<Paper elevation={3} className='timer-container' style={backgroundColor}>
-			<Grid container justify='center' alignItems='center'>
-				<Grid item container justify='center' alignItems='center' xs={12}>
-					<Grid item container justify='space-around'>
-						<Button onClick={() => startTimer()} className='timer-buttons' disabled={breakTime.break === 1}>
-							Timer
-						</Button>
-						<Button onClick={() => startBreak(false)} className='timer-buttons' disabled={breakTime.break === 3}>
-							Long Break
-						</Button>
-						<Button onClick={() => startBreak(true)} className='timer-buttons' disabled={breakTime.break === 2}>
-							Short Break
-						</Button>
+			<Grid container justify='center' alignItems='center' className='timer-box'>
+				<Grid item container justify='space-around'>
+					<Button onClick={() => startTimer()} className='timer-buttons' disabled={breakTime.break === 1}>
+						Timer
+					</Button>
+					<Button onClick={() => startBreak(false)} className='timer-buttons' disabled={breakTime.break === 3}>
+						Long Break
+					</Button>
+					<Button onClick={() => startBreak(true)} className='timer-buttons' disabled={breakTime.break === 2}>
+						Short Break
+					</Button>
+				</Grid>
+				<Typography variant='h1' className='timer'>
+					<Grid item container justify='center' alignItems='center'>
+						<span>{(time / (1000 * 60 * 60)) % 24 > 0.9 && ('0' + Math.floor((time / (1000 * 60 * 60)) % 24)).slice(-2) + ':'}</span>
+						<span>{(time / 60000) % 60 > 0.9 && ('0' + Math.floor((time / 60000) % 60)).slice(-2) + ':'}</span>
+						<span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}</span>
+						{/* :<span>{('0' + Math.floor(((time  / 10) % 100)).slice(-2)}</span> */}
+						<FontAwesomeIcon icon={faUndoAlt} className='icons' onClick={() => resetTime()} />
 					</Grid>
-					<Typography variant='h1' className='timer'>
-						<Grid item container justify='center' alignItems='center'>
-							<span>{(time / (1000 * 60 * 60)) % 24 > 0.9 && ('0' + Math.floor((time / (1000 * 60 * 60)) % 24)).slice(-2) + ':'}</span>
-							<span>{(time / 60000) % 60 > 0.9 && ('0' + Math.floor((time / 60000) % 60)).slice(-2) + ':'}</span>
-							<span>{('0' + Math.floor((time / 1000) % 60)).slice(-2)}</span>
-							{/* :<span>{('0' + Math.floor(((time  / 10) % 100)).slice(-2)}</span> */}
-							<FontAwesomeIcon icon={faUndoAlt} className='icons' onClick={() => resetTime()} />
-						</Grid>
-					</Typography>
-					<Grid item container justify='space-between'>
-						<Grid item container justify='center' xs={4}>
-							{deepStudy && (
-								<Button size='medium' onClick={() => handleOpen('task')} style={breakTime.break === 3 ? { color: '#fff' } : { color: '#000' }}>
-									<FontAwesomeIcon icon={faTasks} className='act-icons' /> Tasks
-								</Button>
-							)}
-						</Grid>
-						<Button onClick={toggleTimer} className={timerOn ? 'stop-button' : 'start-button'}>
-							{timerOn ? <>Stop</> : <>Start</>}
-						</Button>
-						<Grid item container justify='center' xs={4}>
-							{deepStudy && (
-								<Button size='medium' onClick={() => handleOpen('data')} style={breakTime.break === 3 ? { color: '#fff' } : { color: '#000' }}>
-									<FontAwesomeIcon icon={faHourglassHalf} className='act-icons ' />
-									Data
-								</Button>
-							)}
-						</Grid>
+				</Typography>
+				<Grid item container justify='space-between'>
+					<Grid item container justify='center' xs={2} sm={4}>
+						{deepStudy && (
+							<Button size='medium' onClick={() => handleOpen('task')} style={breakTime.break === 3 ? { color: '#fff' } : { color: '#000' }} className='oth-btn'>
+								<FontAwesomeIcon icon={faTasks} className='act-icons' />
+							</Button>
+						)}
+					</Grid>
+					<Button onClick={toggleTimer} className={timerOn ? 'stop-button' : 'start-button'}>
+						{timerOn ? <>Stop</> : <>Start</>}
+					</Button>
+					<Grid item container justify='center' xs={2} sm={4}>
+						{deepStudy && (
+							<Button size='large' onClick={() => handleOpen('data')} style={breakTime.break === 3 ? { color: '#fff' } : { color: '#000' }} className='oth-btn'>
+								<FontAwesomeIcon icon={faChartLine} className='act-icons ' />
+							</Button>
+						)}
 					</Grid>
 				</Grid>
 			</Grid>

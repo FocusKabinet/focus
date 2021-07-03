@@ -1,5 +1,9 @@
 .card-container {
 	margin: 20px;
+	border-radius: 20px !important;
+	-webkit-box-shadow: 0 8px 6px -6px black !important;
+	-moz-box-shadow: 0 8px 6px -6px black !important;
+	box-shadow: 0 8px 6px -6px black !important;
 	& .card-bck {
 		height: 140px;
 	}
@@ -11,5 +15,13 @@
 
 	& .expandOpen {
 		transform: rotate(180deg);
+	}
+
+	.title {
+		display: flex;
+		justify-content: center;
+		flex-direction: column;
+		align-items: center;
+		color: #000;
 	}
 }
