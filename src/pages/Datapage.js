@@ -14,20 +14,16 @@ function Datapage() {
 		doneTasks: useSelector((state) => state.task.doneTasks),
 	};
 
-	const presentAll = () => {
-		console.log(session_times);
-		console.log(timerData);
-	};
-
 	return (
 		<Grid container justify='center' alignItems='flex-start' className='data-container'>
 			<Grid item xs={12}>
-				<Typography variant='h1'>Data</Typography>
+				<Typography variant='h2' className='title'>
+					Your Data
+				</Typography>
 			</Grid>
 			<Grid item xs={12}>
 				<DataDropdown session_times={session_times} />
 			</Grid>
-			<button onClick={presentAll}>Present</button>
 		</Grid>
 	);
 }

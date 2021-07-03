@@ -1,8 +1,8 @@
 @import '../../components/generic/styles/variables.scss';
 
 .page-container {
-	height: 100vh - $navHeight;
-	min-height: 92vh;
+	height: auto;
+	min-height: 100vh - $navHeight;
 	padding: 20px;
 	color: #ffffff;
 	background: linear-gradient(#407447 0%, #d3f3e1 74%);
@@ -11,9 +11,18 @@
 		color: #fff;
 		padding: 10px;
 		border: 2px solid #fff;
+		margin: 30px 0 !important;
 	}
+}
 
-	.pinned-grid {
-		margin: 20px;
+@media (min-width: 1600px) {
+	.MuiTypography-h2 {
+		font-size: 7rem !important;
+	}
+}
+
+@media (min-width: 700px) {
+	.btn-container {
+		display: contents !important;
 	}
 }

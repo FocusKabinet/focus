@@ -1,6 +1,6 @@
 import React from 'react';
 import './styles/DataContainer.scss';
-import { Grid, Typography, Accordion, AccordionSummary, AccordionDetails, Button, Checkbox, ListItem, ListItemIcon, ListItemText, IconButton } from '@material-ui/core';
+import { Grid, Typography, Accordion, AccordionSummary, AccordionDetails } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 function DataContainer({ sessionInfo }) {
@@ -11,27 +11,31 @@ function DataContainer({ sessionInfo }) {
 		if (parent[attr] && attr !== 'tasks') {
 			if (!arrBool && parent[attr] > 0) {
 				return (
-					<Typography variant='h6' gutterBottom>
+					<Typography variant='h6' gutterBottom style={{ color: '#000' }}>
 						{tempTitle + ': ' + parent[attr]}
 					</Typography>
 				);
 			} else if (arrBool && parent[attr].length > 0) {
 				return (
-					<Accordion>
+					<Accordion style={{ color: '#000', border: '1px solid #bab4a9', margin: '5px 0' }}>
 						<AccordionSummary expandIcon={<ExpandMoreIcon />} aria-label='Expand' aria-controls='additional-actions1-content' id='additional-actions1-header'>
-							{tempTitle}:
+							<Typography variant='h6' style={{ color: '#000' }}>
+								{tempTitle}:
+							</Typography>
 						</AccordionSummary>
 						<AccordionDetails>
 							<Typography variant='h6' gutterBottom>
-								<ul>
+								<ol className='acc-ol'>
 									{parent[attr].map((time, id) => (
 										<li key={id}>
 											{('0' + time.start.hours).slice(-2)}:{('0' + time.start.minutes).slice(-2)}:{('0' + time.start.seconds).slice(-2)} - {('0' + time.end.hours).slice(-2)}:
-											{('0' + time.end.minutes).slice(-2)}:{('0' + time.end.seconds).slice(-2)}, <strong>Time Spent:</strong> {('0' + time.timeSpent.hour).slice(-2)}:
-											{('0' + time.timeSpent.min).slice(-2)}:{('0' + time.timeSpent.sec).slice(-2)}
+											{('0' + time.end.minutes).slice(-2)}:{('0' + time.end.seconds).slice(-2)}
+											<div>
+												<strong>Time Spent:</strong> {('0' + time.timeSpent.hour).slice(-2)}:{('0' + time.timeSpent.min).slice(-2)}:{('0' + time.timeSpent.sec).slice(-2)}
+											</div>
 										</li>
 									))}
-								</ul>
+								</ol>
 							</Typography>
 						</AccordionDetails>
 					</Accordion>
@@ -47,18 +51,20 @@ function DataContainer({ sessionInfo }) {
 							let taskTitle = keyName.charAt(0).toUpperCase() + keyName.slice(1);
 							taskTitle = taskTitle.split(/(?=[A-Z])/).join(' ');
 							return (
-								<Accordion>
+								<Accordion style={{ color: '#000', border: '1px solid #bab4a9', margin: '5px 0' }}>
 									<AccordionSummary expandIcon={<ExpandMoreIcon />} aria-label='Expand' aria-controls='additional-actions1-content' id='additional-actions1-header'>
-										Your {taskTitle} this Session:
+										<Typography variant='h6' style={{ color: '#000' }}>
+											Your {taskTitle} this Session:
+										</Typography>
 									</AccordionSummary>
 									<AccordionDetails>
 										<Typography variant='h6' gutterBottom>
-											<ul className='task-list'>
+											<ol className='task-list'>
 												{parent[attr][keyName].map((task, id) => (
 													<li key={id}>
 														<div>
 															<strong>Task: </strong>
-															{task.task}
+															<span className='pot-long'>{task.task}</span>
 														</div>
 														<div>
 															<strong>Time Started: </strong>
@@ -78,39 +84,10 @@ function DataContainer({ sessionInfo }) {
 														)}
 													</li>
 												))}
-											</ul>
+											</ol>
 										</Typography>
 									</AccordionDetails>
 								</Accordion>
-								// <Typography key={keyIndex} variant='h6' gutterBottom>
-								// 	Your {taskTitle} this Session:
-								// <ul className='task-list'>
-								// 	{parent[attr][keyName].map((task, id) => (
-								// 		<li key={id}>
-								// 			<div>
-								// 				<strong>Task: </strong>
-								// 				{task.task}
-								// 			</div>
-								// 			<div>
-								// 				<strong>Time Started: </strong>
-								// 				{('0' + task.time.hours).slice(-2)}:{('0' + task.time.minutes).slice(-2)}:{('0' + task.time.seconds).slice(-2)}
-								// 			</div>
-								// 			{task.timeFinished && (
-								// 				<div>
-								// 					<strong>Time Finished: </strong>
-								// 					{('0' + task.timeFinished.hours).slice(-2)}:{('0' + task.timeFinished.minutes).slice(-2)}:{('0' + task.timeFinished.seconds).slice(-2)}
-								// 				</div>
-								// 			)}
-								// 			{task.timeReopened && (
-								// 				<div>
-								// 					<strong>Time Reopened: </strong>
-								// 					{('0' + task.timeReopened.hours).slice(-2)}:{('0' + task.timeReopened.minutes).slice(-2)}:{('0' + task.timeReopened.seconds).slice(-2)}
-								// 				</div>
-								// 			)}
-								// 		</li>
-								// 	))}
-								// </ul>
-								// </Typography>
 							);
 						}
 					})}

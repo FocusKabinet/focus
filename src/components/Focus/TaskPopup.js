@@ -164,6 +164,7 @@ function TaskPopup({ session, open, handleClose }) {
 									inputProps={{ 'aria-label': 'checkbox with default color' }}
 									style={{ color: '#52d869' }}
 									disabled={!(rxDoneTasks.length > 0)}
+									className='switch'
 								/>
 							</Typography>
 							<IconButton className='close-btn' aria-label='close' onClick={handleCloseData}>
@@ -185,10 +186,10 @@ function TaskPopup({ session, open, handleClose }) {
 								</Typography>
 							)}
 						</Grid>
-						<Grid item className='form-grid'>
+						<Grid container justify='center' item className='form-grid'>
 							<form noValidate autoComplete='off' className='task-input' onSubmit={handleSubmit}>
 								<Grid container justify='center' alignItems='center'>
-									<Grid item xs={11}>
+									<Grid item xs={8} sm={10}>
 										<Snackbar open={openWarning} autoHideDuration={5000} onClose={handleWarningClose}>
 											<Alert onClose={handleWarningClose} severity='warning'>
 												You already have that task!
@@ -196,9 +197,11 @@ function TaskPopup({ session, open, handleClose }) {
 										</Snackbar>
 										<TextField required fullWidth value={input} label='Add a task' onChange={(e) => setInput(e.target.value)} />
 									</Grid>
-									<Button type='submit' disabled={!input} className='submit-form'>
-										<FontAwesomeIcon icon={faPen} />
-									</Button>
+									<Grid item xs={1}>
+										<Button type='submit' disabled={!input} className='submit-form'>
+											<FontAwesomeIcon icon={faPen} />
+										</Button>
+									</Grid>
 								</Grid>
 							</form>
 						</Grid>
@@ -208,7 +211,7 @@ function TaskPopup({ session, open, handleClose }) {
 						<Grid item>
 							<Typography variant='h4' gutterBottom>
 								Your Finished Tasks
-								<Switch checked={showDoneTask} onChange={handleSwitchChange} name='showTask' inputProps={{ 'aria-label': 'checkbox with default color' }} />
+								<Switch checked={showDoneTask} onChange={handleSwitchChange} name='showTask' inputProps={{ 'aria-label': 'checkbox with default color' }} className='switch' />
 							</Typography>
 							<IconButton className='close-btn' aria-label='close' onClick={handleCloseData}>
 								<CloseIcon />

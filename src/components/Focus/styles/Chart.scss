@@ -1,3 +1,14 @@
-// .chart-container {
-// 	width: 50%;
-// }
+.chart-container {
+	margin: 20px;
+	padding: 10px;
+	background-color: #fff;
+	border: 1px solid #bab4a9;
+	border-radius: 20px;
+}
+
+@media (max-width: 400px) {
+	.chart-container {
+		margin: 20px 0;
+		padding: 0;
+	}
+}

@@ -1,11 +1,11 @@
 .timer-container {
-	padding: 20px;
 	background-color: #498551;
 	color: #fff !important;
 	border-radius: 20px !important;
-
+	margin: 0 0 20px;
+	padding: 10px;
 	& .timer {
-		margin: 50px !important;
+		margin: 10px 0;
 	}
 
 	& .timer-buttons {
@@ -19,6 +19,7 @@
 		color: #fff;
 		border: 2px solid #fff;
 		border-radius: 20px;
+		margin: 0 0 20px !important;
 	}
 	& .stop-button {
 		color: #000;
@@ -27,7 +28,7 @@
 
 	& .icons {
 		font-size: 0.4em;
-		margin: 50px;
+		margin: 50px 10px;
 		cursor: pointer;
 
 		&:hover {
@@ -36,7 +37,56 @@
 	}
 
 	.act-icons {
-		font-size: 30px;
+		font-size: 4rem;
 		margin-right: 10px;
+	}
+
+	.oth-btn {
+		height: fit-content;
+		padding: 10px;
+		font-size: 4rem !important;
+	}
+}
+
+@media (max-width: 560px) {
+	.timer-buttons {
+		width: 75%;
+		font-size: 1.3rem !important;
+		border: 1px solid #b9b9b9 !important;
+		margin: 10px 0 !important;
+	}
+	.timer {
+		margin: 10px 0 !important;
+	}
+	.start-button,
+	.stop-button {
+		font-size: 1.3em !important;
+	}
+	.act-icons {
+		font-size: 2rem !important;
+		margin: 20px !important;
+	}
+}
+
+@media (min-width: 1600px) {
+	.timer-container {
+		height: 600px;
+	}
+
+	.timer-box {
+		height: 600px;
+	}
+
+	.timer {
+		font-size: 10rem !important;
+	}
+
+	.timer-buttons {
+		font-size: 2rem !important;
+	}
+
+	.start-button,
+	.stop-button {
+		font-size: 4em !important;
 	}
 }
