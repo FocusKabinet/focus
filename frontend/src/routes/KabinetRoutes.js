@@ -7,6 +7,7 @@ import Navigation from '../components/kabinet/Navigation';
 import KabinetTrendings from '../pages/KabinetTrendings';
 import KabinetAuth from '../pages/KabinetAuth';
 import KabinetProfile from '../pages/KabinetProfile';
+import KabinetPost from '../pages/KabinetPost';
 
 export default function KabinetRoutes(props) {
   return (
@@ -107,6 +108,18 @@ export default function KabinetRoutes(props) {
           </Page>
         )}
       />
+      <Route
+        exact
+        path="/kabinet-post/:id"
+        render={(routeProps) => (
+          <Page {...routeProps}>
+            <KabinetPost {...routeProps} />
+          </Page>
+        )}
+      />
+      <Route exact path="/kabinet-post/">
+        <Redirect to="/kabinet-world" />
+      </Route>
       <Route exact path="/">
         <Redirect to="/kabinet-world" />
       </Route>

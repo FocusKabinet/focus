@@ -15,6 +15,9 @@ import {
   Link,
   CardActionArea,
   Dialog,
+  Button,
+  TextField,
+  InputAdornment,
 } from '@material-ui/core';
 import {
   MoreVert,
@@ -28,6 +31,7 @@ import {
   VisibilityOff,
   BookmarkBorder,
   FavoriteBorder,
+  Share,
 } from '@material-ui/icons';
 import empty from '../../assets/empty-state-photo.png';
 import { format, formatDistance } from 'date-fns';
@@ -63,10 +67,15 @@ function IdeaCard(props) {
   const [menu, menuToggle] = React.useState(null);
   const [expanded, expandToggle] = React.useState(false);
   const [likes, setLikes] = React.useState(props.likes || []);
-  const [imageOpen, setImageOpen] = React.useState(false);
+  const [share, shareToggle] = React.useState(false);
 
   const handleToggle = (e) => {
     menuToggle(Boolean(menu) ? false : e.currentTarget);
+    e.stopPropagation();
+  };
+
+  const handleToggleShare = (e) => {
+    shareToggle(!share);
   };
 
   const handleToggleLike = async (e) => {
@@ -81,11 +90,12 @@ function IdeaCard(props) {
     if (!res) setLikes(newData);
   };
 
-  const isOwner = ownerId === user.uid;
+  const isOwner = user && ownerId === user.uid;
 
   return (
     <Card className="card-idea">
       <CardHeader
+        onClick={() => history.push(`/kabinet-post/${id}`)}
         title={`${emojiObject ? emojiObject.emoji : ''} ${title}`}
         subheader={
           <div className="card-subtitle">
@@ -95,10 +105,11 @@ function IdeaCard(props) {
                   color="primary"
                   className="publisher-link"
                   underline="none"
-                  onClick={() => {
+                  onClick={(e) => {
                     ownerId &&
                       ownerId !== params.uid &&
                       history.push(`/kabinet-user/${ownerId}`);
+                    e.stopPropagation();
                   }}
                 >
                   <AccountCircle fontSize="small" />
@@ -138,16 +149,20 @@ function IdeaCard(props) {
                 className="menu"
               >
                 <MenuItem
-                  onClick={() => history.push(`/kabinet-edit/${id}`)}
+                  onClick={(e) => {
+                    history.push(`/kabinet-edit/${id}`);
+                    e.stopPropagation();
+                  }}
                   disabled={id < 5}
                 >
                   <Edit fontSize="small" />
                   Edit
                 </MenuItem>
                 <MenuItem
-                  onClick={() => {
+                  onClick={(e) => {
                     deleteCard(id);
                     menuToggle(null);
+                    e.stopPropagation();
                   }}
                   className="menu-item-delete"
                   disabled={id < 5}
@@ -161,20 +176,20 @@ function IdeaCard(props) {
       />
       {imageURL && (
         <>
-          <CardActionArea onClick={() => setImageOpen(true)}>
+          <CardActionArea onClick={() => history.push(`/kabinet-post/${id}`)}>
             <CardMedia
-              className="card-img"
+              className={!props.singleView ? 'card-img' : ''}
               src={imageURL || imageUpload}
               component="img"
               onError={(e) => (e.target.src = empty)}
             />
           </CardActionArea>
-          <ImageDialog
+          {/* <ImageDialog
             open={imageOpen}
             title={title}
             imageURL={imageURL}
             onClose={() => setImageOpen(false)}
-          />
+          /> */}
         </>
       )}
       <CardActions disableSpacing>
@@ -202,6 +217,14 @@ function IdeaCard(props) {
             {bookmarks.includes(id) ? <Bookmark /> : <BookmarkBorder />}
           </IconButton>
         )}
+        <IconButton
+          onClick={handleToggleShare}
+          className="share-button"
+          color="primary"
+        >
+          <Share />
+        </IconButton>
+        <SharableLink open={share} handleClose={handleToggleShare} id={id} />
         <IconButton
           onClick={() => expandToggle(!expanded)}
           className={`expand-button ${expanded ? 'expanded' : ''}`}
@@ -243,6 +266,44 @@ function ImageDialog(props) {
   return (
     <Dialog open={open} onClose={onClose}>
       <img src={imageURL} alt={title} />
+    </Dialog>
+  );
+}
+
+function SharableLink(props) {
+  const { open, handleClose, id } = props;
+  const URL = window.location.origin + '/kabinet-post/' + id;
+  return (
+    <Dialog open={open} onClose={handleClose} fullWidth>
+      <div className="sharable-link-container">
+        <Grid
+          container
+          spacing={3}
+          direction="column"
+          justify="center"
+          alignItems="center"
+        >
+          <Grid item>
+            <Typography variant="h6">🔗 Sharable link to this post</Typography>
+          </Grid>
+          <Grid item>
+            <TextField label="URL" value={URL} variant="filled" fullWidth />
+          </Grid>
+          <Grid item>
+            <Button
+              onClick={() => {
+                navigator.clipboard.writeText(URL);
+                handleClose();
+              }}
+              variant="contained"
+              color="primary"
+              fullWidth
+            >
+              Copy to Clipboard
+            </Button>
+          </Grid>
+        </Grid>
+      </div>
     </Dialog>
   );
 }
