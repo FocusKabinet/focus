@@ -23,6 +23,7 @@ import {
   GitHub,
 } from '@material-ui/icons';
 import { logout } from '../../helpers/kabinetProfile';
+import GoBackButton from './GoBackButton';
 
 export default function TopBar(props) {
   const {
@@ -37,17 +38,20 @@ export default function TopBar(props) {
       <AppBar color="inherit" className="app-bar">
         <Toolbar variant="dense">
           <div className="top-bar-content">
-            <div
-              className="top-bar-title"
-              onClick={() => history.push('/kabinet-world')}
-            >
-              <Language />
-              <Typography variant="h6">kabinet</Typography>
-            </div>
+            {isChildrenPath(path) ? (
+              <GoBackButton {...props} />
+            ) : (
+              <div
+                className="top-bar-title"
+                onClick={() => history.push('/kabinet-world')}
+              >
+                <Language />
+                <Typography variant="h6">kabinet</Typography>
+              </div>
+            )}
             <div className="top-bar-buttons">
               {user ? (
                 <>
-                  {/* <Typography>{user.displayName}</Typography> */}
                   <IconButton
                     className="profile-button"
                     onClick={() => setDrawer(true)}
@@ -69,16 +73,6 @@ export default function TopBar(props) {
                         </ListItemIcon>
                         <ListItemText>Bookmarks</ListItemText>
                       </ListItem>
-                      {/* <ListItem
-                        button
-                        disabled
-                        // onClick={() => history.push('/kabinet-bookmarked')}
-                      >
-                        <ListItemIcon>
-                          <Note className="draft-icon" />
-                        </ListItemIcon>
-                        <ListItemText>Drafts</ListItemText>
-                      </ListItem> */}
                       <ListItem
                         button
                         onClick={() => {
@@ -153,4 +147,15 @@ export default function TopBar(props) {
       </AppBar>
     </div>
   );
+}
+
+function isChildrenPath(currentPath) {
+  const childrenPaths = [
+    'kabinet-post',
+    'kabinet-user',
+    'kabinet-bookmarked',
+    'kabinet-profile',
+  ];
+  let isChildren = childrenPaths.includes(currentPath.split('/')[1]);
+  return isChildren;
 }

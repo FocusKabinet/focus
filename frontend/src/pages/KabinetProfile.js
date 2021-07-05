@@ -66,31 +66,21 @@ function KabinetProfile(props) {
             />
           </Grid>
           <Grid item>
-            <div className="form-actions">
+            <div className="profile-update-buttons">
               <Button
                 color="primary"
-                variant="outlined"
-                onClick={() => props.history.goBack()}
+                onClick={() => setChangePw(true)}
                 size="small"
               >
-                Back
+                Change password
               </Button>
-              <div className="profile-update-buttons">
-                <Button
-                  color="primary"
-                  onClick={() => setChangePw(true)}
-                  size="small"
-                >
-                  Change password
-                </Button>
-                <Button
-                  color="primary"
-                  onClick={() => setChangeDetails(true)}
-                  size="small"
-                >
-                  Update email
-                </Button>
-              </div>
+              <Button
+                color="primary"
+                onClick={() => setChangeDetails(true)}
+                size="small"
+              >
+                Update email
+              </Button>
             </div>
           </Grid>
         </Grid>

@@ -18,7 +18,6 @@ import {
   DateRange,
   ExpandMore,
   Face,
-  KeyboardBackspace,
   PhotoAlbum,
   Search,
 } from '@material-ui/icons';
@@ -143,7 +142,6 @@ function KabinetDashboard(props) {
               <Book /> Your bookmarks
             </div>
           </Typography>
-          <GoBackButton {...props} />
         </>
       )}
       {props.viewUser && (
@@ -158,7 +156,6 @@ function KabinetDashboard(props) {
               <Face /> {`${viewProfile.displayName}'s collection`}
             </div>
           </Typography>
-          <GoBackButton {...props} />
         </>
       )}
       <Grid
@@ -295,18 +292,4 @@ function accumulateKeywords(cards) {
     return b[1] - a[1];
   });
   return data;
-}
-
-function GoBackButton(props) {
-  return (
-    <Button
-      className="goback-button"
-      variant="outlined"
-      color="primary"
-      onClick={() => props.history.goBack()}
-      startIcon={<KeyboardBackspace />}
-    >
-      Back
-    </Button>
-  );
 }
