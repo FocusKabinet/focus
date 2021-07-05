@@ -13,6 +13,7 @@ import { setProfile } from '../../redux/actions/kabinetUser';
 import { setLoadingState } from '../../redux/actions/loading';
 import { getUserBookmark } from '../../helpers/kabinetUserInteractions';
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import Landing from './Landing';
 
 const theme = createMuiTheme({
   typography: {
@@ -34,7 +35,8 @@ function Page(props) {
   }, [props]);
 
   return (
-    <div className='page'>
+    <div className="page">
+      <Landing />
       <ThemeProvider theme={theme}>
         <LoadingOverlay open={props.loading || false} />
         <Notification />
