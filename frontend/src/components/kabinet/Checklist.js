@@ -45,14 +45,8 @@ export function CheckList(props) {
   };
 
   return (
-    <Box className="keyword-container">
-      <List
-      // subheader={
-      //   <ListSubheader id="nested-list-subheader" dis>
-      //     {`Total: ${list.length} item(s)`}
-      //   </ListSubheader>
-      // }
-      >
+    <Box className="checklist-container">
+      <List>
         {list.map((todo, idx) => {
           return (
             <Paper

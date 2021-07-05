@@ -200,7 +200,7 @@ function KabinetForm(props) {
         variant="h4"
         gutterBottom
       >
-        {props.edit ? 'Refine your idea' : 'What are you thinking about?'}
+        {props.edit ? 'Refine' : 'Publish'}
       </Typography>
       <Paper className="new-idea-form">
         <Grid container spacing={2} direction="column">

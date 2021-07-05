@@ -10,7 +10,7 @@ import ScrollToTop from '../components/kabinet/ScrollToTop';
 import { Typography } from '@material-ui/core';
 
 export default function KabinetTrendings(props) {
-  const [trends, updateTrends] = React.useState({});
+  const [trends, updateTrends] = React.useState(null);
   const [headlinesData, updateHeadlines] = React.useState({});
   const [countryObj, updateCountryObj] = React.useState({});
 
@@ -37,6 +37,7 @@ export default function KabinetTrendings(props) {
     fetchData();
   }, [props]);
 
+  if (!trends) return null;
   return (
     <>
       <Typography

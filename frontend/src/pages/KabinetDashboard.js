@@ -222,7 +222,7 @@ function SearchBar(props) {
           <TextField
             fullWidth
             className="search-field"
-            label="What are you looking for?"
+            label="Search"
             variant="outlined"
             size="small"
             value={search}

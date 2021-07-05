@@ -20,6 +20,7 @@ import {
   CollectionsBookmark,
   ExitToApp,
   Language,
+  GitHub,
 } from '@material-ui/icons';
 import { logout } from '../../helpers/kabinetProfile';
 
@@ -34,14 +35,14 @@ export default function TopBar(props) {
   return (
     <div className="top-bar">
       <AppBar color="inherit" className="app-bar">
-        <Toolbar>
+        <Toolbar variant="dense">
           <div className="top-bar-content">
             <div
               className="top-bar-title"
               onClick={() => history.push('/kabinet-world')}
             >
               <Language />
-              <Typography variant="h6">Kabinet</Typography>
+              <Typography variant="h6">kabinet</Typography>
             </div>
             <div className="top-bar-buttons">
               {user ? (
@@ -101,6 +102,20 @@ export default function TopBar(props) {
                           <ExitToApp color="secondary" />
                         </ListItemIcon>
                         <ListItemText>Logout</ListItemText>
+                      </ListItem>
+                      <ListItem
+                        button
+                        onClick={() => {
+                          window.open(
+                            'https://github.com/FocusKabinet/focus/tree/kabinet-beta-v2',
+                            '_blank'
+                          );
+                        }}
+                      >
+                        <ListItemIcon>
+                          <GitHub fontSize="small" style={{ color: 'black' }} />
+                        </ListItemIcon>
+                        <ListItemText>Learn More (GitHub)</ListItemText>
                       </ListItem>
                       <Divider />
                       <ListItem button onClick={() => setDrawer(false)}>

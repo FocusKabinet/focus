@@ -81,6 +81,8 @@ function IdeaCard(props) {
     if (!res) setLikes(newData);
   };
 
+  const isOwner = ownerId === user.uid;
+
   return (
     <Card className="card-idea">
       <CardHeader
@@ -100,7 +102,9 @@ function IdeaCard(props) {
                   }}
                 >
                   <AccountCircle fontSize="small" />
-                  {ownerName}
+                  <Typography color={isOwner ? 'secondary' : 'primary'}>
+                    {ownerName}
+                  </Typography>
                 </Link>
               </Typography>
             )}
@@ -214,7 +218,6 @@ function IdeaCard(props) {
             </Grid>
             {props.keywords && !!props.keywords.length && (
               <Grid item>
-                <Typography>Keywords: </Typography>
                 <KeywordTags
                   readOnly
                   keywords={props.keywords}
@@ -224,7 +227,6 @@ function IdeaCard(props) {
             )}
             {props.checklist && !!props.checklist.length && (
               <Grid item>
-                <Typography>Checklist: </Typography>
                 <CheckList list={props.checklist} readOnly />
               </Grid>
             )}

@@ -2,6 +2,7 @@ import {
   AppBar,
   BottomNavigation,
   BottomNavigationAction,
+  Toolbar,
 } from '@material-ui/core';
 import { AllInbox, Public, Whatshot } from '@material-ui/icons';
 import { connect } from 'react-redux';

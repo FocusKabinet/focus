@@ -4,7 +4,7 @@
   display: flex;
   align-self: center;
   justify-content: center;
-  background-color: #292f31;
+  background-color: #212529;
   min-height: 100vh;
 }
 
@@ -21,8 +21,5 @@
   }
   &.sm {
     width: 70vw;
-  }
-  &.xs {
-    width: 85vw;
   }
 }
