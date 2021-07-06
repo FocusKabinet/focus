@@ -10,9 +10,10 @@
     "google-trends-api": "^4.9.2"
   },
   "scripts": {
-    "start": "nodemon backend",
+    "start": "node backend",
+    "startdev": "nodemon backend",
     "build": "cd frontend && npm install && npm run build",
-    "dev": "concurrently --kill-others-on-fail \"npm run start\" \"cd frontend && npm run start\""
+    "dev": "concurrently --kill-others-on-fail \"npm run startdev\" \"cd frontend && npm run start\""
   },
   "cacheDirectories": [
     "node_modules",
