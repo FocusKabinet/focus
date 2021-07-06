@@ -8,7 +8,7 @@ import {
   InputAdornment,
   Drawer,
 } from '@material-ui/core';
-import { AlternateEmail, Face, Person, VpnKey } from '@material-ui/icons';
+import { Email, Face, Person, VpnKey } from '@material-ui/icons';
 import { connect } from 'react-redux';
 import './styles/KabinetProfile.scss';
 import { updatePassword, updateDetails } from '../helpers/kabinetProfile';
@@ -59,7 +59,7 @@ function KabinetProfile(props) {
                 readOnly: true,
                 startAdornment: (
                   <InputAdornment position="start">
-                    <AlternateEmail />
+                    <Email />
                   </InputAdornment>
                 ),
               }}
@@ -306,7 +306,7 @@ function ChangeDetails(props) {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <AlternateEmail />
+                  <Email />
                 </InputAdornment>
               ),
             }}

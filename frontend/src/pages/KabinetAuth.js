@@ -7,7 +7,7 @@ import {
   Typography,
   InputAdornment,
 } from '@material-ui/core';
-import { AlternateEmail, Face, VpnKey } from '@material-ui/icons';
+import { Email, Face, VpnKey } from '@material-ui/icons';
 import { login, register } from '../helpers/kabinetProfile';
 import './styles/KabinetAuth.scss';
 
@@ -89,7 +89,7 @@ export default function KabinetAuth(props) {
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">
-                    <AlternateEmail />
+                    <Email />
                   </InputAdornment>
                 ),
               }}
