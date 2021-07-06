@@ -104,7 +104,9 @@ function IdeaCard(props) {
   return (
     <Card className="card-idea">
       <CardHeader
-        onClick={() => history.push(`/kabinet-post/${id}`)}
+        // onClick={() => id !== params.id && history.push(`/kabinet-post/${id}`)}
+        style={{ cursor: 'pointer' }}
+        onClick={() => !props.singleView && handleToggleOpenPost()}
         title={`${emojiObject ? emojiObject.emoji : ''} ${title}`}
         subheader={
           <div className="card-subtitle">
