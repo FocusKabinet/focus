@@ -10,6 +10,9 @@
     visibility: hidden;
   }
   .button {
+    &:hover {
+      background-color: #ef233c;
+    }
     background-color: #d90429;
   }
 }
