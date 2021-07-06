@@ -53,6 +53,18 @@
   display: flex;
 }
 
+.open-post {
+  .open-post-container {
+    margin: 1rem;
+    .goback {
+      margin-bottom: 0.5rem;
+    }
+  }
+  .MuiDialog-paper {
+    background-color: #161a1d;
+  }
+}
+
 .MuiButtonBase-root.menu-item-delete {
   color: #cd2b2c;
 }

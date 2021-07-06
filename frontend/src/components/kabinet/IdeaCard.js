@@ -18,6 +18,8 @@ import {
   Button,
   TextField,
   InputAdornment,
+  useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
 import {
   MoreVert,
@@ -32,6 +34,7 @@ import {
   BookmarkBorder,
   FavoriteBorder,
   Share,
+  Close,
 } from '@material-ui/icons';
 import empty from '../../assets/empty-state-photo.png';
 import { format, formatDistance } from 'date-fns';
@@ -43,6 +46,7 @@ import {
   toggleBookmark,
   toggleLike,
 } from '../../helpers/kabinetUserInteractions';
+import GoBackButton from './GoBackButton';
 
 function IdeaCard(props) {
   const {
@@ -63,11 +67,13 @@ function IdeaCard(props) {
     private: hidden,
     bookmarks,
     params,
+    singleView,
   } = props;
   const [menu, menuToggle] = React.useState(null);
   const [expanded, expandToggle] = React.useState(false);
   const [likes, setLikes] = React.useState(props.likes || []);
   const [share, shareToggle] = React.useState(false);
+  const [openPost, toggleOpenPost] = React.useState(false);
 
   const handleToggle = (e) => {
     menuToggle(Boolean(menu) ? false : e.currentTarget);
@@ -90,6 +96,9 @@ function IdeaCard(props) {
     if (!res) setLikes(newData);
   };
 
+  const handleToggleOpenPost = (e) => {
+    toggleOpenPost(!openPost);
+  };
   const isOwner = user && ownerId === user.uid;
 
   return (
@@ -174,9 +183,16 @@ function IdeaCard(props) {
           )
         }
       />
+      <OpenPostDialog
+        open={openPost}
+        handleClose={handleToggleOpenPost}
+        {...props}
+      />
       {imageURL && (
         <>
-          <CardActionArea onClick={() => history.push(`/kabinet-post/${id}`)}>
+          <CardActionArea
+            onClick={() => !props.singleView && handleToggleOpenPost()}
+          >
             <CardMedia
               className={!props.singleView ? 'card-img' : ''}
               src={imageURL || imageUpload}
@@ -307,6 +323,36 @@ function SharableLink(props) {
     </Dialog>
   );
 }
+
+function OpenPostDialog(props) {
+  const { open, handleClose, ...otherProps } = props;
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+
+  return (
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      fullScreen={mobile}
+      className="open-post"
+    >
+      {mobile ? (
+        <div className="open-post-container">
+          <GoBackButton
+            onClick={handleClose}
+            color="secondary"
+            className="goback"
+          />
+          <IdeaCard {...otherProps} singleView />
+        </div>
+      ) : (
+        <IdeaCard {...otherProps} singleView />
+      )}
+    </Dialog>
+  );
+}
+
 const mapStateToProps = (state) => {
   return {
     user: state.kabinet_user,
