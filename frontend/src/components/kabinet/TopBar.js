@@ -39,7 +39,7 @@ export default function TopBar(props) {
         <Toolbar variant="dense">
           <div className="top-bar-content">
             {isChildrenPath(path) ? (
-              <GoBackButton {...props} />
+              <GoBackButton history={history} />
             ) : (
               <div
                 className="top-bar-title"
