@@ -14,9 +14,12 @@ export default function GoBackButton(props) {
     // </IconButton>
     <Button
       className="goback-button"
-      color="primary"
-      onClick={() => props.history.goBack()}
+      color={props.color || 'primary'}
+      onClick={() =>
+        !props.onClick ? props.history.goBack() : props.onClick()
+      }
       startIcon={<KeyboardBackspace />}
+      {...props}
     >
       Back
     </Button>
