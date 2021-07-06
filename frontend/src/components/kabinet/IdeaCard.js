@@ -305,7 +305,13 @@ function SharableLink(props) {
             <Typography variant="h6">🔗 Sharable link to this post</Typography>
           </Grid>
           <Grid item>
-            <TextField label="URL" value={URL} variant="filled" fullWidth />
+            <TextField
+              label="URL"
+              value={URL}
+              variant="filled"
+              fullWidth
+              InputProps={{ readOnly: true }}
+            />
           </Grid>
           <Grid item>
             <Button
