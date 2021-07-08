@@ -30,7 +30,7 @@ import {
   fetchCards,
   fetchUserCards,
 } from '../helpers/kabinetHelpers';
-import { getPublicUser } from '../helpers/kabinetProfile';
+import { getPublicUserByDisplayName } from '../helpers/kabinetProfile';
 import { getVisibleCards } from '../helpers/kabinetSelectors';
 import ScrollToTop from '../components/kabinet/ScrollToTop';
 import { connect } from 'react-redux';
@@ -60,9 +60,9 @@ function KabinetDashboard(props) {
       }
     }
     if (props.viewUser) {
-      const publicId = props.match.params.uid;
-      const data = await fetchUserCards(publicId);
-      const user = await getPublicUser(publicId);
+      const displayName = props.match.params.displayName;
+      const user = await getPublicUserByDisplayName(displayName);
+      const data = await fetchUserCards(user.uid);
       setViewProfile(user);
       updateInitialCards(data);
       updateCards(data);
@@ -144,7 +144,7 @@ function KabinetDashboard(props) {
           </Typography>
         </>
       )}
-      {props.viewUser && (
+      {props.viewUser && Object.keys(viewProfile).length && (
         <>
           <Typography
             className="list-title"

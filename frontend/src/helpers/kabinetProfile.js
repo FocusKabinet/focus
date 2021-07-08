@@ -288,3 +288,31 @@ export const getPublicUser = async (uid) => {
   store.dispatch(setLoadingState(false));
   return userObj;
 };
+
+export const getPublicUserByDisplayName = async (displayName) => {
+  let userObj = {};
+  let queryData = [];
+
+  store.dispatch(setLoadingState(true));
+  const res = await firestore
+    .collection('kabinet-users')
+    .where('displayName', '==', displayName)
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        queryData.push(doc.data());
+      });
+      userObj = queryData[0];
+    })
+    .catch((err) => {
+      store.dispatch(
+        setNotificationState({
+          open: true,
+          message: err.message,
+          severity: 'error',
+        })
+      );
+    });
+  store.dispatch(setLoadingState(false));
+  return userObj;
+};

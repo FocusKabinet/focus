@@ -117,9 +117,9 @@ function IdeaCard(props) {
                   className="publisher-link"
                   underline="none"
                   onClick={(e) => {
-                    ownerId &&
-                      ownerId !== params.uid &&
-                      history.push(`/kabinet-user/${ownerId}`);
+                    ownerName &&
+                      ownerName !== params.displayName &&
+                      history.push(`/kabinet-user/${ownerName}`);
                     e.stopPropagation();
                   }}
                 >

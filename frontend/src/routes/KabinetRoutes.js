@@ -101,7 +101,7 @@ export default function KabinetRoutes(props) {
         )}
       />
       <Route
-        path="/kabinet-user/:uid"
+        path="/kabinet-user/:displayName"
         render={(routeProps) => (
           <Page {...routeProps}>
             <KabinetDashboard {...routeProps} viewUser />
