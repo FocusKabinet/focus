@@ -144,7 +144,7 @@ function KabinetDashboard(props) {
           </Typography>
         </>
       )}
-      {props.viewUser && Object.keys(viewProfile).length && (
+      {props.viewUser && !!Object.keys(viewProfile).length && (
         <>
           <Typography
             className="list-title"

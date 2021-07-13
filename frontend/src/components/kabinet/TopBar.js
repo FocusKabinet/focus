@@ -151,7 +151,7 @@ export default function TopBar(props) {
 
 function isChildrenPath(currentPath) {
   const childrenPaths = [
-    // 'kabinet-post',
+    'kabinet-post',
     'kabinet-user',
     'kabinet-bookmarked',
     'kabinet-profile',

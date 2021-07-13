@@ -40,7 +40,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 1rem;
+  .like-count {
+    margin-right: 1rem;
+  }
 }
 
 .like-button {
