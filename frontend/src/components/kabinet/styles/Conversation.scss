@@ -1,5 +1,6 @@
 .conversation {
-  margin-top: 1rem;
+  padding: 1rem;
+
   .title {
     color: white;
     .title-content {
@@ -11,7 +12,7 @@
     }
   }
   .comments-container {
-    padding: 0.5rem;
+    padding: 0.4rem;
 
     .comment-action {
       display: flex;
@@ -24,6 +25,10 @@
   }
 }
 
+.mobile {
+  padding: 0;
+  margin-top: 1rem;
+}
 .comments-area {
   margin-top: 1rem;
 }
@@ -48,9 +53,7 @@
     flex-flow: row;
   }
   .likes {
-    svg {
-      margin-right: 0;
-    }
+    margin-right: 0.5rem;
   }
   .comment-date {
     margin-right: 0.2rem;
@@ -76,7 +79,7 @@
     margin-right: 1rem;
     height: auto;
     width: 2px;
-    background-color: #b1a7a6;
+    background-color: white;
   }
   .indented {
     width: 100%;

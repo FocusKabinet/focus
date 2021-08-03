@@ -107,20 +107,20 @@ function IdeaCard(props) {
 
   return (
     <div style={{ overflow: 'hidden' }}>
-      <Card className="card-idea">
+      <Card className='card-idea'>
         <CardHeader
           // onClick={() => id !== params.id && history.push(`/kabinet-post/${id}`)}
           style={{ cursor: 'pointer' }}
           onClick={() => !singleView && handleToggleOpenPost()}
           title={`${emojiObject ? emojiObject.emoji : ''} ${title}`}
           subheader={
-            <div className="card-subtitle">
+            <div className='card-subtitle'>
               {!collection && (
-                <Typography variant="subtitle1">
+                <Typography variant='subtitle1'>
                   <Link
-                    color="primary"
-                    className="publisher-link"
-                    underline="none"
+                    color='primary'
+                    className='publisher-link'
+                    underline='none'
                     onClick={(e) => {
                       ownerName &&
                         ownerName !== params.displayName &&
@@ -128,16 +128,16 @@ function IdeaCard(props) {
                       e.stopPropagation();
                     }}
                   >
-                    <AccountCircle fontSize="small" />
+                    <AccountCircle fontSize='small' />
                     <Typography color={isOwner ? 'secondary' : 'primary'}>
                       {ownerName}
                     </Typography>
                   </Link>
                 </Typography>
               )}
-              <Typography variant="subtitle2" className="publish-date">
+              <Typography variant='subtitle2' className='publish-date'>
                 {hidden && <VisibilityOff />}
-                <Schedule fontSize="small" />
+                <Schedule fontSize='small' />
                 {/* {format(new Date(createdAt), 'MMM do, yyyy')} */}
                 {formatDistance(new Date(createdAt), new Date(), {
                   addSuffix: true,
@@ -150,19 +150,19 @@ function IdeaCard(props) {
             user.uid === ownerId && (
               <>
                 <IconButton
-                  aria-label="settings"
-                  className="header-settings"
+                  aria-label='settings'
+                  className='header-settings'
                   onClick={handleToggle}
                 >
                   <MoreVert />
                 </IconButton>
                 <Menu
                   anchorEl={menu}
-                  id="simple-menu"
+                  id='simple-menu'
                   keepMounted
                   open={Boolean(menu)}
                   onClose={handleToggle}
-                  className="menu"
+                  className='menu'
                 >
                   <MenuItem
                     onClick={(e) => {
@@ -171,7 +171,7 @@ function IdeaCard(props) {
                     }}
                     disabled={id < 5}
                   >
-                    <Edit fontSize="small" />
+                    <Edit fontSize='small' />
                     Edit
                   </MenuItem>
                   <MenuItem
@@ -180,10 +180,10 @@ function IdeaCard(props) {
                       menuToggle(null);
                       e.stopPropagation();
                     }}
-                    className="menu-item-delete"
+                    className='menu-item-delete'
                     disabled={id < 5}
                   >
-                    <Delete fontSize="small" /> Delete
+                    <Delete fontSize='small' /> Delete
                   </MenuItem>
                 </Menu>
               </>
@@ -203,7 +203,7 @@ function IdeaCard(props) {
               <CardMedia
                 className={!props.singleView ? 'card-img' : ''}
                 src={imageURL || imageUpload}
-                component="img"
+                component='img'
                 onError={(e) => (e.target.src = empty)}
               />
             </CardActionArea>
@@ -216,11 +216,11 @@ function IdeaCard(props) {
           </>
         )}
         <CardActions disableSpacing>
-          <div className="likes">
+          <div className='likes'>
             <IconButton
               onClick={handleToggleLike}
               disabled={!user}
-              className="like-button"
+              className='like-button'
             >
               {user && likes.includes(user.uid) ? (
                 <Favorite />
@@ -229,7 +229,7 @@ function IdeaCard(props) {
               )}
             </IconButton>
             {!!likes.length && (
-              <Typography variant="body1" className="like-count">
+              <Typography variant='body1' className='like-count'>
                 {likes.length}
               </Typography>
             )}
@@ -237,13 +237,13 @@ function IdeaCard(props) {
           {user && user.uid !== ownerId && (
             <IconButton
               onClick={() => toggleBookmark(id)}
-              className="bookmark-button"
+              className='bookmark-button'
             >
               {bookmarks.includes(id) ? <Bookmark /> : <BookmarkBorder />}
             </IconButton>
           )}
-          <div className="share-button">
-            <IconButton onClick={handleToggleShare} color="primary">
+          <div className='share-button'>
+            <IconButton onClick={handleToggleShare} color='primary'>
               <Share />
             </IconButton>
             <SharableLink
@@ -261,10 +261,10 @@ function IdeaCard(props) {
             <ExpandMore />
           </IconButton>
         </CardActions>
-        <Collapse in={expanded} timeout="auto" unmountOnExit>
+        <Collapse in={expanded} timeout='auto' unmountOnExit>
           <Divider />
-          <CardContent className="card-content">
-            <Grid container direction="column" spacing={1}>
+          <CardContent className='card-content'>
+            <Grid container direction='column' spacing={1}>
               <Grid item>
                 <Typography paragraph>{description}</Typography>
               </Grid>
@@ -287,7 +287,12 @@ function IdeaCard(props) {
         </Collapse>
       </Card>
       {singleView && (
-        <Conversation cardId={id} ownerId={ownerId} ownerName={ownerName} />
+        <Conversation
+          cardId={id}
+          ownerId={ownerId}
+          ownerName={ownerName}
+          mobile={props.mobile}
+        />
       )}
     </div>
   );
@@ -308,22 +313,22 @@ function SharableLink(props) {
   const URL = window.location.origin + '/kabinet-post/' + id;
   return (
     <Dialog open={open} onClose={handleClose} fullWidth>
-      <div className="sharable-link-container">
+      <div className='sharable-link-container'>
         <Grid
           container
           spacing={3}
-          direction="column"
-          justify="center"
-          alignItems="center"
+          direction='column'
+          justify='center'
+          alignItems='center'
         >
           <Grid item>
-            <Typography variant="h6">🔗 Sharable link to this post</Typography>
+            <Typography variant='h6'>🔗 Sharable link to this post</Typography>
           </Grid>
           <Grid item>
             <TextField
-              label="URL"
+              label='URL'
               value={URL}
-              variant="filled"
+              variant='filled'
               fullWidth
               InputProps={{ readOnly: true }}
             />
@@ -341,8 +346,8 @@ function SharableLink(props) {
                   })
                 );
               }}
-              variant="contained"
-              color="primary"
+              variant='contained'
+              color='primary'
               fullWidth
             >
               Copy to Clipboard
@@ -365,15 +370,15 @@ function OpenPostDialog(props) {
       onClose={handleClose}
       fullWidth
       fullScreen={mobile}
-      className="open-post"
-      scroll="body"
+      className='open-post'
+      scroll='body'
     >
       {mobile ? (
-        <div className="open-post-container">
+        <div className='open-post-container'>
           <GoBackButton
             onClick={handleClose}
-            color="secondary"
-            className="goback"
+            color='secondary'
+            className='goback'
           />
           <IdeaCard {...otherProps} singleView />
         </div>

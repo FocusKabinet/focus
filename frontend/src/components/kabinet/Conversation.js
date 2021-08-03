@@ -14,6 +14,8 @@ import {
   ListItemText,
   ListItemIcon,
   List,
+  useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
 import {
   Send,
@@ -68,28 +70,32 @@ function Conversation(props) {
     const res = await postComment(cardId, commentObj);
     if (!res) setComment('');
   };
+
+  const theme = useTheme();
+  const mobile = useMediaQuery(theme.breakpoints.down('xs'));
+
   return (
-    <div className="conversation">
-      <Typography variant="h6" gutterBottom color="inherit" className="title">
-        <div className="title-content">
+    <div className={`conversation ${mobile ? 'mobile' : ''}`}>
+      <Typography variant='h6' gutterBottom color='inherit' className='title'>
+        <div className='title-content'>
           <Forum />
           Conversations
         </div>
       </Typography>
-      <Card className="comments-container">
-        <div className="comment-action">
+      <Card className='comments-container'>
+        <div className='comment-action'>
           <TextField
-            variant="filled"
-            label="Enter your comment"
-            size="small"
+            variant='filled'
+            label='Enter your comment'
+            size='small'
             value={comment}
             onChange={handleComment}
             fullWidth
             InputProps={{
               endAdornment: (
                 <IconButton
-                  color="primary"
-                  size="small"
+                  color='primary'
+                  size='small'
                   disabled={!comment.length}
                   onClick={handleSubmit}
                 >
@@ -100,8 +106,8 @@ function Conversation(props) {
           />
         </div>
       </Card>
-      <div className="comments-area">
-        <Grid container direction="column" spacing={1}>
+      <div className='comments-area'>
+        <Grid container direction='column' spacing={1}>
           {comments.map((item) => (
             <Grid item key={item.id}>
               <Comment key={item.id} {...item} {...props} />
@@ -178,20 +184,20 @@ function Comment(props) {
   };
   const isOwner = user && authorDisplayName === user.displayName;
   const commentCard = (
-    <Card className="comment-container">
-      <div className="comment-top">
-        <Typography variant="subtitle1">
+    <Card className='comment-container'>
+      <div className='comment-top'>
+        <Typography variant='subtitle1'>
           <Link
-            color="primary"
-            className="publisher-link"
-            underline="none"
+            color='primary'
+            className='publisher-link'
+            underline='none'
             onClick={(e) => {
               authorDisplayName !== match.params.displayName &&
                 history.push(`/kabinet-user/${authorDisplayName}`);
               e.stopPropagation();
             }}
           >
-            <AccountCircle fontSize="small" />
+            <AccountCircle fontSize='small' />
             <Typography color={isOwner ? 'secondary' : 'primary'}>
               {authorDisplayName}
             </Typography>
@@ -199,21 +205,21 @@ function Comment(props) {
         </Typography>
         {isOwner && (
           <IconButton
-            className="menu-button"
+            className='menu-button'
             onClick={() => setOptions(true)}
-            size="small"
+            size='small'
           >
             <MoreVert />
           </IconButton>
         )}
       </div>
-      <Typography variant="body1">{content}</Typography>
-      <div className="comment-info">
-        <div className="comment-actions">
-          <div className="likes">
+      <Typography variant='body1'>{content}</Typography>
+      <div className='comment-info'>
+        <div className='comment-actions'>
+          <div className='likes'>
             <IconButton
-              size="small"
-              className="like-button"
+              size='small'
+              className='like-button'
               disabled={!user}
               onClick={handleToggleLike}
             >
@@ -224,14 +230,14 @@ function Comment(props) {
               )}
             </IconButton>
             {!!likes.length && (
-              <Typography variant="body2">{likes.length}</Typography>
+              <Typography variant='body2'>{likes.length}</Typography>
             )}
           </div>
           {!children && user && (
             <>
               <Button
-                size="small"
-                color="primary"
+                size='small'
+                color='primary'
                 onClick={() => setDrawer(!showDrawer)}
               >
                 Reply
@@ -239,28 +245,28 @@ function Comment(props) {
             </>
           )}
         </div>
-        <Typography variant="subtitle2" className="comment-date">
+        <Typography variant='subtitle2' className='comment-date'>
           {formatDistance(new Date(createdAt), new Date(), {
             addSuffix: true,
           })}
         </Typography>
       </div>
-      <Collapse in={showDrawer} timeout="auto" unmountOnExit>
+      <Collapse in={showDrawer} timeout='auto' unmountOnExit>
         <Divider />
-        <div className="reply-container">
+        <div className='reply-container'>
           <TextField
             autoFocus
-            variant="filled"
-            label="Enter your reply"
-            size="small"
+            variant='filled'
+            label='Enter your reply'
+            size='small'
             value={reply}
             onChange={(e) => setReply(e.target.value)}
             fullWidth
             InputProps={{
               endAdornment: (
                 <IconButton
-                  color="primary"
-                  size="small"
+                  color='primary'
+                  size='small'
                   disabled={!reply.length}
                   onClick={handlePostReply}
                 >
@@ -276,15 +282,15 @@ function Comment(props) {
   return (
     <>
       {children ? (
-        <div className="indented-container">
-          <Divider orientation="vertical" className="divider" />
-          <div className="indented">{commentCard}</div>
+        <div className='indented-container'>
+          <Divider orientation='vertical' className='divider' />
+          <div className='indented'>{commentCard}</div>
         </div>
       ) : (
         <>
           {commentCard}
           <div style={{ marginTop: '0.5rem' }}>
-            <Grid container direction="column" spacing={1}>
+            <Grid container direction='column' spacing={1}>
               {replies.map((item) => (
                 <Grid item key={item.id}>
                   <Reply key={item.id} {...item} user={user} />
@@ -316,11 +322,11 @@ export default connect(mapStateToProps)(withRouter(Conversation));
 
 function Options(props) {
   return (
-    <Drawer anchor="bottom" open={props.open} onClose={props.handleOptions}>
+    <Drawer anchor='bottom' open={props.open} onClose={props.handleOptions}>
       <List>
         <ListItem button onClick={props.handleDelete}>
           <ListItemIcon>
-            <Delete color="secondary" />
+            <Delete color='secondary' />
           </ListItemIcon>
           <ListItemText>Remove comment</ListItemText>
         </ListItem>
