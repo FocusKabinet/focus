@@ -230,10 +230,8 @@ async function uploadImage(id, img) {
     .child(`kabinet-img/${id}`)
     .put(img, metadata)
     .then(async (snapshot) => {
-      console.log('image uploaded successfully');
       await snapshot.ref.getDownloadURL().then((url) => {
         imageURL = url;
-        console.log(imageURL);
       });
     })
     .catch((e) => {
@@ -255,7 +253,7 @@ async function deleteImage(id) {
       (await storageRef
         .child(`kabinet-img/${id}`)
         .delete()
-        .then(() => console.log('image overwritten successfuly'))
+        .then()
         .catch((e) => {}));
   } catch {
     return;

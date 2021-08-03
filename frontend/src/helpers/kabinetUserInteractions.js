@@ -116,7 +116,6 @@ export const loadComments = (cardId, callback) => {
           const data = doc.data();
           arr.push(data);
         });
-        console.log(arr);
         callback(arr);
       },
       (err) => {
@@ -154,7 +153,6 @@ export const getReplies = (commentObj, callback) => {
 export const postReply = async (replyObj) => {
   replyObj['id'] = uuid();
   const { id, commentId, cardId } = replyObj;
-  console.log(replyObj);
   let res = null;
   await firestore
     .collection('kabinet-convo')
@@ -187,7 +185,6 @@ export const postReply = async (replyObj) => {
 };
 
 export function deleteComment(commentObj) {
-  console.log(commentObj);
   const { cardId, id, commentId, children: reply } = commentObj;
   try {
     if (!reply) {

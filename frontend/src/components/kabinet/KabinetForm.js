@@ -149,7 +149,6 @@ function KabinetForm(props) {
 
   const handleDateChange = (date) => {
     changeDirty(true);
-    console.log(date);
     return updateForm({ ...form, reminder: date });
   };
 
@@ -183,7 +182,6 @@ function KabinetForm(props) {
   };
 
   const saveAsDraft = () => {
-    console.log('save as draft', form);
     return setDrawer(false);
   };
 
@@ -195,33 +193,33 @@ function KabinetForm(props) {
   return (
     <div>
       <Typography
-        className="list-title"
-        align="center"
-        variant="h4"
+        className='list-title'
+        align='center'
+        variant='h4'
         gutterBottom
       >
         {props.edit ? 'Refine' : 'Publish'}
       </Typography>
-      <Paper className="new-idea-form">
-        <Grid container spacing={2} direction="column">
+      <Paper className='new-idea-form'>
+        <Grid container spacing={2} direction='column'>
           <Grid item>
             <TextField
               fullWidth
-              className="title-field"
-              label="A short title for your idea"
-              variant="outlined"
-              size="small"
-              id="title"
+              className='title-field'
+              label='A short title for your idea'
+              variant='outlined'
+              size='small'
+              id='title'
               value={form.title}
               onChange={handleUpdateForm}
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position="start">
+                  <InputAdornment position='start'>
                     <IconButton
                       onClick={handleTogglePicker}
-                      color="primary"
-                      size="small"
-                      variant="contained"
+                      color='primary'
+                      size='small'
+                      variant='contained'
                     >
                       {form.emojiObject.emoji}
                     </IconButton>
@@ -232,7 +230,7 @@ function KabinetForm(props) {
             />
           </Grid>
           <EmojiPicker
-            id="emoji"
+            id='emoji'
             open={pickerDialog}
             onEmojiClick={onEmojiClick}
             handleClose={handleTogglePicker}
@@ -240,38 +238,38 @@ function KabinetForm(props) {
           <Grid item>
             <TextField
               fullWidth
-              id="description"
+              id='description'
               multiline
               rows={5}
-              className="title-field"
-              label="Description"
-              placeholder="Describe your idea"
-              variant="outlined"
-              size="small"
+              className='title-field'
+              label='Description'
+              placeholder='Describe your idea'
+              variant='outlined'
+              size='small'
               value={form.description}
               onChange={handleUpdateForm}
               required
             />
           </Grid>
           <Grid item>
-            <Typography variant="body1" gutterBottom>
+            <Typography variant='body1' gutterBottom>
               Create a checklist for this idea
             </Typography>
             <TextField
               fullWidth
-              className="title-field"
-              label="Add a to-do"
-              variant="outlined"
-              size="small"
+              className='title-field'
+              label='Add a to-do'
+              variant='outlined'
+              size='small'
               value={todoField}
               onKeyDown={addToChecklist}
               onChange={(e) => changeTodoField(e.target.value)}
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position="end">
+                  <InputAdornment position='end'>
                     <IconButton
                       onClick={(e) => addToChecklist('add')}
-                      color="primary"
+                      color='primary'
                       disabled={!todoField}
                     >
                       <AddCircle />
@@ -290,19 +288,19 @@ function KabinetForm(props) {
           <Grid item>
             <TextField
               fullWidth
-              className="title-field"
-              label="Any keyword?"
-              variant="outlined"
-              size="small"
+              className='title-field'
+              label='Any keyword?'
+              variant='outlined'
+              size='small'
               value={keywordField}
               onKeyDown={handleChangeKeywords}
               onChange={(e) => changeKeywordField(e.target.value)}
               InputProps={{
                 endAdornment: (
-                  <InputAdornment position="end">
+                  <InputAdornment position='end'>
                     <IconButton
                       onClick={() => handleChangeKeywords('add')}
-                      color="primary"
+                      color='primary'
                       disabled={!keywordField}
                     >
                       <AddCircle />
@@ -313,7 +311,7 @@ function KabinetForm(props) {
             />
             {!!form.keywords.length && (
               <KeywordTags
-                id="keywords"
+                id='keywords'
                 keywords={form.keywords}
                 handleChange={handleChangeKeywords}
                 setPrimary={handleSetPrimary}
@@ -322,36 +320,36 @@ function KabinetForm(props) {
             )}
           </Grid>
           <Grid item>
-            <Typography variant="body1" gutterBottom>
+            <Typography variant='body1' gutterBottom>
               Add a photo
             </Typography>
-            <Paper className="photo-tabs">
+            <Paper className='photo-tabs'>
               <Tabs
                 value={tab}
                 onChange={(e, value) => setTab(value)}
-                indicatorColor="primary"
-                textColor="primary"
+                indicatorColor='primary'
+                textColor='primary'
                 centered
               >
-                <Tab label="Image URL" />
-                <Tab label="Upload" />
+                <Tab label='Image URL' />
+                <Tab label='Upload' />
               </Tabs>
               <TabPanel value={tab} index={0}>
                 <TextField
                   fullWidth
-                  className="image_url-field"
-                  placeholder="https://"
-                  variant="outlined"
-                  size="small"
-                  id="imageURL"
+                  className='image_url-field'
+                  placeholder='https://'
+                  variant='outlined'
+                  size='small'
+                  id='imageURL'
                   value={form.imageURL || ''}
                   onChange={handleUpdateForm}
                 />
                 {form.imageURL && (
                   <CardMedia
-                    className="image-preview"
+                    className='image-preview'
                     src={form.imageURL}
-                    component="img"
+                    component='img'
                     onError={(e) => (e.target.src = empty)}
                   />
                 )}
@@ -359,26 +357,26 @@ function KabinetForm(props) {
               <TabPanel value={tab} index={1}>
                 <ImageUploader
                   withIcon={false}
-                  buttonText="Browse"
-                  id="imageUpload"
+                  buttonText='Browse'
+                  id='imageUpload'
                   onChange={handleUpload}
                   imgExtension={['.jpeg', '.jpg', '.gif', '.png']}
                   maxFileSize={10485760}
                   singleImage
                   withPreview={false}
-                  label="Max file size: 10MB. Supports: .JPEG .GIF .PNG"
-                  fileSizeError="File size is too large!"
-                  fileTypeError="File is not supported!"
+                  label='Max file size: 10MB. Supports: .JPEG .GIF .PNG'
+                  fileSizeError='File size is too large!'
+                  fileTypeError='File is not supported!'
                 />
                 {form.imageUpload && (
                   <div>
                     <CardMedia
-                      className="image-preview"
+                      className='image-preview'
                       image={URL.createObjectURL(form.imageUpload)}
                     />
                     <Button
-                      size="small"
-                      color="primary"
+                      size='small'
+                      color='primary'
                       onClick={() => updateForm({ ...form, imageUpload: null })}
                     >
                       Discard
@@ -389,11 +387,11 @@ function KabinetForm(props) {
             </Paper>
           </Grid>
           <Grid item>
-            <div className="set-visibility">
+            <div className='set-visibility'>
               <Typography>Set visibility: </Typography>
               {!!form.private ? <VisibilityOff /> : <Visibility />}
             </div>
-            <div className="set-visibility">
+            <div className='set-visibility'>
               <Typography>Public</Typography>
               <Switch onChange={toggleVisibility} checked={form.private} />
               <Typography>Private</Typography>
@@ -408,29 +406,29 @@ function KabinetForm(props) {
             />
           </Grid> */}
           <Grid item>
-            <div className="form-actions">
+            <div className='form-actions'>
               <IconButton
-                size="small"
-                color="primary"
+                size='small'
+                color='primary'
                 onClick={() => setDrawer(true)}
               >
                 <Settings />
               </IconButton>
               <Drawer
-                anchor="bottom"
+                anchor='bottom'
                 open={showDrawer}
                 onClose={() => setDrawer(false)}
               >
                 <List>
                   <ListItem button onClick={() => saveAsDraft()} disabled>
                     <ListItemIcon>
-                      <Save color="primary" />
+                      <Save color='primary' />
                     </ListItemIcon>
                     <ListItemText>Save As Draft</ListItemText>
                   </ListItem>
                   <ListItem button onClick={() => clearForm()}>
                     <ListItemIcon>
-                      <Delete color="secondary" />
+                      <Delete color='secondary' />
                     </ListItemIcon>
                     <ListItemText>Clear</ListItemText>
                   </ListItem>
@@ -443,17 +441,17 @@ function KabinetForm(props) {
                   </ListItem>
                 </List>
               </Drawer>
-              <div className="form-actions-nav">
+              <div className='form-actions-nav'>
                 <Button
-                  color="primary"
-                  variant="outlined"
+                  color='primary'
+                  variant='outlined'
                   onClick={() => props.history.goBack()}
                 >
                   Cancel
                 </Button>
                 <Button
-                  color="primary"
-                  variant="contained"
+                  color='primary'
+                  variant='contained'
                   onClick={handleSubmit}
                   disabled={!form.title || !isDirty || !form.description}
                 >
@@ -484,7 +482,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div role="tabpanel" hidden={value !== index} {...other}>
+    <div role='tabpanel' hidden={value !== index} {...other}>
       {value === index && <Box p={2}>{children}</Box>}
     </div>
   );
